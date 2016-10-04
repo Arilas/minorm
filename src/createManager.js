@@ -11,9 +11,7 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
    *   tableName: Repository
    * }
    */
-  const repos = {
-
-  }
+  const repos = {}
   /**
    * {
    *   tableName1: {
@@ -25,9 +23,7 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
    *   }
    * }
    */
-  const associations: {[key: string]: {[key: string]: Relation}} = {
-
-  }
+  const associations: {[key: string]: {[key: string]: Relation}} = {}
 
   return {
     getRepository(tableName) {
@@ -43,8 +39,10 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
     query(sql, values) {
       if (typeof sql.toParam === 'function') {
         sql = sql.toParam()
+        logger && logger.debug(`SQL query: ${sql.text}`)
         return pool.query(sql.text, sql.values)
       }
+      logger && logger.debug(`SQL query: ${sql}`)
       return pool.query(sql, values)
     },
     nestQuery(sql) {
@@ -61,9 +59,9 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
       }
     },
     _setRelationFrom(tableName, relations) {
-      logger && logger.info(`Loaded relations for ${tableName} with associations: ${relations.map(r => r.columnName).join(', ')}`) //eslint-disable-line no-logger
+      logger && logger.debug(`Loaded relations for ${tableName} with associations: ${relations.map(r => r.columnName).join(', ')}`) 
       if (associations.hasOwnProperty(tableName)) {
-        logger && logger.warn(`Twice Loaded meta for table ${tableName}. Please check that you use manager.getRepository method`) //eslint-disable-line no-logger
+        logger && logger.warn(`Twice Loaded meta for table ${tableName}. Please check that you use manager.getRepository() method`)
         return
       }
       associations[tableName] = relations.reduce((target, relation) => this.getRepository(relation.tableName) && ({
@@ -89,7 +87,7 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
             const originTableName = table[0].table
             if (!associations.hasOwnProperty(originTableName) || !associations[originTableName].hasOwnProperty(columnName)) {
               const msg = `Foreign key ${columnName} is not found in ${originTableName}. Try to get Repository for ${originTableName} to load relations.`
-              logger &&  logger.error(msg) //eslint-disable-line no-logger
+              logger &&  logger.error(msg)
               throw new Error(msg)
             }
             const relation: Relation = associations[originTableName][columnName]
@@ -110,7 +108,9 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
             query.left_join(...prepareJoin(fromAlias, columnName, alias))
             return query.field(`\`${alias}\`.*`)
           }
-          query.execute = (nested: boolean) => nested ? this.nestQuery(query) : this.query(query) //eslint-disable-line arrow-parens
+          query.execute = (nested: boolean) => //eslint-disable-line arrow-parens
+            (nested ? this.nestQuery(query) : this.query(query))
+            .then(([result]) => result)
 
           return query
         }

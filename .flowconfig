@@ -1,0 +1,12 @@
+[ignore]
+.*node_modules/babel.*
+.*node_modules/babylon
+.*node_modules/chai
+
+[include]
+
+[libs]
+flow-typed/
+
+[options]
+suppress_comment=.*\\$FlowIgnore

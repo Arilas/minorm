@@ -19,7 +19,7 @@ export type Repository = {
   findBy(criteria: Criteria, orderBy: {[key: string]: string}, limit?: number, offset?: number): Promise<Array<Model>>,
   create(data: {[key: string]: any}): Model,
   hydrate(data: {[key: string]: any}, isFetched?: boolean): Model,
-  _save(changes: {[key: string]: any}, id?: number): Promise<boolean>
+  _save(changes: {[key: string]: any}, id?: number): Promise<number|string>
 }
 
 export type Relation = {
@@ -39,7 +39,7 @@ export type SelectQuery = {
   limit(limit: number): SelectQuery,
   offset(offset: number): SelectQuery,
   toParam(): {text: string, values: Array<any>},
-  execute(nested?: boolean): Promise<*>
+  execute(nested?: boolean): Promise<Array<*>>
 }
 
 export type Manager = {

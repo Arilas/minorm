@@ -4,6 +4,8 @@
   "description": "MinORM - minimal MySQL ORM with performance as the Goal",
   "main": "lib/index.js",
   "scripts": {
+    "dist": "babel -d lib/ src/",
+    "prepublish": "npm run dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

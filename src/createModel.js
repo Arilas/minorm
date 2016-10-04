@@ -19,12 +19,14 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
     }
     : target, {})
     if (Object.keys(changes).length || !model.id) {
-      return repository._save(changes, model.id).then((id) => {
+      return repository._save(changes, model.id).then(id => {
         origin = {
           ...model,
-          id
+          id: id ? id : model.id
         }
-        model.id = id
+        if (id) {
+          model.id = id
+        }
         return model
       })
     }

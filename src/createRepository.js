@@ -104,9 +104,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       return manager.query(
         sql.text,
         sql.values
-      ).then(([result]) => {
-        return result.insertId
-      })
+      ).then(([result]) => result.insertId)
     }
   }
 
