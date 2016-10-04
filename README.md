@@ -41,6 +41,17 @@ export const PostsRepo = {
 }
 ```
 
+## Manager
+
+* `getRepository(tableName)` - returns a Repository
+* `getConnection()` - returns MySQL Connection from pool
+* `query(sql: string|Object|SqeulQuery, values?: Array)` - execute query in pool, also supports Sequl query
+* `nestQuery(sql: Object|SquelQuery)` - execute query and return result as ```[{table1: {feilds}, table2: {}}, {table1: {fiedls}}]``` etc 
+* `startQuery()` - returns a wrapped Squel Query Builder
+* `extendRepository(tableName, callback)` - If you want to extend Repository by some methods you can follow two ways:
+  1. Just mix methods as showed in example
+  2. Use `extendRepository` method, that receive original repo object and must return new repo object. Can be used to override native methods like `hydrate` etc.
+
 ## Repository
 
 MinORM uses Repositories for working with tables. One table == one Repository. It has a lot of useful methods like:

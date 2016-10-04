@@ -26,6 +26,9 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
   const associations: {[key: string]: {[key: string]: Relation}} = {}
 
   return {
+    extendRepository(tableName, callback) {
+      repos[tableName] = callback(this.getRepository(tableName))
+    },
     getRepository(tableName) {
       if (!repos.hasOwnProperty(tableName)) {
         repos[tableName] = createRepository(tableName, this)
