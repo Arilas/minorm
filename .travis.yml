@@ -1,4 +1,5 @@
-language: node_jscache:
+language: node_js
+cache:
   directories:
   - node_modules # NPM packages
 node_js:
