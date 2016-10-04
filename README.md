@@ -1,4 +1,7 @@
 # MinORM
+[![Build Status](https://travis-ci.org/Arilas/minorm.svg?branch=master)](https://travis-ci.org/Arilas/minorm)
+[![codecov](https://codecov.io/gh/Arilas/minorm/branch/master/graph/badge.svg)](https://codecov.io/gh/Arilas/minorm)
+
 
 MinORM is a high-performance ORM built on top of [Node MySQL2](https://github.com/sidorares/node-mysql2)
 that is a continuation of Node MySQL-Native. Also MinORM uses Squel library as Query Builder

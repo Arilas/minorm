@@ -11,7 +11,7 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
    *   tableName: Repository
    * }
    */
-  const repos = {}
+  let repos = {}
   /**
    * {
    *   tableName1: {
@@ -23,7 +23,7 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
    *   }
    * }
    */
-  const associations: {[key: string]: {[key: string]: Relation}} = {}
+  let associations: {[key: string]: {[key: string]: Relation}} = {}
 
   return {
     extendRepository(tableName, callback) {
@@ -36,6 +36,13 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
 
       return repos[tableName]
     },
+    getPool() {
+      return pool
+    },
+    clear() {
+      repos = {}
+      associations = {}
+    },
     getConnection() {
       return pool.getConnection()
     },
@@ -45,6 +52,7 @@ export function createManager(connectionConfig: any, logger?: typeof console = f
         logger && logger.debug(`SQL query: ${sql.text}`)
         return pool.query(sql.text, sql.values)
       }
+      // $FlowIgnore impossible situation
       logger && logger.debug(`SQL query: ${sql}`)
       return pool.query(sql, values)
     },

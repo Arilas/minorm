@@ -48,7 +48,7 @@ function loadRelations(manager: Manager, tableName: string) {
 }
 
 export function createRepository(tableName: string, manager: Manager): Repository {
-  loadRelations(manager, tableName)
+  manager.hasOwnProperty('_setRelationFrom') && loadRelations(manager, tableName)
   const repo = {
     find(id: any) {
       const query = Squel.select()

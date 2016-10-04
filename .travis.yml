@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - 0.12
+  - 4.0
+  - 4.6
+  - 6.0
+  - 6.7
+install:
+  - npm install -g babel-cli
+  - npm install -g istanbul
+  - npm install -g mocha
+  - npm install -g flow-bin
+  - npm install
+script:
+  - npm test
+  - flow check
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
