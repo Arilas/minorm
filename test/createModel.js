@@ -25,8 +25,10 @@ describe('createModel', () => {
     await obj.save() // $FlowIgnore fix for model
     obj.populate({ 
       foo: 'bar'
-    })// $FlowIgnore fix for model
-    await obj.save() 
+    })
+    // $FlowIgnore fix for model
+    await obj.save()
+    // $FlowIgnore fix for model
     await obj.save()
   })
 })
