@@ -4,7 +4,7 @@ import Squel from 'squel'
 import {createRepository} from './createRepository'
 import type {Manager, Relation} from './types'
 
-export function createManager(connectionConfig: any, logger?: typeof console = false): Manager {
+export function createManager(connectionConfig: any, logger?: ?typeof console = null): Manager {
   const pool = MySQL.createPool(connectionConfig)
   /**
    * {

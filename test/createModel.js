@@ -15,7 +15,7 @@ describe('createModel', () => {
           assert.propertyVal(changes, 'foo', 'bar')
           assert.notProperty(changes, 'id')
           assert.notProperty(changes, 'test')
-          return Promise.resolve(undefined)
+          return Promise.resolve(null)
         } else {
           assert.propertyVal(changes, 'test', 'some')
           return Promise.resolve(1)
