@@ -1,0 +1,42 @@
+{
+  "name": "minorm",
+  "version": "0.0.1",
+  "description": "MinORM - minimal MySQL ORM with performance as the Goal",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arilas/minorm.git"
+  },
+  "keywords": [
+    "MinORM",
+    "Krona",
+    "MySQL",
+    "ORM"
+  ],
+  "author": "Alex Grand <alex@granted.name>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Arilas/minorm/issues"
+  },
+  "homepage": "https://github.com/Arilas/minorm#readme",
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-eslint": "^7.0.0",
+    "babel-preset-nodejs6": "^1.0.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-1": "^6.16.0",
+    "babel-register": "^6.16.3",
+    "chai": "^3.5.0",
+    "eslint": "^3.7.1",
+    "eslint-plugin-flowtype": "^2.19.0",
+    "isparta": "^4.0.0",
+    "mocha": "^3.1.0"
+  },
+  "dependencies": {
+    "mysql2": "^1.1.0",
+    "squel": "^5.4.3"
+  }
+}
