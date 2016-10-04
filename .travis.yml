@@ -3,6 +3,7 @@ node_js:
   - 6.0
   - 6.7
 install:
+  - npm install -g codecov
   - npm install -g babel-cli
   - npm install -g istanbul
   - npm install -g mocha
@@ -12,4 +13,4 @@ script:
   - npm test
   - flow check
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
