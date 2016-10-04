@@ -8,7 +8,7 @@ export type Model = {
 }
 
 export type Criteria = {
-  [key: string]: string | {
+  [key: string]: string | number | {
     [key: string]: any
   }
 }
@@ -16,7 +16,7 @@ export type Criteria = {
 export type Repository = {
   find(id: number): Promise<?Model>,
   findOneBy(criteria: Criteria): Promise<?Model>,
-  findBy(criteria: Criteria, orderBy: {[key: string]: string}, limit?: number, offset?: number): Promise<Array<Model>>,
+  findBy(criteria: Criteria, orderBy?: {[key: string]: string}, limit?: number, offset?: number): Promise<Array<Model>>,
   create(data: {[key: string]: any}): Model,
   hydrate(data: {[key: string]: any}, isFetched?: boolean): Model,
   _save(changes: {[key: string]: any}, id?: number): Promise<number|string|null>

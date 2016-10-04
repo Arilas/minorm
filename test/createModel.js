@@ -27,5 +27,6 @@ describe('createModel', () => {
       foo: 'bar'
     })// $FlowIgnore fix for model
     await obj.save() 
+    await obj.save()
   })
 })
