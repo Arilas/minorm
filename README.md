@@ -4,13 +4,13 @@
 
 
 MinORM is a high-performance ORM built on top of [Node MySQL2](https://github.com/sidorares/node-mysql2)
-that is a continuation of Node MySQL-Native. Also MinORM uses Squel library as Query Builder
+that is a continuation of Node MySQL-Native. Also MinORM uses [Squel](https://github.com/hiddentao/squel) library as Query Builder
 
 It's really lightweight, provide simple solutions that just works without a lot of configurations.
 
 ## Why use MinORM
 
-If you are tired by highweight ORMs like Bookshelf or Sequelize, and want just some basic functionality
+If you are tired by highweight ORMs like [Bookshelf](https://github.com/tgriesser/bookshelf) or [Sequelize](https://github.com/sequelize/sequelize), and want just some basic functionality
 from it - MinORM can be a good start point.
 
 ## Installation and usage
