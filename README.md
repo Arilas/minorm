@@ -23,6 +23,7 @@ import {createManager} from 'minorm'
 export const manager = createManager({
   //options like for MySQL2 pool creation
 })
+manager.connect()
 
 export const PostsRepo = {
   ...manager.getRepository('posts'),

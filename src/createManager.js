@@ -1,11 +1,11 @@
 /** @flow */
-import MySQL from 'mysql2/promise'
 import Squel from 'squel'
 import {createRepository} from './createRepository'
+import {connect} from './connectionManager'
 import type {Manager, Relation} from './types'
 
 export function createManager(connectionConfig: any, logger?: ?typeof console = null): Manager {
-  const pool = MySQL.createPool(connectionConfig)
+  let pool
   /**
    * {
    *   tableName: Repository
@@ -25,7 +25,19 @@ export function createManager(connectionConfig: any, logger?: ?typeof console = 
    */
   let associations: {[key: string]: {[key: string]: Relation}} = {}
 
+  function getPool() {
+    if (!pool) {
+      const msg = 'Please start connection before'
+      logger && logger.error(msg)
+      throw new Error(msg)
+    }
+    return pool
+  }
+
   return {
+    connect() {
+      pool = connect(connectionConfig)
+    },
     extendRepository(tableName, callback) {
       repos[tableName] = callback(this.getRepository(tableName))
     },
@@ -36,34 +48,35 @@ export function createManager(connectionConfig: any, logger?: ?typeof console = 
 
       return repos[tableName]
     },
-    getPool() {
-      return pool
-    },
+    getPool,
     clear() {
+      pool = null
       repos = {}
       associations = {}
     },
     getConnection() {
-      return pool.getConnection()
+      return getPool().getConnection()
     },
     query(sql, values) {
       if (typeof sql.toParam === 'function') {
         sql = sql.toParam()
         logger && logger.debug(`SQL query: ${sql.text}`)
-        return pool.query(sql.text, sql.values)
+        return getPool().query(sql.text, sql.values)
       }
       // $FlowIgnore impossible situation
       logger && logger.debug(`SQL query: ${sql}`)
-      return pool.query(sql, values)
+      return getPool().query(sql, values)
     },
     nestQuery(sql) {
       if (typeof sql.toParam === 'function') {
         sql = sql.toParam()
       }
       if (sql.text != null && sql.values != null) {
-        return pool.query({
+        return getPool().query({
+          // $FlowIgnore I've already check this
           sql: sql.text,
           nestTables: true
+          // $FlowIgnore I've already check this
         }, sql.values)
       } else {
         throw new Error('nestQuery accepts Squel query or result of query.toParam()')
