@@ -6,7 +6,7 @@
   "scripts": {
     "dist": "babel -d lib/ src/",
     "prepublish": "npm run dist",
-    "test": "babel-node ./node_modules/.bin/isparta cover ./node_modules/.bin/_mocha --report lcovonly -- -R spec"
+    "test": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-eslint": "^7.0.0",
+    "babel-plugin-istanbul": "^2.0.1",
     "babel-preset-nodejs6": "^1.0.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-1": "^6.16.0",
@@ -34,8 +35,8 @@
     "chai": "^3.5.0",
     "eslint": "^3.7.1",
     "eslint-plugin-flowtype": "^2.19.0",
-    "isparta": "^4.0.0",
-    "mocha": "^3.1.0"
+    "mocha": "^3.1.0",
+    "nyc": "^8.3.0"
   },
   "dependencies": {
     "mysql2": "^1.1.0",
