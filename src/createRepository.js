@@ -44,7 +44,7 @@ function loadRelations(manager: Manager, tableName: string) {
   manager.query(
     METADATA_QUERY,
     [tableName]
-  ).then(({result: relations}) => manager._setRelationFrom(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
+  ).then(([relations]) => manager._setRelationFrom(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
 }
 
 export function createRepository(tableName: string, manager: Manager): Repository {
