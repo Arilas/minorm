@@ -4,7 +4,7 @@ import {createModel} from './createModel'
 import type {Repository, ColumnsMeta, Manager} from './types'
 
 const METADATA_QUERY = 'SELECT COLUMN_NAME columnName,REFERENCED_TABLE_NAME tableName,REFERENCED_COLUMN_NAME referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL'
-const COLUMNS_QUERY = 'SHOW COLUMNS FROM ?'
+const COLUMNS_QUERY = 'SHOW COLUMNS FROM ??'
 
 function mapCriteriaToQuery(criteria, query) {
   Object.keys(criteria).map(key => {

@@ -132,8 +132,7 @@ export function createManager(connectionConfig: any, logger?: ?typeof console = 
             query.left_join(...prepareJoin(fromAlias, columnName, alias))
             return query.field(`\`${alias}\`.*`)
           }
-          query.execute = (nested: boolean) => //eslint-disable-line arrow-parens
-            (nested ? this.nestQuery(query) : this.query(query))
+          query.execute = (nested: boolean) => (nested ? this.nestQuery(query) : this.query(query)) //eslint-disable-line arrow-parens
             .then(([result]) => result)
 
           return query

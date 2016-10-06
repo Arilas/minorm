@@ -2,7 +2,7 @@
 import {assert} from 'chai'
 import {createRepository} from '../src/createRepository'
 
-const METADATA_QUERY = 'SHOW COLUMNS FROM ?'
+const METADATA_QUERY = 'SHOW COLUMNS FROM ??'
 const uMetadata = [
   {
     Field: 'id'
