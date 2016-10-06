@@ -47,8 +47,11 @@ export const PostsRepo = {
 
 ## Manager
 
+* `connect()` - connect to database
 * `getRepository(tableName)` - returns a Repository
 * `getConnection()` - returns MySQL Connection from pool
+* `getPool()` - returns Connection pool
+* `clear()` - clear connection, Repositories and Metadata
 * `query(sql: string|Object|SqeulQuery, values?: Array)` - execute query in pool, also supports Sequl query
 * `nestQuery(sql: Object|SquelQuery)` - execute query and return result as ```[{table1: {feilds}, table2: {}}, {table1: {fiedls}}]``` etc 
 * `startQuery()` - returns a wrapped Squel Query Builder
@@ -63,8 +66,8 @@ MinORM uses Repositories for working with tables. One table == one Repository. I
 * `find(id)` - search single record in DB by id and wrap it as the model
 * `findOneBy(criteria)` - search single record in DB by criteria.
 * `findBy(criteria, criteria, orderBy = {}, limit, offset)` - search records by criteria with limits and offsets
-* `create` - adds Model methods to any object with structure
-* `hydrate` - helper method that attach Model methods to any object and accept argument that promise that this object is fetched from DB without changes.
+* `create(data)` - adds Model methods to any object with structure
+* `hydrate(data, isFetched)` - helper method that attach Model methods to any object and accept argument that promise that this object is fetched from DB without changes.
 
 Criteria is a plain object with `key` is a column name, `value` is a simple string, number, etc or object with operator like `$in`, `$not`, `$like`.
 
