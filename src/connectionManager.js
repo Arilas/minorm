@@ -1,9 +1,9 @@
 /** @flow */
 import MySQL from 'mysql2/promise'
 
-let connectionProvider = mySQLConnect
+let connectionProvider = mySQLCreatePool
 
-function mySQLConnect(connectionConfig: any) {
+export function mySQLCreatePool(connectionConfig: any) {
   return MySQL.createPool(connectionConfig)
 }
 
@@ -16,5 +16,5 @@ export function setProvider(provider: Function) {
 }
 
 export function resetProvider() {
-  connectionProvider = mySQLConnect
+  connectionProvider = mySQLCreatePool
 }

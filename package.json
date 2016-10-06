@@ -1,6 +1,6 @@
 {
   "name": "minorm",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "MinORM - minimal MySQL ORM with performance as the Goal",
   "main": "lib/index.js",
   "scripts": {
