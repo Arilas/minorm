@@ -11,26 +11,25 @@ function definePrivate(obj: {[key: string]: any}, name, method) {
 
 export function createModel(repository: Repository, model: {[key: string]: any} = {}, isFetched: boolean = true): Model {
   let origin = isFetched ? {...model} : {}
-  definePrivate(model, 'save', () => {
-    const changes = Object.keys(model).reduce((target, key) => origin[key] != model[key]
+  definePrivate(model, 'save', async () => {
+    const columnsMeta = await repository.getMetadata()
+    const changes = Object.keys(columnsMeta).reduce((target, key) => origin[key] != model[key]
     ? {
       ...target,
       [key]: model[key]
     }
     : target, {})
     if (Object.keys(changes).length || !model.id) {
-      return repository._save(changes, model.id).then(id => {
-        origin = {
-          ...model,
-          id: id ? id : model.id
-        }
-        if (id) {
-          model.id = id
-        }
-        return model
-      })
+      const id = await repository._save(changes, model.id)
+      origin = {
+        ...model,
+        id: id ? id : model.id
+      }
+      if (id) {
+        model.id = id
+      }
     }
-    return Promise.resolve(model)
+    return model
   })
   definePrivate(model, 'populate', data => {
     Object.keys(data).forEach(key => model[key] = data[key])

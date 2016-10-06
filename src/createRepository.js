@@ -1,9 +1,10 @@
 /** @flow */
 import Squel from 'squel'
 import {createModel} from './createModel'
-import type {Repository, Manager} from './types'
+import type {Repository, ColumnsMeta, Manager} from './types'
 
 const METADATA_QUERY = 'SELECT COLUMN_NAME columnName,REFERENCED_TABLE_NAME tableName,REFERENCED_COLUMN_NAME referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL'
+const COLUMNS_QUERY = 'SHOW COLUMNS FROM ?'
 
 function mapCriteriaToQuery(criteria, query) {
   Object.keys(criteria).map(key => {
@@ -47,9 +48,27 @@ function loadRelations(manager: Manager, tableName: string) {
   ).then(([relations]) => manager._setRelationFrom(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
 }
 
+function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> {
+  return manager.query(
+    COLUMNS_QUERY,
+    [tableName]
+  ).then(([result]) => result.reduce((target, column) => ({
+    ...target,
+    [column.Field]: column
+  }), {}))
+}
+
 export function createRepository(tableName: string, manager: Manager): Repository {
   manager.hasOwnProperty('_setRelationFrom') && loadRelations(manager, tableName)
+  let columnsMeta = loadColumns(manager, tableName).then(columns => columnsMeta = columns)
   const repo = {
+    getMetadata() {
+      if (columnsMeta instanceof Promise) {
+        return columnsMeta
+      } else {
+        return Promise.resolve(columnsMeta)
+      }
+    },
     find(id: any) {
       const query = Squel.select()
         .from(tableName)

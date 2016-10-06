@@ -18,8 +18,20 @@ export type Repository = {
   findOneBy(criteria: Criteria): Promise<?Model>,
   findBy(criteria: Criteria, orderBy?: {[key: string]: string}, limit?: number, offset?: number): Promise<Array<Model>>,
   create(data: {[key: string]: any}): Model,
+  getMetadata(): Promise<ColumnsMeta>,
   hydrate(data: {[key: string]: any}, isFetched?: boolean): Model,
   _save(changes: {[key: string]: any}, id?: number): Promise<number|string|null>
+}
+
+export type ColumnsMeta = {
+  [key: string]: {
+    Field: string,
+    Type: string,
+    Null: string,
+    Key: string,
+    Default: string,
+    Extra: string
+  }
 }
 
 export type Relation = {
