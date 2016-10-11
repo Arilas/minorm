@@ -69,7 +69,7 @@ MinORM uses Repositories for working with tables. One table == one Repository. I
 * `create(data)` - adds Model methods to any object with structure
 * `hydrate(data, isFetched)` - helper method that attach Model methods to any object and accept argument that promise that this object is fetched from DB without changes.
 
-Criteria is a plain object with `key` is a column name, `value` is a simple string, number, etc or object with operator like `$in`, `$not`, `$like`.
+Criteria is a plain object with `key` is a column name, `value` is a simple string, number, etc or object with operator like `$in`, `$not`, `$like` and `$notIn`.
 
 ## Model
 
