@@ -30,6 +30,12 @@ function mapCriteriaToQuery(criteria, query) {
             criteria[key][operator]
           )
           break
+        case '$notIn': 
+          query.where(
+            `${key} NOT IN ?`,
+            criteria[key][operator]
+          )
+          break
         case '$like':
           query.where(
             `${key} LIKE ?`,

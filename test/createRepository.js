@@ -91,7 +91,7 @@ describe('createRepository', () => {
     assert.propertyVal(record, 'some', 'field')
   })
   it('should findOne data by hard criteria', async () => {
-    const QUERY = 'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?)'
+    const QUERY = 'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?) AND (foo NOT IN (?, ?))'
     const manager = {
       query(sql, values) {
         // $FlowIgnore fix for Metadata Query
@@ -99,7 +99,7 @@ describe('createRepository', () => {
           return Promise.resolve(uMetadata)
         }
         assert.equal(sql, QUERY)
-        assert.lengthOf(values, 4)
+        assert.lengthOf(values, 6)
         assert.include(values || [], 1)
         assert.include(values || [], 2)
         return Promise.resolve([[{
@@ -119,6 +119,9 @@ describe('createRepository', () => {
       },
       name: {
         $like: 'test'
+      },
+      foo: {
+        $notIn: [1,2]
       }
     })
     assert.lengthOf(result, 1)
