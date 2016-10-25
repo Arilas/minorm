@@ -51,7 +51,7 @@ function loadRelations(manager: Manager, tableName: string) {
   manager.query(
     METADATA_QUERY,
     [tableName]
-  ).then(([relations]) => manager._setRelationFrom(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
+  ).then(([relations]) => manager.getMetadataManager().setAssociations(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
 }
 
 function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> {
@@ -65,7 +65,7 @@ function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> 
 }
 
 export function createRepository(tableName: string, manager: Manager): Repository {
-  manager.hasOwnProperty('_setRelationFrom') && loadRelations(manager, tableName)
+  manager.hasOwnProperty('getMetadataManager') && loadRelations(manager, tableName)
   let columnsMeta = loadColumns(manager, tableName).then(columns => columnsMeta = columns)
   const repo = {
     getMetadata() {
@@ -97,16 +97,21 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       ).then(([result]) => result.length ? createModel(repo, result[0]) : null)
     },
     findBy(criteria, orderBy = {}, limit, offset) {
-      const query = Squel.select()
-        .from(tableName)
+      const query = this.startQuery()
       limit && query.limit(limit)
       offset && query.offset(offset)
-      mapCriteriaToQuery(criteria, query)
+      query.criteria(criteria)
       const sql = query.toParam()
       return manager.query(
         sql.text,
         sql.values
       ).then(([result]) => result.map(createModel.bind(null, repo)))
+    },
+    startQuery(alias: string = null) {
+      return manager.startQuery()
+        .select()
+        .from(tableName, alias)
+        .field(alias ? `${alias}.*` : '*')
     },
     create(data = {}) {
       return this.hydrate(data)
