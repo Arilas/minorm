@@ -1,7 +1,7 @@
 /** @flow */
-import type {Relation} from '../types'
+import type {Relation, Manager, MetadataManager} from '../types'
 
-export default function createMetadataManager() {
+export default function createMetadataManager(): (manager: Manager) => MetadataManager {
   return manager => {
     /**
      * {
@@ -16,7 +16,7 @@ export default function createMetadataManager() {
      */
     let associations: {[key: string]: {[key: string]: Relation}} = {}
 
-    const logger = manager.gerLogger()
+    const logger = manager.getLogger()
 
     return {
       hasTable(tableName) {

@@ -41,7 +41,7 @@ export type Relation = {
 }
 
 export type SelectQuery = {
-  from(tableName: string, alias: string): SelectQuery,
+  from(tableName: string, alias: ?string): SelectQuery,
   join(tableName: string, alias: string, on: string): SelectQuery,
   left_join(tableName: string, alias: string, on: string): SelectQuery,
   include(fromAlias: string, columnName: string, alias?: string): SelectQuery,
@@ -50,15 +50,28 @@ export type SelectQuery = {
   where(condition: string, value?: any): SelectQuery,
   limit(limit: number): SelectQuery,
   offset(offset: number): SelectQuery,
-  toParam(): {text: string, values: Array<any>},
-  execute(nested?: boolean): Promise<Array<*>>
+  toParam(): {text: string, values: Array<any>}
+}
+
+export type MetadataManager = {
+  hasTable(tableName: string): boolean,
+  getTable(tableName: string): {[key: string]: Relation},
+  hasAssociation(tableName: string, columnName: string): boolean,
+  setAssociations(tableName: string, relations: Array<Relation>): void,
+  clear(): void
 }
 
 export type Manager = {
+  connect(): void,
   getRepository(tableName: string): Repository,
+  extendRepository(tableName: string, callback: (repo: Repository) => Repository): void,
+  getLogger(): ?typeof console,
+  // getPool(): Pool,
+  clear(): void,
+  getMetadataManager(): MetadataManager,
+  setMetadataManager(manager: MetadataManager): void,
   getConnection(): Connection,
   query(sql: string | SelectQuery, values?: Array<any>): Promise<*>,
   nestQuery(sql: {text: string, values: Array<any>} | SelectQuery): Promise<*>,
-  startQuery(): {select(): SelectQuery}, 
-  _setRelationFrom(tableName: string, relations: Array<Relation>): void
+  startQuery(): {select(): SelectQuery}
 }

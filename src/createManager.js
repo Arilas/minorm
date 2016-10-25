@@ -4,9 +4,9 @@ import {createRepository} from './createRepository'
 import {connect} from './connectionManager'
 import select from './query/select'
 import createMetadataManager from './utils/metadataManager'
-import type {Manager, Relation} from './types'
+import type {Manager, MetadataManager} from './types'
 
-export function createManager(connectionConfig: any, logger?: ?typeof console = null): Manager {
+export function createManager(connectionConfig: any, logger: ?typeof console = null): Manager {
   let pool
   /**
    * {
@@ -14,7 +14,7 @@ export function createManager(connectionConfig: any, logger?: ?typeof console = 
    * }
    */
   let repos = {}
-  let metadataManager
+  let metadataManager: MetadataManager
 
   function getPool() {
     if (!pool) {
@@ -28,7 +28,7 @@ export function createManager(connectionConfig: any, logger?: ?typeof console = 
   return {
     connect() {
       if (!metadataManager) {
-        metadataManager = createMetadataManager()
+        metadataManager = createMetadataManager()(this)
       }
       pool = connect(connectionConfig)
     },
@@ -41,6 +41,9 @@ export function createManager(connectionConfig: any, logger?: ?typeof console = 
       }
 
       return repos[tableName]
+    },
+    getLogger() {
+      return logger
     },
     getPool,
     clear() {

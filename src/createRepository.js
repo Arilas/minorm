@@ -76,8 +76,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       }
     },
     find(id: any) {
-      const query = Squel.select()
-        .from(tableName)
+      const query = this.startQuery()
         .where('id = ?', id)
         .toParam()
       return manager.query(
@@ -86,10 +85,9 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       ).then(([result]) => result.length ? createModel(repo, result[0]) : null)
     },
     findOneBy(criteria) {
-      const query = Squel.select()
-        .from(tableName)
+      const query = this.startQuery()
         .limit(1)
-      mapCriteriaToQuery(criteria, query)
+        .criteria(criteria)
       const sql = query.toParam()
       return manager.query(
         sql.text,
@@ -98,16 +96,16 @@ export function createRepository(tableName: string, manager: Manager): Repositor
     },
     findBy(criteria, orderBy = {}, limit, offset) {
       const query = this.startQuery()
+        .criteria(criteria)
       limit && query.limit(limit)
       offset && query.offset(offset)
-      query.criteria(criteria)
       const sql = query.toParam()
       return manager.query(
         sql.text,
         sql.values
       ).then(([result]) => result.map(createModel.bind(null, repo)))
     },
-    startQuery(alias: string = null) {
+    startQuery(alias: ?string = null) {
       return manager.startQuery()
         .select()
         .from(tableName, alias)

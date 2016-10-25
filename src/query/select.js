@@ -1,10 +1,10 @@
 /** @flow */
 import Squel from 'squel'
-import type {Relation} from '../types'
+import type {Relation, Manager, SelectQuery as $SelectQuery} from '../types'
 
 class IncludeBlock extends Squel.cls.JoinBlock {
 
-  constructor(manager, fromTableBlock, options) {
+  constructor(manager: Manager, fromTableBlock: typeof Squel.cls.FromTableBlock, options: any) {
     super(options)
 
     this._manager = manager
@@ -89,7 +89,7 @@ class CriteriaBlock extends Squel.cls.WhereBlock {
 }
 
 export class SelectQuery extends Squel.cls.QueryBuilder {
-  constructor(manager, options, blocks = null) {
+  constructor(manager: Manager, options: any, blocks: ?Array<typeof Squel.cls.QueryBlock> = null) {
     // For include functionality we need fromTableBlock inside IncludeBlock
     const fromTableBlock = new Squel.cls.FromTableBlock(options)
     blocks = blocks || [
@@ -112,6 +112,6 @@ export class SelectQuery extends Squel.cls.QueryBuilder {
   }
 }
 
-export default function select(manager, options) {
+export default function select(manager: Manager, options: any): $SelectQuery {
   return new SelectQuery(manager, options)
 }
