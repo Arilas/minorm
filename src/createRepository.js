@@ -6,52 +6,11 @@ import type {Repository, ColumnsMeta, Manager} from './types'
 const METADATA_QUERY = 'SELECT COLUMN_NAME columnName,REFERENCED_TABLE_NAME tableName,REFERENCED_COLUMN_NAME referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL'
 const COLUMNS_QUERY = 'SHOW COLUMNS FROM ??'
 
-function mapCriteriaToQuery(criteria, query) {
-  Object.keys(criteria).map(key => {
-    if (
-      ['string', 'number'].indexOf(typeof criteria[key]) != -1
-    ) {
-      query.where(
-        `${key} = ?`,
-        criteria[key]
-      )
-    } else if (typeof criteria[key] == 'object') {
-      const operator = Object.keys(criteria[key])[0]
-      switch(operator) {
-        case '$in': 
-          query.where(
-            `${key} IN ?`,
-            criteria[key][operator]
-          )
-          break
-        case '$not':
-          query.where(
-            `${key} != ?`,
-            criteria[key][operator]
-          )
-          break
-        case '$notIn': 
-          query.where(
-            `${key} NOT IN ?`,
-            criteria[key][operator]
-          )
-          break
-        case '$like':
-          query.where(
-            `${key} LIKE ?`,
-            criteria[key][operator]
-          )
-          break
-      }
-    }
-  })
-}
-
 function loadRelations(manager: Manager, tableName: string) {
   manager.query(
     METADATA_QUERY,
     [tableName]
-  ).then(([relations]) => manager._setRelationFrom(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
+  ).then(([relations]) => manager.getMetadataManager().setAssociations(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
 }
 
 function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> {
@@ -65,7 +24,7 @@ function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> 
 }
 
 export function createRepository(tableName: string, manager: Manager): Repository {
-  manager.hasOwnProperty('_setRelationFrom') && loadRelations(manager, tableName)
+  manager.hasOwnProperty('getMetadataManager') && loadRelations(manager, tableName)
   let columnsMeta = loadColumns(manager, tableName).then(columns => columnsMeta = columns)
   const repo = {
     getMetadata() {
@@ -76,8 +35,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       }
     },
     find(id: any) {
-      const query = Squel.select()
-        .from(tableName)
+      const query = this.startQuery()
         .where('id = ?', id)
         .toParam()
       return manager.query(
@@ -86,10 +44,9 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       ).then(([result]) => result.length ? createModel(repo, result[0]) : null)
     },
     findOneBy(criteria) {
-      const query = Squel.select()
-        .from(tableName)
+      const query = this.startQuery()
         .limit(1)
-      mapCriteriaToQuery(criteria, query)
+        .criteria(criteria)
       const sql = query.toParam()
       return manager.query(
         sql.text,
@@ -97,16 +54,21 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       ).then(([result]) => result.length ? createModel(repo, result[0]) : null)
     },
     findBy(criteria, orderBy = {}, limit, offset) {
-      const query = Squel.select()
-        .from(tableName)
+      const query = this.startQuery()
+        .criteria(criteria)
       limit && query.limit(limit)
       offset && query.offset(offset)
-      mapCriteriaToQuery(criteria, query)
       const sql = query.toParam()
       return manager.query(
         sql.text,
         sql.values
       ).then(([result]) => result.map(createModel.bind(null, repo)))
+    },
+    startQuery(alias: ?string = null) {
+      return manager.startQuery()
+        .select()
+        .from(tableName, alias)
+        .field(alias ? `${alias}.*` : '*')
     },
     create(data = {}) {
       return this.hydrate(data)

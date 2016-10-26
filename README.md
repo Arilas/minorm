@@ -28,12 +28,15 @@ manager.connect()
 export const PostsRepo = {
   ...manager.getRepository('posts'),
   async getPostsFromUser(id) {
-    const postQuery = manager.startQuery().select()
-      .field('post.*')
-      .from('posts', 'post')
+    const postQuery = this.startQuery('post')
       .include('post', 'creator_id')
       .tryInclude('creator', 'avatar_id')
       .where('post.creator_id = ?', id)
+      .criteria({
+        'post.title': {
+          $not: 'Bad title'
+        }
+      })
     const [result] = await manager.nestQuery(postQuery)
     //Or:
     const result = await postQuery.execute(true)
@@ -50,8 +53,11 @@ export const PostsRepo = {
 * `connect()` - connect to database
 * `getRepository(tableName)` - returns a Repository
 * `getConnection()` - returns MySQL Connection from pool
+* `getLogger()` returns logger used for manager
 * `getPool()` - returns Connection pool
 * `clear()` - clear connection, Repositories and Metadata
+* `getMetadataManager()` - returns Metadata manager
+* `setMetadataManager(manager)` - replace Metadata manager with cachable
 * `query(sql: string|Object|SqeulQuery, values?: Array)` - execute query in pool, also supports Sequl query
 * `nestQuery(sql: Object|SquelQuery)` - execute query and return result as ```[{table1: {feilds}, table2: {}}, {table1: {fiedls}}]``` etc 
 * `startQuery()` - returns a wrapped Squel Query Builder
@@ -65,9 +71,11 @@ MinORM uses Repositories for working with tables. One table == one Repository. I
 
 * `find(id)` - search single record in DB by id and wrap it as the model
 * `findOneBy(criteria)` - search single record in DB by criteria.
-* `findBy(criteria, criteria, orderBy = {}, limit, offset)` - search records by criteria with limits and offsets
+* `findBy(criteria, orderBy = {}, limit, offset)` - search records by criteria with limits and offsets
+* `startQuery(alias = null)` - create select Query
 * `create(data)` - adds Model methods to any object with structure
 * `hydrate(data, isFetched)` - helper method that attach Model methods to any object and accept argument that promise that this object is fetched from DB without changes.
+* `getMetadata()` - returns object with all table columns
 
 Criteria is a plain object with `key` is a column name, `value` is a simple string, number, etc or object with operator like `$in`, `$not`, `$like` and `$notIn`.
 

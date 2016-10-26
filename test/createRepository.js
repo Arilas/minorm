@@ -1,16 +1,25 @@
 /** @flow */
 import {assert} from 'chai'
 import {createRepository} from '../src/createRepository'
+import Squel from 'squel'
+import select from '../src/query/select'
 
 const METADATA_QUERY = 'SHOW COLUMNS FROM ??'
-const uMetadata = [
+const uMetadata = [[
   {
     Field: 'id'
   },
   {
     Field: 'some'
   }
-]
+]]
+
+function startQuery() {
+  return {
+    ...Squel,
+    select: options => select(this, options)
+  }
+}
 
 describe('createRepository', () => {
   it('should find data by id', async () => {
@@ -28,7 +37,8 @@ describe('createRepository', () => {
           id: 1,
           some: 'field'
         }]])
-      }
+      },
+      startQuery
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
@@ -53,7 +63,8 @@ describe('createRepository', () => {
           id: 1,
           some: 'field'
         }]])
-      }
+      },
+      startQuery
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
@@ -78,7 +89,8 @@ describe('createRepository', () => {
           id: 1,
           some: 'field'
         }]])
-      }
+      },
+      startQuery
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
@@ -106,7 +118,8 @@ describe('createRepository', () => {
           id: 1,
           some: 'field'
         }]])
-      }
+      },
+      startQuery
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
