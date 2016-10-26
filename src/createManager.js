@@ -88,7 +88,7 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
     startQuery() {
       return {
         ...Squel,
-        select
+        select: options => select(this, options)
       }
     }
   }

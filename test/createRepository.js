@@ -17,7 +17,7 @@ const uMetadata = [[
 function startQuery() {
   return {
     ...Squel,
-    select
+    select: options => select(this, options)
   }
 }
 
