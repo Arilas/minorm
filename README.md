@@ -58,8 +58,8 @@ export const PostsRepo = {
 * `clear()` - clear connection, Repositories and Metadata
 * `getMetadataManager()` - returns Metadata manager
 * `setMetadataManager(manager)` - replace Metadata manager with cachable
-* `query(sql: string|Object|SqeulQuery, values?: Array)` - execute query in pool, also supports Sequl query
-* `nestQuery(sql: Object|SquelQuery)` - execute query and return result as ```[{table1: {feilds}, table2: {}}, {table1: {fiedls}}]``` etc 
+* `query(query: SqeulQuery)` - execute query in pool
+* `nestQuery(query: SquelQuery)` - execute query and return result as ```[{table1: {feilds}, table2: {}}, {table1: {fiedls}}]``` etc 
 * `startQuery()` - returns a wrapped Squel Query Builder
 * `extendRepository(tableName, callback)` - If you want to extend Repository by some methods you can follow two ways:
   1. Just mix methods as showed in example

@@ -60,30 +60,24 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
     getConnection() {
       return getPool().getConnection()
     },
-    query(sql, values) {
-      if (typeof sql.toParam === 'function') {
-        sql = sql.toParam()
-        logger && logger.debug(`SQL query: ${sql.text}`)
-        return getPool().query(sql.text, sql.values)
+    query(query) {
+      if (typeof query.toParam !== 'function') {
+        throw new Error(`manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`)
       }
-      // $FlowIgnore impossible situation
-      logger && logger.debug(`SQL query: ${sql}`)
-      return getPool().query(sql, values)
+      const {text, values} = query.toParam()
+      logger && logger.debug(`SQL query: ${text}`)
+      return getPool().query(text, values)
     },
-    nestQuery(sql) {
-      if (typeof sql.toParam === 'function') {
-        sql = sql.toParam()
+    nestQuery(query) {
+      if (typeof query.toParam !== 'function') {
+        throw new Error(`manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`)
       }
-      if (sql.text != null && sql.values != null) {
-        return getPool().query({
-          // $FlowIgnore I've already check this
-          sql: sql.text,
-          nestTables: true
-          // $FlowIgnore I've already check this
-        }, sql.values)
-      } else {
-        throw new Error('nestQuery accepts Squel query or result of query.toParam()')
-      }
+      const {text, values} = query.toParam()
+      logger && logger.debug(`SQL query: ${text}`)
+      return getPool().query({
+        sql: text,
+        nestTables: true
+      }, values)
     },
     startQuery() {
       return {

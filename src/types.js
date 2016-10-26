@@ -72,7 +72,7 @@ export type Manager = {
   getMetadataManager(): MetadataManager,
   setMetadataManager(manager: MetadataManager): void,
   getConnection(): Connection,
-  query(sql: string | SelectQuery, values?: Array<any>): Promise<*>,
-  nestQuery(sql: {text: string, values: Array<any>} | SelectQuery): Promise<*>,
+  query(query: SelectQuery): Promise<*>,
+  nestQuery(query: SelectQuery): Promise<*>,
   startQuery(): {select(): SelectQuery}
 }

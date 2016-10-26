@@ -14,10 +14,26 @@ const uMetadata = [[
   }
 ]]
 
-function startQuery() {
+function createStubManager() {
   return {
-    ...Squel,
-    select: options => select(this, options)
+    getConnection() {
+      return {
+        query(sql) {
+          if (sql == METADATA_QUERY) {
+            return Promise.resolve(uMetadata)
+          }
+        }
+      }
+    },
+    startQuery() {
+      return {
+        ...Squel,
+        select: options => select(this, options)
+      }
+    },
+    query() {
+      throw new Error('You must override query method')
+    }
   }
 }
 
@@ -25,20 +41,17 @@ describe('createRepository', () => {
   it('should find data by id', async () => {
     const QUERY = 'SELECT * FROM u WHERE (id = ?)'
     const manager = {
-      query(sql, values) {
-        // $FlowIgnore fix for Metadata Query
-        if (sql == METADATA_QUERY) {
-          return Promise.resolve(uMetadata)
-        }
-        assert.equal(sql, QUERY)
+      ...createStubManager(),
+      query(query) {
+        const {text, values} = query.toParam()
+        assert.equal(text, QUERY)
         assert.lengthOf(values, 1)
         assert.include(values || [], 1)
         return Promise.resolve([[{
           id: 1,
           some: 'field'
         }]])
-      },
-      startQuery
+      }
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
@@ -51,20 +64,17 @@ describe('createRepository', () => {
   it('should findOne data by criteria', async () => {
     const QUERY = 'SELECT * FROM u WHERE (id = ?) LIMIT 1'
     const manager = {
-      query(sql, values) {
-        // $FlowIgnore fix for Metadata Query
-        if (sql == METADATA_QUERY) {
-          return Promise.resolve(uMetadata)
-        }
-        assert.equal(sql, QUERY)
+      ...createStubManager(),
+      query(query) {
+        const {text, values} = query.toParam()
+        assert.equal(text, QUERY)
         assert.lengthOf(values, 1)
         assert.include(values || [], 1)
         return Promise.resolve([[{
           id: 1,
           some: 'field'
         }]])
-      },
-      startQuery
+      }
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
@@ -77,20 +87,17 @@ describe('createRepository', () => {
   it('should find data by criteria', async () => {
     const QUERY = 'SELECT * FROM u WHERE (id = ?)'
     const manager = {
-      query(sql, values) {
-        // $FlowIgnore fix for Metadata Query
-        if (sql == METADATA_QUERY) {
-          return Promise.resolve(uMetadata)
-        }
-        assert.equal(sql, QUERY)
+      ...createStubManager(),
+      query(query) {
+        const {text, values} = query.toParam()
+        assert.equal(text, QUERY)
         assert.lengthOf(values, 1)
         assert.include(values || [], 1)
         return Promise.resolve([[{
           id: 1,
           some: 'field'
         }]])
-      },
-      startQuery
+      }
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
@@ -105,12 +112,10 @@ describe('createRepository', () => {
   it('should findOne data by hard criteria', async () => {
     const QUERY = 'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?) AND (foo NOT IN (?, ?))'
     const manager = {
-      query(sql, values) {
-        // $FlowIgnore fix for Metadata Query
-        if (sql == METADATA_QUERY) {
-          return Promise.resolve(uMetadata)
-        }
-        assert.equal(sql, QUERY)
+      ...createStubManager(),
+      query(query) {
+        const {text, values} = query.toParam()
+        assert.equal(text, QUERY)
         assert.lengthOf(values, 6)
         assert.include(values || [], 1)
         assert.include(values || [], 2)
@@ -118,8 +123,7 @@ describe('createRepository', () => {
           id: 1,
           some: 'field'
         }]])
-      },
-      startQuery
+      }
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
