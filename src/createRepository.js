@@ -6,47 +6,6 @@ import type {Repository, ColumnsMeta, Manager} from './types'
 const METADATA_QUERY = 'SELECT COLUMN_NAME columnName,REFERENCED_TABLE_NAME tableName,REFERENCED_COLUMN_NAME referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL'
 const COLUMNS_QUERY = 'SHOW COLUMNS FROM ??'
 
-function mapCriteriaToQuery(criteria, query) {
-  Object.keys(criteria).map(key => {
-    if (
-      ['string', 'number'].indexOf(typeof criteria[key]) != -1
-    ) {
-      query.where(
-        `${key} = ?`,
-        criteria[key]
-      )
-    } else if (typeof criteria[key] == 'object') {
-      const operator = Object.keys(criteria[key])[0]
-      switch(operator) {
-        case '$in': 
-          query.where(
-            `${key} IN ?`,
-            criteria[key][operator]
-          )
-          break
-        case '$not':
-          query.where(
-            `${key} != ?`,
-            criteria[key][operator]
-          )
-          break
-        case '$notIn': 
-          query.where(
-            `${key} NOT IN ?`,
-            criteria[key][operator]
-          )
-          break
-        case '$like':
-          query.where(
-            `${key} LIKE ?`,
-            criteria[key][operator]
-          )
-          break
-      }
-    }
-  })
-}
-
 function loadRelations(manager: Manager, tableName: string) {
   manager.query(
     METADATA_QUERY,
