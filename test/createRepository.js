@@ -148,4 +148,46 @@ describe('createRepository', () => {
     assert.propertyVal(record, 'id', 1)
     assert.propertyVal(record, 'some', 'field')
   })
+  it('should create data', async () => {
+    const QUERY = 'INSERT INTO u (test, ololo) VALUES (?, ?)'
+    const changes = {
+      test : 'some',
+      ololo: 'ololo'
+    }
+    const manager = {
+      ...createStubManager(),
+      query(query) {
+        const {text, values} = query.toParam()
+        assert.equal(text, QUERY)
+        assert.lengthOf(values, 2)
+        return Promise.resolve([{
+          insertId: 1
+        }])
+      }
+    }
+
+    const uRepo = createRepository('u', manager)
+    const result = await uRepo._save(changes)
+    assert.equal(result, 1)
+  })
+  it('should update data', async () => {
+    const QUERY = 'UPDATE u SET id = ?, test = ?, ololo = ? WHERE (id = ?)'
+    const changes = {
+      id: 1,
+      test : 'some',
+      ololo: 'ololo'
+    }
+    const manager = {
+      ...createStubManager(),
+      query(query) {
+        const {text, values} = query.toParam()
+        assert.equal(text, QUERY)
+        assert.lengthOf(values, 4)
+        return Promise.resolve([{}])
+      }
+    }
+
+    const uRepo = createRepository('u', manager)
+    await uRepo._save(changes, 1)
+  })
 })
