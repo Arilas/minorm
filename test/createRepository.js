@@ -65,13 +65,13 @@ describe('createRepository', () => {
     assert.propertyVal(record, 'some', 'field')
   })
   it('should findOne data by criteria', async () => {
-    const QUERY = 'SELECT * FROM u WHERE (id = ?) LIMIT 1'
+    const QUERY = 'SELECT * FROM u WHERE (id = ?) LIMIT ?'
     const manager = {
       ...createStubManager(),
       query(query) {
         const {text, values} = query.toParam()
         assert.equal(text, QUERY)
-        assert.lengthOf(values, 1)
+        assert.lengthOf(values, 2)
         assert.include(values || [], 1)
         return Promise.resolve([[{
           id: 1,
