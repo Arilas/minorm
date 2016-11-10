@@ -7,14 +7,14 @@ const METADATA_QUERY = 'SELECT COLUMN_NAME columnName,REFERENCED_TABLE_NAME tabl
 const COLUMNS_QUERY = 'SHOW COLUMNS FROM ??'
 
 function loadRelations(manager: Manager, tableName: string) {
-  manager.query(
+  manager.getConnection().query(
     METADATA_QUERY,
     [tableName]
   ).then(([relations]) => manager.getMetadataManager().setAssociations(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
 }
 
 function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> {
-  return manager.query(
+  return manager.getConnection().query(
     COLUMNS_QUERY,
     [tableName]
   ).then(([result]) => result.reduce((target, column) => ({
@@ -37,32 +37,20 @@ export function createRepository(tableName: string, manager: Manager): Repositor
     find(id: any) {
       const query = this.startQuery()
         .where('id = ?', id)
-        .toParam()
-      return manager.query(
-        query.text,
-        query.values
-      ).then(([result]) => result.length ? createModel(repo, result[0]) : null)
+      return query.execute().then(result => result.length ? createModel(repo, result[0]) : null)
     },
     findOneBy(criteria) {
       const query = this.startQuery()
         .limit(1)
         .criteria(criteria)
-      const sql = query.toParam()
-      return manager.query(
-        sql.text,
-        sql.values
-      ).then(([result]) => result.length ? createModel(repo, result[0]) : null)
+      return query.execute().then(result => result.length ? createModel(repo, result[0]) : null)
     },
     findBy(criteria, orderBy = {}, limit, offset) {
       const query = this.startQuery()
         .criteria(criteria)
       limit && query.limit(limit)
       offset && query.offset(offset)
-      const sql = query.toParam()
-      return manager.query(
-        sql.text,
-        sql.values
-      ).then(([result]) => result.map(createModel.bind(null, repo)))
+      return query.execute().then(result => result.map(createModel.bind(null, repo)))
     },
     startQuery(alias: ?string = null) {
       return manager.startQuery()
@@ -87,11 +75,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
           .into(tableName)
       }
       Object.keys(changes).forEach(key => query.set(key, changes[key]))
-      const sql = query.toParam()
-      return manager.query(
-        sql.text,
-        sql.values
-      ).then(([result]) => result.insertId)
+      return manager.query(query).then(([result]) => result.insertId)
     }
   }
 
