@@ -33,6 +33,9 @@ function createStubManager() {
     },
     query() {
       throw new Error('You must override query method')
+    },
+    clear() {
+
     }
   }
 }
@@ -165,7 +168,7 @@ describe('createRepository', () => {
         }])
       }
     }
-
+    // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
     const result = await uRepo._save(changes)
     assert.equal(result, 1)
@@ -186,7 +189,7 @@ describe('createRepository', () => {
         return Promise.resolve([{}])
       }
     }
-
+    // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
     await uRepo._save(changes, 1)
   })
