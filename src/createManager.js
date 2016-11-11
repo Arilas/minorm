@@ -31,6 +31,13 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
         metadataManager = createMetadataManager()(this)
       }
       pool = connect(connectionConfig)
+      metadataManager.ready()
+    },
+    async ready() {
+      return await metadataManager.ready()
+    },
+    getConfiguration() {
+      return connectionConfig
     },
     extendRepository(tableName, callback) {
       repos[tableName] = callback(this.getRepository(tableName))

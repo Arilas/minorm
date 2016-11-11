@@ -59,6 +59,8 @@ export type MetadataManager = {
   getTable(tableName: string): {[key: string]: Relation},
   hasAssociation(tableName: string, columnName: string): boolean,
   setAssociations(tableName: string, relations: Array<Relation>): void,
+  ready(): Promise<any>,
+  isLoaded(): boolean,
   clear(): void
 }
 
@@ -67,11 +69,13 @@ export type Manager = {
   getRepository(tableName: string): Repository,
   extendRepository(tableName: string, callback: (repo: Repository) => Repository): void,
   getLogger(): ?typeof console,
+  ready(): Promise<any>,
   // getPool(): Pool,
   clear(): void,
   getMetadataManager(): MetadataManager,
   setMetadataManager(manager: MetadataManager): void,
   getConnection(): Connection,
+  getConfiguration(): {[key: string]: any},
   query(query: SelectQuery): Promise<*>,
   nestQuery(query: SelectQuery): Promise<*>,
   startQuery(): {select(): SelectQuery}
