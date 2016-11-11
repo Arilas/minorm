@@ -4,24 +4,24 @@ import {createRepository} from '../src/createRepository'
 import Squel from 'squel'
 import select from '../src/query/select'
 
-const METADATA_QUERY = 'SHOW COLUMNS FROM ??'
-const uMetadata = [[
-  {
-    Field: 'id'
+const uMetadata = {
+  id: {
+    columnName: 'id'
   },
-  {
-    Field: 'some'
+  some: {
+    columnName: 'some'
   }
-]]
+}
 
 function createStubManager() {
   return {
-    getConnection() {
+    getMetadataManager() {
       return {
-        query(sql) {
-          if (sql == METADATA_QUERY) {
-            return Promise.resolve(uMetadata)
-          }
+        ready() {
+          return Promise.resolve(true)
+        },
+        getColumns() {
+          return uMetadata
         }
       }
     },

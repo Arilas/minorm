@@ -4,13 +4,13 @@ import {createModel} from '../src/createModel'
 
 const uMetadata = {
   id: {
-    Field: 'id'
+    columnName: 'id'
   },
   foo: {
-    Field: 'some'
+    columnName: 'some'
   },
   test: {
-    Field: 'test'
+    columnName: 'test'
   }
 }
 
