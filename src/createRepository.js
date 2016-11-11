@@ -1,38 +1,13 @@
 /** @flow */
 import Squel from 'squel'
 import {createModel} from './createModel'
-import type {Repository, ColumnsMeta, Manager} from './types'
-
-const METADATA_QUERY = 'SELECT COLUMN_NAME columnName,REFERENCED_TABLE_NAME tableName,REFERENCED_COLUMN_NAME referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = ? AND REFERENCED_TABLE_NAME IS NOT NULL'
-const COLUMNS_QUERY = 'SHOW COLUMNS FROM ??'
-
-function loadRelations(manager: Manager, tableName: string) {
-  manager.getConnection().query(
-    METADATA_QUERY,
-    [tableName]
-  ).then(([relations]) => manager.getMetadataManager().setAssociations(tableName, relations)).catch(err => console.error(err)) //eslint-disable-line no-console
-}
-
-function loadColumns(manager: Manager, tableName: string): Promise<ColumnsMeta> {
-  return manager.getConnection().query(
-    COLUMNS_QUERY,
-    [tableName]
-  ).then(([result]) => result.reduce((target, column) => ({
-    ...target,
-    [column.Field]: column
-  }), {}))
-}
+import type {Repository, Manager} from './types'
 
 export function createRepository(tableName: string, manager: Manager): Repository {
-  manager.hasOwnProperty('getMetadataManager') && loadRelations(manager, tableName)
-  let columnsMeta = loadColumns(manager, tableName).then(columns => columnsMeta = columns)
   const repo = {
-    getMetadata() {
-      if (columnsMeta instanceof Promise) {
-        return columnsMeta
-      } else {
-        return Promise.resolve(columnsMeta)
-      }
+    async getMetadata() {
+      await manager.getMetadataManager().ready()
+      return manager.getMetadataManager().getColumns(tableName)
     },
     find(id: any) {
       const query = this.startQuery()

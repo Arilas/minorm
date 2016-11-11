@@ -29,21 +29,9 @@ const TABLE_RELATION_META_QUERY = `
 
 export default function createMetadataManager(): (manager: Manager) => MetadataManager {
   return manager => {
-    /**
-     * {
-     *   tableName1: {
-     *     columnName1: {
-     *       tableName: string, //Table to join with
-     *       columnName: string, //Inner column name in tableName1
-     *       referencedColumnName: string //Column in joined tabls
-     *     }
-     *   }
-     * }
-     */
     let loaded = false
     let loadPromise
     let dbSchema = {}
-    let associations: {[key: string]: {[key: string]: Relation}} = {}
 
     const logger = manager.getLogger()
 
@@ -94,6 +82,7 @@ export default function createMetadataManager(): (manager: Manager) => MetadataM
           this.loadRelationsMetadata()
         ])
         await loadPromise
+        logger && logger.info('Loaded Database Schema')
         loadPromise = null
         loaded = true
       },
@@ -104,31 +93,21 @@ export default function createMetadataManager(): (manager: Manager) => MetadataM
         return await this.initDbSchema()
       },
       hasTable(tableName) {
-        return associations.hasOwnProperty(tableName)
+        return dbSchema.hasOwnProperty(tableName)
       },
       getTable(tableName) {
-        return associations[tableName]
+        return dbSchema[tableName]
       },
       hasAssociation(tableName, columnName) {
-        return this.hasTable(tableName) && associations[tableName].hasOwnProperty(columnName)
+        return this.hasTable(tableName) && dbSchema[tableName].relations.hasOwnProperty(columnName)
       },
-      setAssociations(tableName, relations) {
-        logger && logger.debug(`Loaded relations for ${tableName} with associations: ${relations.map(r => r.columnName).join(', ')}`) 
-        if (associations.hasOwnProperty(tableName)) {
-          logger && logger.warn(`Twice Loaded meta for table ${tableName}. Please check that you use manager.getRepository() method`)
-          return
-        }
-        // TODO: Fix loading metadata in metadataManager
-        associations[tableName] = relations.reduce((target, relation) => manager.getRepository(relation.tableName) && ({
-          ...target,
-          [relation.columnName]: relation
-        }), {})
+      getColumns(tableName) {
+        return this.hasTable(tableName) && dbSchema[tableName].columns
       },
       clear() {
         dbSchema = {}
         loaded = false
         loadPromise = null
-        associations = {}
       }
     }
   }

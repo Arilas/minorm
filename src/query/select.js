@@ -33,7 +33,7 @@ class IncludeBlock extends Squel.cls.JoinBlock {
     }
     const relation: Relation = this._manager.getMetadataManager().getTable(originTableName)[columnName]
     const onPart = `${alias}.${relation.referencedColumnName} = ${fromAlias}.${relation.columnName}`
-    return [relation.tableName, alias, onPart]
+    return [relation.referencedTableName, alias, onPart]
   }
 
   include(fromAlias: string, columnName: string, alias?: string) {
