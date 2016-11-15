@@ -7,16 +7,28 @@ matrix:
   include:
     - addons:
         mariadb: 10.0
-      env: DB=mariadb MYSQL_USER=root MYSQL_PASS=''
+      env: DB=mariadb NODE=6.0 MYSQL_USER=root MYSQL_PASS=''
       node_js:
         - 6.0
+    - addons:
+        mariadb: 10.0
+      env: DB=mariadb NODE=6.9 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
         - 6.9
+    - addons:
+        mariadb: 10.0
+      env: DB=mariadb NODE=7.0 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
         - 7.0
+    - addons:
+        mariadb: 10.0
+      env: DB=mariadb NODE=7.1 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
         - 7.1
     - dist: trusty
       sudo: required
       group: edge # until the next update
-      env: DB=mysql56 MYSQL_USER=root MYSQL_PASS=''
+      env: DB=mysql56 NODE=6.0 MYSQL_USER=root MYSQL_PASS=''
       services:
         - mysql
       addons:
@@ -27,9 +39,18 @@ matrix:
             - mysql-client-5.6
       node_js:
         - 6.0
+    - dist: trusty
+      sudo: required
+      group: edge # until the next update
+      env: DB=mysql56 NODE=6.9 MYSQL_HOST=127.0.0.1 MYSQL_USER=root MYSQL_PASS=''
+      addons:
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      node_js:
         - 6.9
-        - 7.0
-        - 7.1
 
 before_script:
  - mysql -u root -e 'create database minorm_test;'
