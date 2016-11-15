@@ -1,14 +1,32 @@
 language: node_js
-#services:
-#  - mysql
-#before_script:
-#  - mysql -e 'create database minorm-test;'
 cache:
   directories:
   - node_modules # NPM packages
 node_js:
   - 6.0
-  - 6.7
+  - 6.9
+  - 7.0
+  - 7.1
+matrix:
+  fast_finish: true
+  include:
+    - addons:
+        mariadb: 10.0
+      env: MYSQL_USER=root MYSQL_PASS=''
+    - dist: trusty
+      group: edge # until the next update
+      env: MYSQL_USER=root MYSQL_PASS=''
+      services:
+        - mysql
+      addons:
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+
+before_script:
+ - mysql -u root -e 'create database minorm_test;'
 install:
   - npm install -g codecov
   - npm install -g babel-cli
@@ -21,3 +39,5 @@ script:
   - flow check
 after_success:
   - codecov
+after_script:
+  - mysql -u root -e 'drop database minorm_test;'
