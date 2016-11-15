@@ -15,7 +15,7 @@ export function createSchemaTool(manager: Manager) {
       callback(ctx)
       const queries = gateways.map(gateway => gateway.build())
       try {
-        await Promise.all(queries.map(query => manager.getPool().execute(query)))
+        await manager.getPool().execute(queries.join(';\n'))
         return true
       } catch (err) {
         console.error('There\'s a problem with database init', err)
