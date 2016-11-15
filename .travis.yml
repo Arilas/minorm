@@ -2,20 +2,20 @@ language: node_js
 cache:
   directories:
   - node_modules # NPM packages
-node_js:
-  - 6.0
-  - 6.9
-  - 7.0
-  - 7.1
 matrix:
   fast_finish: true
   include:
     - addons:
         mariadb: 10.0
-      env: MYSQL_USER=root MYSQL_PASS=''
+      env: DB=mariadb MYSQL_USER=root MYSQL_PASS=''
+      node_js:
+        - 6.0
+        - 6.9
+        - 7.0
+        - 7.1
     - dist: trusty
       group: edge # until the next update
-      env: MYSQL_USER=root MYSQL_PASS=''
+      env: DB=mysql56 MYSQL_USER=root MYSQL_PASS=''
       services:
         - mysql
       addons:
@@ -24,6 +24,11 @@ matrix:
             - mysql-server-5.6
             - mysql-client-core-5.6
             - mysql-client-5.6
+      node_js:
+        - 6.0
+        - 6.9
+        - 7.0
+        - 7.1
 
 before_script:
  - mysql -u root -e 'create database minorm_test;'
