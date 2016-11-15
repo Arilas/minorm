@@ -15,7 +15,10 @@ export function createSchemaTool(manager: Manager) {
       callback(ctx)
       const queries = gateways.map(gateway => gateway.build())
       try {
-        await manager.getPool().execute(queries.join(';\n'))
+        do {
+          const query = queries.shift()
+          await manager.getPool().execute(query)
+        } while(queries.length)
         return true
       } catch (err) {
         console.error('There\'s a problem with database init', err)
