@@ -7,9 +7,30 @@ function createTableGateway(ctx) {
     column(columnName) {
       return ctx.addLine(createColumnBuilder(columnName))
     },
-    ref(columnName: string, referencedTableName: string, referencedColumnName: string) {
-
-    } 
+    ref(columnName: string, referencedTableName: string, referencedColumnName: string, indexName = null) {
+      if (!indexName) {
+        indexName = `FK_${columnName}`
+      }
+      ctx.addLine(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
+    },
+    unique(columnName, indexName = null) {
+      if (!indexName) {
+        indexName = 'IDX_' + columnName
+      }
+      ctx.addLine(`UNIQUE KEY ${indexName} ${columnName}`)
+    },
+    index(columnName, indexName = null) {
+      if (!indexName) {
+        indexName = 'IDX_' + columnName
+      }
+      ctx.addLine(`INDEX ${indexName} ${columnName}`)
+    },
+    key(columnName, indexName = null) {
+      if (!indexName) {
+        indexName = 'IDX_' + columnName
+      }
+      ctx.addLine(`KEY ${indexName} ${columnName}`)
+    }
   }
 }
 
@@ -23,6 +44,15 @@ export function createTableBuilder(manager: Manager) {
       }
     }
     callback(createTableGateway(api))
-    return lines
+    return {
+      build() {
+        const blocks = [
+          `CREATE TABLE \`${tableName}\` (`,
+          lines.map(line => line.toString()).join(',\n'),
+          ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
+        ]
+        return blocks.join('\n')
+      }
+    }
   }
 }
