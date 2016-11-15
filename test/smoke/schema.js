@@ -26,6 +26,8 @@ describe('Smoke', () => {
           ctx.ref('creator_id', 'users', 'id')
         })
       })
+      await schemaTool.dropTable('posts')
+      await schemaTool.dropTable('users')
     })
   })
 })

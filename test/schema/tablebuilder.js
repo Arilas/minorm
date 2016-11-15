@@ -9,6 +9,7 @@ describe('Schema', () => {
 \`login\` VARCHAR(255) NOT NULL,
 \`password\` VARCHAR(255) NOT NULL,
 \`createdAt\` DATE
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;`
       const builder = createTableBuilder('users', gateway => {
         gateway.column('id').int().unsigned().primary().autoIncrement()
