@@ -11,7 +11,7 @@ It's really lightweight, provide simple solutions that just works without a lot 
 ## Why use MinORM
 
 If you are tired by highweight ORMs like [Bookshelf](https://github.com/tgriesser/bookshelf) or [Sequelize](https://github.com/sequelize/sequelize), and want just some basic functionality
-from it - MinORM can be a good start point.
+from it - MinORM can be a good start point. MinORM also have build-in Migrations module that you can use.
 
 ## Installation and usage
 
@@ -89,3 +89,56 @@ MinORM don't have any column mappers and/or hydrators. So Models is just result 
 ## Debug
 
 `createManager` supports second parameter as logger, you can choose logger to use it can be simple `console`, `winston` or any other logger.
+
+## Schema Tool and Migrations
+
+MinORM have ability to write your own Migrations and initializers. For example:
+
+```js
+import {createSchemaTool} from 'minorm'
+
+const schemaTool = createSchemaTool(manager)
+schemaTool.setSchemaInit({//It's also migration
+  up(schema) {
+    schema.table('users', table => {
+      table.id()
+      table.column('login').notNull()
+      table.column('password').notNull()
+      table.createdAndModified()
+    })
+    schema.table('posts', table => {
+      table.id()
+      table.column('title').notNull()
+      table.column('body').text()
+      table.column('creator_id').int().unsigned()
+      table.createdAndModified()
+      table.ref('creator_id', 'users', 'id')
+    })
+  },
+  down(schema) {
+    schema.dropTable('posts')
+    schema.dropTable('users')
+  }
+})
+schemaTool.getMigrationManager().addMigration(
+  '2016-11-16 19:01:18',
+  {
+    up(schema) {
+      schema.use('posts', table => {
+        table.index('title')
+      })
+    },
+    down(schema) {
+      schema.use('users', table => {
+        table.dropIndex('IDX_title')
+      })
+    }
+  } 
+)
+schemaTool.initSchema().then(() => {
+  console.log('Database inited')
+})
+```
+
+When you write Migrations you don't need to worry about async things. All references will be added after all tables are created. So
+in case of cross-relations between tables you will not receive any problems.
