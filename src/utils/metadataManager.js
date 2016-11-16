@@ -6,7 +6,7 @@ const TABLE_COLUMNS_META_QUERY = `
     TABLE_NAME tableName,
     COLUMN_NAME columnName,
     DATA_TYPE dataType,
-    CHARACTER_MAXIMUX_LENGTH dataLength,
+    CHARACTER_MAXIMUM_LENGTH dataLength,
     IS_NULLABLE isNullable
   FROM
     INFORMATION_SCHEMA.COLUMNS
@@ -37,7 +37,7 @@ export default function createMetadataManager(): (manager: Manager) => MetadataM
 
     return {
       loadTablesMetadata() {
-        return manager.getConnection().query(
+        return manager.getPool().query(
           TABLE_COLUMNS_META_QUERY,
           [manager.getConfiguration().database]
         ).then(([result]) => {
@@ -54,7 +54,7 @@ export default function createMetadataManager(): (manager: Manager) => MetadataM
         })
       },
       loadRelationsMetadata() {
-        return manager.getConnection().query(
+        return manager.getPool().query(
           TABLE_RELATION_META_QUERY,
           [manager.getConfiguration().database]
         ).then(([result]) => {

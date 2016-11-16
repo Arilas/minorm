@@ -62,17 +62,23 @@ export type MetadataManager = {
   clear(): void
 }
 
+export type Pool = {
+  getConnection(): Promise<Connection>,
+  query(sql: string | Object, values?: Array<any>): Promise<*>,
+  execute(sql: string | Object, values?: Array<any>): Promise<*>
+}
+
 export type Manager = {
   connect(): void,
   getRepository(tableName: string): Repository,
   extendRepository(tableName: string, callback: (repo: Repository) => Repository): void,
   getLogger(): ?typeof console,
   ready(): Promise<any>,
-  // getPool(): Pool,
+  getPool(): Pool,
   clear(): void,
   getMetadataManager(): MetadataManager,
   setMetadataManager(manager: MetadataManager): void,
-  getConnection(): Connection,
+  getConnection(): Promise<Connection>,
   getConfiguration(): {[key: string]: any},
   query(query: SelectQuery): Promise<*>,
   nestQuery(query: SelectQuery): Promise<*>,
