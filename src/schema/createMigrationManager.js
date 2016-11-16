@@ -23,54 +23,42 @@ export function createMigrationManager(manager: Manager): MigrationManager {
     async apply() {
       await manager.ready()
       if (!manager.getMetadataManager().hasTable(MINORM_MIGRATIONS_TABLE)) {
-        await this.processInit()
-        manager.clear()
-        manager.connect()
-        await manager.ready()
+        await this.execute(initializers, 'up')
       }
       const migrationsToExecute = await this.getMigrationsToExecute()
       if (migrationsToExecute.size > 0) {
-        await this.processMigrations(migrationsToExecute)
-        manager.clear()
-        manager.connect()
-        await manager.ready()
+        await this.execute(migrationsToExecute, 'up')
       }
       return true
     },
     async revertAll() {
+      await manager.ready()
       const migrationsToRevert = new Map(
         Array.from(migrations.keys())
         .sort()
         .reverse()
         .map(migration => [migration, migrations.get(migration)])
       )
-      await this.revertMigrations(migrationsToRevert)
-      await this.revertInit()
-      manager.clear()
-      manager.connect()
-      await manager.ready()
+      await this.execute(migrationsToRevert, 'down')
+      await this.execute(initializers, 'down')
       return true
     },
-    async processInit() {
-      const {context, getQueries, getAlters} = createSchemaToolContext()
-      initializers.forEach(handler => handler.up(context))
-      try {
-        await Promise.all(getQueries().map(line => manager.getPool().execute(line)))
-        await Promise.all(getAlters().map(line => manager.getPool().execute(line)))
-        return true
-      } catch (err) {
-        logger && logger.error('There\'s a problem with database init', err)
-        throw err
-      }
-    },
-    async processMigrations(migrations: MigrationsMap) {
+    async execute(migrations, method) {
       const MigrationsRepo = manager.getRepository(MINORM_MIGRATIONS_TABLE)
-      try {
-        for (const [key, handler] of migrations) {
-          const {context, getQueries, getAlters} = createSchemaToolContext()
-          handler.up(context)
-          await Promise.all(getQueries().map(line => manager.getPool().execute(line)))
-          await Promise.all(getAlters().map(line => manager.getPool().execute(line)))
+      for(const [key, handler] of migrations) {
+        const {context, getAddQueries, getDropQueries, getAddAlters, getDropAlters} = createSchemaToolContext()
+        handler[method](context)
+        await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
+        // Because some of people don't drop foreign keys before and order is matter
+        for(const line of getDropQueries()) {
+          await manager.getPool().execute(line)
+        }
+        await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
+        await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
+        manager.clear()
+        manager.connect()
+        await manager.ready()
+        if (method === 'up') {
           const date = new Date
           const formattedDate = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`
           await MigrationsRepo.create({
@@ -79,48 +67,8 @@ export function createMigrationManager(manager: Manager): MigrationManager {
             modifiedAt: formattedDate
           }).save()
         }
-        return true
-      } catch (err) {
-        logger && logger.error('There\'s a problem with database init', err)
-        throw err
       }
-    },
-    async revertMigrations(migrations: MigrationsMap) {
-      try {
-        for (const [key, handler] of migrations) {
-          const {context, getQueries, getAlters} = createSchemaToolContext()
-          handler.down(context)
-          await Promise.all(getAlters().map(line => manager.getPool().execute(line)))
-          const queries = getQueries()
-          if (queries.length) {
-            do {
-              const query = queries.shift()
-              await manager.getPool().execute(query)
-            } while (queries.length)
-          }
-        }
-        return true
-      } catch (err) {
-        logger && logger.error('There\'s a problem with database init', err)
-        throw err
-      }
-    },
-    async revertInit() {
-      const {context, getQueries, getAlters} = createSchemaToolContext()
-      initializers.forEach(handler => handler.down(context))
-      const alters = getAlters()
-      const queries = getQueries()
-      try {
-        await Promise.all(alters.map(line => manager.getPool().execute(line)))
-        do {
-          const query = queries.shift()
-          await manager.getPool().execute(query)
-        } while (queries.length)
-        return true
-      } catch (err) {
-        logger && logger.error('There\'s a problem with database init', err)
-        throw err
-      }
+      return true
     },
     async getMigrationsToExecute(): Promise<MigrationsMap> {
       const [result] = await manager.getPool().query(MIGRATIONS_QUERY)

@@ -14,14 +14,17 @@ export type SchemaToolContext = {
 }
 
 export type SchemaToolGatewayApi = {
-  addLine(line: {toString(): string} | string): string | Object,
-  addAlter(line: {toString(): string} | string): string | Object,
-  removeAlter(line: string ): string 
+  lineAdd(line: {toString(): string} | string): void,
+  lineDrop(line: {toString(): string} | string): void,
+  alterAdd(line: {toString(): string} | string): void,
+  alterDrop(line: {toString(): string} | string): void
 }
 
 export type SchemaToolGateway = {
-  getQuery(): string | null,
-  getAlters(): Array<string>,
+  getAddQuery(): Array<string>,
+  getDropQuery(): Array<string>,
+  getAddAlters(): Array<string>,
+  getDropAlters(): Array<string>,
   getApi(): ?SchemaToolGatewayApi
 }
 
@@ -29,9 +32,9 @@ export type SchemaToolCreateTableContext = {
   column(columnName: string): SchemaToolColumnContext,
   id(): SchemaToolColumnContext,
   createdAndModified(): SchemaToolColumnContext,
-  dropColumn(columnName: string): string,
-  dropIndex(indexName: string): string,
-  dropRef(foreignKey: string): string,
+  dropColumn(columnName: string): void,
+  dropIndex(indexName: string): void,
+  dropRef(foreignKey: string): void,
   ref(columnName: string, referencedTableName: string, referencedColumnName: string): void,
   unique(columnName: string, indexName?: string): void,
   index(columnName: string, indexName?: string): void,

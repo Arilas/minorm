@@ -6,13 +6,13 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
   if (!ctx) {
     throw new Error('Gateway API must be specified')
   }
-  const addLine = isNew ? ctx.addLine : ctx.addAlter
-  const removeAlter = ctx.removeAlter
-  const addAlter = ctx.addAlter
+  const lineAdd = isNew ? ctx.lineAdd : ctx.alterAdd
+  const alterDrop = ctx.alterDrop
+  const alterAdd = ctx.alterAdd
   return {
     column(columnName) {
       const column = createColumnContext(columnName, isNew)
-      addLine(column)
+      lineAdd(column)
       return column
     },
     id() {
@@ -23,57 +23,64 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
       return this.column('modifiedAt').dateTime()
     },
     dropColumn(columnName: string) {
-      return removeAlter(`COLUMN \`${columnName}\``)
+      alterDrop(`COLUMN \`${columnName}\``)
     },
     dropIndex(indexName: string) {
-      return removeAlter(`INDEX \`${indexName}\``)
+      alterDrop(`INDEX \`${indexName}\``)
     },
     dropRef(foreignKey: string) {
-      return removeAlter(`FOREIGN KEY \`${foreignKey}\``)
+      alterDrop(`FOREIGN KEY \`${foreignKey}\``)
     },
     ref(columnName: string, referencedTableName: string, referencedColumnName: string, indexName = null) {
       if (!indexName) {
         indexName = `FK_${columnName}`
       }
-      addAlter(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
+      alterAdd(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
     },
     unique(columnName, indexName = null) {
       if (!indexName) {
         indexName = 'IDX_' + columnName
       }
-      addLine(`UNIQUE KEY \`${indexName}\` (\`${columnName}\`)`)
+      lineAdd(`UNIQUE KEY \`${indexName}\` (\`${columnName}\`)`)
     },
     index(columnName, indexName = null) {
       if (!indexName) {
         indexName = 'IDX_' + columnName
       }
-      addLine(`INDEX \`${indexName}\` (\`${columnName}\`)`)
+      lineAdd(`INDEX \`${indexName}\` (\`${columnName}\`)`)
     },
     key(columnName, indexName = null) {
       if (!indexName) {
         indexName = 'IDX_' + columnName
       }
-      addLine(`KEY \`${indexName}\` (\`${columnName}\`)`)
+      lineAdd(`KEY \`${indexName}\` (\`${columnName}\`)`)
     }
   }
 }
 
 export function createTableGateway(tableName: string): SchemaToolGateway {
-  const lines = []
-  const alters = []
-  const removeAlters = []
+  const parts = {
+    lines: {
+      add: [],
+      drop: []
+    },
+    alters: {
+      add: [],
+      drop: []
+    }
+  }
   const api = {
-    addLine(line) {
-      lines.push(line)
-      return line
+    lineAdd(line) {
+      parts.lines.add.push(line)
     },
-    addAlter(line) {
-      alters.push(line)
-      return line
+    lineDrop(line) {
+      parts.lines.drop.push(line)
     },
-    removeAlter(line) {
-      removeAlters.push(line)
-      return line
+    alterAdd(line) {
+      parts.alters.add.push(line)
+    },
+    alterDrop(line) {
+      parts.alters.drop.push(line)
     }
   }
   return {
@@ -83,28 +90,33 @@ export function createTableGateway(tableName: string): SchemaToolGateway {
     build() {
       const blocks = [
         `CREATE TABLE IF NOT EXISTS \`${tableName}\` (`,
-        lines.map(line => line.toString()).join(',\n') + (alters.length > 0 ? ',' : ''),
-        alters.map(line => line.toString()).join(',\n'),
+        parts.lines.add.map(line => line.toString()).join(',\n') + (parts.alters.add.length > 0 ? ',' : ''),
+        parts.alters.add.map(line => line.toString()).join(',\n'),
         ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
       ]
       return blocks.join('\n')
     },
-    getQuery() {
-      if (!lines.length) {
-        return null
+    getAddQuery() {
+      if (!parts.lines.add.length) {
+        return []
       }
       const blocks = [
         `CREATE TABLE IF NOT EXISTS \`${tableName}\` (`,
-        lines.map(line => line.toString()).join(',\n'),
+        parts.lines.add.map(line => line.toString()).join(',\n'),
         ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
       ]
-      return blocks.join('\n')
-    },
-    getAlters() {
       return [
-        ...alters.map(line => `ALTER TABLE ${tableName} ADD ${line.toString()}`),
-        ...removeAlters.map(line => `ALTER TABLE ${tableName} DROP ${line.toString()}`)
+        blocks.join('\n')
       ]
+    },
+    getDropQuery() {
+      return parts.lines.drop.map(line => line.toString())
+    },
+    getAddAlters() {
+      return parts.alters.add.map(line => `ALTER TABLE ${tableName} ADD ${line.toString()}`)
+    },
+    getDropAlters() {
+      return parts.alters.drop.map(line => `ALTER TABLE ${tableName} DROP ${line.toString()}`)
     }
   }
 }

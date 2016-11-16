@@ -5,8 +5,10 @@ import type {SchemaToolGateway, SchemaToolContext} from './types'
 
 type CreateContext = {
   context: SchemaToolContext,
-  getQueries(): Array<string>,
-  getAlters(): Array<string>
+  getAddQueries(): Array<string>,
+  getDropQueries(): Array<string>,
+  getAddAlters(): Array<string>,
+  getDropAlters(): Array<string>
 }
 
 export function createSchemaToolContext(): CreateContext {
@@ -25,10 +27,16 @@ export function createSchemaToolContext(): CreateContext {
       },
       dropTable(tableName): SchemaToolGateway {
         const gateway = {
-          getQuery() {
-            return `DROP TABLE ${tableName}`
+          getAddQuery() {
+            return []
           },
-          getAlters() {
+          getDropQuery() {
+            return [`DROP TABLE ${tableName}`]
+          },
+          getAddAlters() {
+            return []
+          },
+          getDropAlters() {
             return []
           },
           getApi() {
@@ -39,16 +47,30 @@ export function createSchemaToolContext(): CreateContext {
         return gateway
       }
     },
-    getQueries(): Array<string> {
+    getAddQueries(): Array<string> {
       return gateways
-        .map(gateway => gateway.getQuery())
+        .map(gateway => gateway.getAddQuery())
         .reduce((target, query) => !query ? target : [
           ...target,
-          query
+          ...query
         ], [])
     },
-    getAlters(): Array<string> {
-      return gateways.map(gateway => gateway.getAlters()).reduce((target, alters) => ([
+    getDropQueries(): Array<string> {
+      return gateways
+        .map(gateway => gateway.getDropQuery())
+        .reduce((target, query) => !query ? target : [
+          ...target,
+          ...query
+        ], [])
+    },
+    getAddAlters(): Array<string> {
+      return gateways.map(gateway => gateway.getAddAlters()).reduce((target, alters) => ([
+        ...target,
+        ...alters
+      ]), [])
+    },
+    getDropAlters(): Array<string> {
+      return gateways.map(gateway => gateway.getDropAlters()).reduce((target, alters) => ([
         ...target,
         ...alters
       ]), [])
