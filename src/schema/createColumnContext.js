@@ -10,7 +10,7 @@ export const TYPE_DATETIME = 'DATETIME'
 export const TYPE_TIME = 'TIME'
 export const TYPE_TINYINT = 'TINYINT'
 
-export function createColumnContext(columnName: string): SchemaToolColumnContext {
+export function createColumnContext(columnName: string, isNew?: boolean = true): SchemaToolColumnContext {
   let type = TYPE_VARCHAR
   let nullable = true
   let primary = false
@@ -59,7 +59,7 @@ export function createColumnContext(columnName: string): SchemaToolColumnContext
       const incrementPart = autoIncrement ? ' AUTO_INCREMENT' : ''
       const nullablePart = !nullable ? ' NOT NULL' : ''
       const primaryPart = primary ? ' PRIMARY KEY' : ''
-      return `\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
+      return `${!isNew? 'COLUMN ' : ''}\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
     },
     toString() {
       return this.build()
@@ -68,7 +68,7 @@ export function createColumnContext(columnName: string): SchemaToolColumnContext
     text: makeSimpleTypeChanger(TYPE_TEXT),
     longText: makeSimpleTypeChanger(TYPE_LONGTEXT),
     date: makeSimpleTypeChanger(TYPE_DATE),
-    dateTime: makeSimpleTypeChanger(TYPE_DATE),
+    dateTime: makeSimpleTypeChanger(TYPE_DATETIME),
     time: makeSimpleTypeChanger(TYPE_TIME),
     string: makeParametrizedTypeChanger(TYPE_VARCHAR),
     int: makeParametrizedTypeChanger(TYPE_INT, 11),

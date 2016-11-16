@@ -1,7 +1,4 @@
 /** @flow */
-import {useTableBuilder} from './tablebuilder'
-import {MINORM_MIGRATIONS_TABLE} from './constants'
-import {createSchemaToolContext} from './createSchemaToolContext'
 import {createMigrationManager} from './createMigrationManager'
 import initMinormMigration from './initMinormSchema'
 import type {SchemaTool} from './types'

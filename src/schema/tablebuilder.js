@@ -11,7 +11,7 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
   const addAlter = ctx.addAlter
   return {
     column(columnName) {
-      const column = createColumnContext(columnName)
+      const column = createColumnContext(columnName, isNew)
       addLine(column)
       return column
     },

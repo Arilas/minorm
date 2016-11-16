@@ -6,7 +6,7 @@ import Config from '../config'
 describe('Smoke', () => {
   describe('Schema Tool', () => {
     it('should init Database schema', async function() {
-      this.timeout(5000)
+      this.timeout(10000)
       const manager = createManager(Config.connection)
       manager.connect()
       await manager.ready()
@@ -17,7 +17,8 @@ describe('Smoke', () => {
             ctx.column('id').int().unsigned().primary().autoIncrement()
             ctx.column('login').notNull()
             ctx.column('password').notNull()
-            ctx.column('createdAt').date()
+            ctx.column('columnToDrop')
+            ctx.column('createdAt').dateTime()
           })
           schema.table('posts', ctx => {
             ctx.column('id').int().unsigned().primary().autoIncrement()
@@ -39,6 +40,40 @@ describe('Smoke', () => {
           })
         }
       })
+      // Must be applied second
+      schemaTool.getMigrationManager().addMigration(
+        '2016-11-16 18:04:24',
+        {
+          up(schema) {
+            schema.use('users', table => {
+              table.dropColumn('secondDrop')
+            })
+          },
+          down(schema) {
+            schema.use('users', table => {
+              table.column('secondDrop')
+            })
+          }
+        } 
+      )
+      // First migration
+      schemaTool.getMigrationManager().addMigration(
+        '2016-11-16 17:42:15',
+        {
+          up(schema) {
+            schema.use('users', table => {
+              table.dropColumn('columnToDrop')
+              table.column('secondDrop')
+            })
+          },
+          down(schema) {
+            schema.use('users', table => {
+              table.column('columnToDrop')
+              table.dropColumn('secondDrop')
+            })
+          }
+        } 
+      )
       await schemaTool.initSchema()
       await schemaTool.dropSchema()
     })

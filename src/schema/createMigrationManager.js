@@ -24,10 +24,16 @@ export function createMigrationManager(manager: Manager): MigrationManager {
       await manager.ready()
       if (!manager.getMetadataManager().hasTable(MINORM_MIGRATIONS_TABLE)) {
         await this.processInit()
+        manager.clear()
+        manager.connect()
+        await manager.ready()
       }
       const migrationsToExecute = await this.getMigrationsToExecute()
       if (migrationsToExecute.size > 0) {
         await this.processMigrations(migrationsToExecute)
+        manager.clear()
+        manager.connect()
+        await manager.ready()
       }
       return true
     },
@@ -40,6 +46,9 @@ export function createMigrationManager(manager: Manager): MigrationManager {
       )
       await this.revertMigrations(migrationsToRevert)
       await this.revertInit()
+      manager.clear()
+      manager.connect()
+      await manager.ready()
       return true
     },
     async processInit() {
@@ -83,10 +92,12 @@ export function createMigrationManager(manager: Manager): MigrationManager {
           handler.down(context)
           await Promise.all(getAlters().map(line => manager.getPool().execute(line)))
           const queries = getQueries()
-          do {
-            const query = queries.shift()
-            await manager.getPool().execute(query)
-          } while (queries.length)
+          if (queries.length) {
+            do {
+              const query = queries.shift()
+              await manager.getPool().execute(query)
+            } while (queries.length)
+          }
         }
         return true
       } catch (err) {
@@ -120,7 +131,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
 
       return new Map(
         Array.from(migrations.keys())
-        .filter(migration => appliedMigrations.hasOwnProperty(migration))
+        .filter(migration => !appliedMigrations.hasOwnProperty(migration))
         .sort()
         // $FlowIgnore fix for model
         .map(migration => [migration, migrations.get(migration)])
