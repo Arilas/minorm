@@ -11,31 +11,33 @@ describe('Smoke', () => {
       manager.connect()
       await manager.ready()
       const schemaTool = createSchemaTool(manager)
-      schemaTool.setSchemaInit(schema => {
-        schema.table('users', ctx => {
-          ctx.column('id').int().unsigned().primary().autoIncrement()
-          ctx.column('login').notNull()
-          ctx.column('password').notNull()
-          ctx.column('createdAt').date()
-        })
-        schema.table('posts', ctx => {
-          ctx.column('id').int().unsigned().primary().autoIncrement()
-          ctx.column('title').notNull()
-          ctx.column('body').text()
-          ctx.column('creator_id').int().unsigned()
-          ctx.column('createdAt').date()
-          ctx.index('title')
-          ctx.ref('creator_id', 'users', 'id')
-        })
-      })
-      schemaTool.setSchemaDrop(schema => {
-        // Will be executed correctly cause we remove FK
-        schema.dropTable('users')
-        schema.dropTable('posts')
-        // Must be executed before DROP TABLE
-        schema.use('posts', table => {
-          table.dropRef('FK_creator_id')
-        })
+      schemaTool.setSchemaInit({
+        up(schema) {
+          schema.table('users', ctx => {
+            ctx.column('id').int().unsigned().primary().autoIncrement()
+            ctx.column('login').notNull()
+            ctx.column('password').notNull()
+            ctx.column('createdAt').date()
+          })
+          schema.table('posts', ctx => {
+            ctx.column('id').int().unsigned().primary().autoIncrement()
+            ctx.column('title').notNull()
+            ctx.column('body').text()
+            ctx.column('creator_id').int().unsigned()
+            ctx.column('createdAt').date()
+            ctx.index('title')
+            ctx.ref('creator_id', 'users', 'id')
+          })
+        },
+        down(schema) {
+          // Will be executed correctly cause we remove FK
+          schema.dropTable('users')
+          schema.dropTable('posts')
+          // Must be executed before DROP TABLE
+          schema.use('posts', table => {
+            table.dropRef('FK_creator_id')
+          })
+        }
       })
       await schemaTool.initSchema()
       await schemaTool.dropSchema()

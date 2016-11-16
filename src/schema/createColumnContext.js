@@ -11,54 +11,31 @@ export const TYPE_TIME = 'TIME'
 export const TYPE_TINYINT = 'TINYINT'
 
 export function createColumnContext(columnName: string): SchemaToolColumnContext {
-  let type = 'VARCHAR'
+  let type = TYPE_VARCHAR
   let nullable = true
   let primary = false
   let unsigned = false
   let autoIncrement = false
   let defaultValue
   let length = 255
+
+  function makeSimpleTypeChanger(newType) {
+    return function() {
+      type = newType
+      length = null
+      return this
+    }
+  }
+
+  function makeParametrizedTypeChanger(newType, defaultLength = 255) {
+    return function(len = defaultLength) {
+      type = newType
+      length = len
+      return this
+    }
+  }
+
   return {
-    string(len = 255) {
-      type = TYPE_VARCHAR
-      length = len
-      return this
-    },
-    text() {
-      type = TYPE_TEXT
-      length = null
-      return this
-    },
-    longText() {
-      type = TYPE_LONGTEXT
-      length = null
-      return this
-    },
-    bool() {
-      type = TYPE_TINYINT
-      length = 1
-      return this
-    },
-    int(len = 11) {
-      type = TYPE_INT
-      length = len
-      return this
-    },
-    date() {
-      type = TYPE_DATE
-      length = null
-      return this
-    },
-    dateTime() {
-      type = TYPE_DATETIME
-      length = null
-      return this
-    },
-    time() {
-      type = TYPE_TIME
-      length = null
-      return this
-    },
     notNull() {
       nullable = false
       return this
@@ -86,6 +63,16 @@ export function createColumnContext(columnName: string): SchemaToolColumnContext
     },
     toString() {
       return this.build()
-    }
+    },
+    // Types
+    text: makeSimpleTypeChanger(TYPE_TEXT),
+    longText: makeSimpleTypeChanger(TYPE_LONGTEXT),
+    date: makeSimpleTypeChanger(TYPE_DATE),
+    dateTime: makeSimpleTypeChanger(TYPE_DATE),
+    time: makeSimpleTypeChanger(TYPE_TIME),
+    string: makeParametrizedTypeChanger(TYPE_VARCHAR),
+    int: makeParametrizedTypeChanger(TYPE_INT, 11),
+    tinyInt: makeParametrizedTypeChanger(TYPE_TINYINT),
+    bool: makeParametrizedTypeChanger(TYPE_TINYINT, 1)
   }
 }

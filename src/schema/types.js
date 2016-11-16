@@ -1,10 +1,10 @@
 /** @flow */
 
 export type SchemaTool = {
-  setSchemaInit(callback: (ctx: SchemaToolContext) => void): void,
-  setSchemaDrop(callback: (ctx: SchemaToolContext) => void): void,
+  setSchemaInit(handler: Migration): void,
   initSchema(): Promise<any>,
-  dropSchema(): Promise<any>
+  dropSchema(): Promise<any>,
+  getMigrationManager(): MigrationManager
 }
 
 export type SchemaToolContext = {
@@ -43,6 +43,7 @@ export type SchemaToolColumnContext = {
   text(): SchemaToolColumnContext,
   longText(): SchemaToolColumnContext,
   bool(): SchemaToolColumnContext,
+  tinyInt(len?: number): SchemaToolColumnContext,
   int(len?: number): SchemaToolColumnContext,
   date(): SchemaToolColumnContext,
   dateTime(): SchemaToolColumnContext,
@@ -53,4 +54,16 @@ export type SchemaToolColumnContext = {
   autoIncrement(): SchemaToolColumnContext,
   build(): string,
   toString(): string
+}
+
+export type Migration = {
+  up(SchemaTool: SchemaToolContext): void,
+  down(SchemaTool: SchemaToolContext): void
+}
+
+export type MigrationManager = {
+  addInitializer(name: string, handler: Migration): void,
+  addMigration(name: string, handler: Migration): void,
+  apply(): Promise<boolean>,
+  revertAll(): Promise<boolean>
 }

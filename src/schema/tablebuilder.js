@@ -19,8 +19,8 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
       return this.column('id').int().unsigned().primary().autoIncrement()
     },
     createdAndModified() {
-      this.column('createdAt').date()
-      return this.column('modifiedAt').date()
+      this.column('createdAt').dateTime()
+      return this.column('modifiedAt').dateTime()
     },
     dropColumn(columnName: string) {
       return removeAlter(`COLUMN \`${columnName}\``)
