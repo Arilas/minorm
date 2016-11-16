@@ -1,11 +1,19 @@
 /** @flow */
-import {createColumnBuilder} from './columnbuilder'
+import {createColumnContext} from './createColumnContext'
+import type {SchemaToolCreateTableContext, SchemaToolGateway} from './types'
 
-function createTableGateway(ctx, isNew: boolean = true) {
+function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableContext {
+  if (!ctx) {
+    throw new Error('Gateway API must be specified')
+  }
   const addLine = isNew ? ctx.addLine : ctx.addAlter
+  const removeAlter = ctx.removeAlter
+  const addAlter = ctx.addAlter
   return {
     column(columnName) {
-      return addLine(createColumnBuilder(columnName))
+      const column = createColumnContext(columnName)
+      addLine(column)
+      return column
     },
     id() {
       return this.column('id').int().unsigned().primary().autoIncrement()
@@ -15,16 +23,19 @@ function createTableGateway(ctx, isNew: boolean = true) {
       return this.column('modifiedAt').date()
     },
     dropColumn(columnName: string) {
-      return ctx.removeAlter(`COLUMN \`${columnName}\``)
+      return removeAlter(`COLUMN \`${columnName}\``)
     },
     dropIndex(indexName: string) {
-      return ctx.removeAlter(`INDEX \`${indexName}\``)
+      return removeAlter(`INDEX \`${indexName}\``)
+    },
+    dropRef(foreignKey: string) {
+      return removeAlter(`FOREIGN KEY \`${foreignKey}\``)
     },
     ref(columnName: string, referencedTableName: string, referencedColumnName: string, indexName = null) {
       if (!indexName) {
         indexName = `FK_${columnName}`
       }
-      ctx.addAlter(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
+      addAlter(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
     },
     unique(columnName, indexName = null) {
       if (!indexName) {
@@ -47,20 +58,20 @@ function createTableGateway(ctx, isNew: boolean = true) {
   }
 }
 
-export function createTableWrapper(tableName: string) {
+export function createTableGateway(tableName: string): SchemaToolGateway {
   const lines = []
   const alters = []
   const removeAlters = []
   const api = {
-    addLine(line: string | Object) {
+    addLine(line) {
       lines.push(line)
       return line
     },
-    addAlter(line: string | Object) {
+    addAlter(line) {
       alters.push(line)
       return line
     },
-    removeAlter(line: string) {
+    removeAlter(line) {
       removeAlters.push(line)
       return line
     }
@@ -78,7 +89,10 @@ export function createTableWrapper(tableName: string) {
       ]
       return blocks.join('\n')
     },
-    buildOnlyTable() {
+    getQuery() {
+      if (!lines.length) {
+        return null
+      }
       const blocks = [
         `CREATE TABLE IF NOT EXISTS \`${tableName}\` (`,
         lines.map(line => line.toString()).join(',\n'),
@@ -86,7 +100,7 @@ export function createTableWrapper(tableName: string) {
       ]
       return blocks.join('\n')
     },
-    buildOnlyAlters() {
+    getAlters() {
       return [
         ...alters.map(line => `ALTER TABLE ${tableName} ADD ${line.toString()}`),
         ...removeAlters.map(line => `ALTER TABLE ${tableName} DROP ${line.toString()}`)
@@ -96,13 +110,13 @@ export function createTableWrapper(tableName: string) {
 }
 
 export function createTableBuilder(tableName: string, callback: Function) {
-  const wrapper = createTableWrapper(tableName)
-  callback(createTableGateway(wrapper.getApi()))
+  const wrapper = createTableGateway(tableName)
+  callback(createTableContext(wrapper.getApi()))
   return wrapper
 }
 
 export function useTableBuilder(tableName: string, callback: Function) {
-  const wrapper = createTableWrapper(tableName)
-  callback(createTableGateway(wrapper.getApi(), false))
+  const wrapper = createTableGateway(tableName)
+  callback(createTableContext(wrapper.getApi(), false))
   return wrapper
 }

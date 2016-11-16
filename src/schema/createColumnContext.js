@@ -1,4 +1,5 @@
 /** @flow */
+import type {SchemaToolColumnContext} from './types'
 
 export const TYPE_VARCHAR = 'VARCHAR'
 export const TYPE_TEXT = 'TEXT'
@@ -9,7 +10,7 @@ export const TYPE_DATETIME = 'DATETIME'
 export const TYPE_TIME = 'TIME'
 export const TYPE_TINYINT = 'TINYINT'
 
-export function createColumnBuilder(columnName: string) {
+export function createColumnContext(columnName: string): SchemaToolColumnContext {
   let type = 'VARCHAR'
   let nullable = true
   let primary = false
@@ -18,7 +19,7 @@ export function createColumnBuilder(columnName: string) {
   let defaultValue
   let length = 255
   return {
-    string(len: number = 255) {
+    string(len = 255) {
       type = TYPE_VARCHAR
       length = len
       return this
@@ -38,7 +39,7 @@ export function createColumnBuilder(columnName: string) {
       length = 1
       return this
     },
-    int(len: number = 11) {
+    int(len = 11) {
       type = TYPE_INT
       length = len
       return this
@@ -72,8 +73,9 @@ export function createColumnBuilder(columnName: string) {
     },
     autoIncrement() {
       autoIncrement = true
+      return this
     },
-    buildColumnPart() {
+    build() {
       const typePart = length ? `${type}(${length})` : type
       const unsignedPart = unsigned ? ' UNSIGNED' : ''
       const defaultValuePart = defaultValue !== undefined ? ` DEFAULT '${defaultValue}'` : ''
@@ -83,7 +85,7 @@ export function createColumnBuilder(columnName: string) {
       return `\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
     },
     toString() {
-      return this.buildColumnPart()
+      return this.build()
     }
   }
 }
