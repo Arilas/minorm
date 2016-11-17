@@ -2,7 +2,10 @@
 import {assert} from 'chai'
 import {createRepository} from '../src/createRepository'
 import Squel from 'squel'
+import insert from '../src/query/insert'
 import select from '../src/query/select'
+import update from '../src/query/update'
+import remove from '../src/query/delete'
 
 const uMetadata = {
   id: {
@@ -27,8 +30,11 @@ function createStubManager() {
     },
     startQuery() {
       return {
-        ...Squel,
-        select: options => select(this, options)
+        insert: options => insert(this, options),
+        update: options => update(this, options),
+        select: options => select(this, options),
+        delete: options => remove(this, options),
+        remove: options => remove(this, options)
       }
     },
     query() {
@@ -170,7 +176,7 @@ describe('createRepository', () => {
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
-    const result = await uRepo._save(changes)
+    const result = await uRepo.insert(changes)
     assert.equal(result, 1)
   })
   it('should update data', async () => {
@@ -191,6 +197,6 @@ describe('createRepository', () => {
     }
     // $FlowIgnore fix for model
     const uRepo = createRepository('u', manager)
-    await uRepo._save(changes, 1)
+    await uRepo.update(1, changes)
   })
 })

@@ -20,13 +20,14 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
     }
     : target, {})
     if (Object.keys(changes).length || !model.id) {
-      const id = await repository._save(changes, model.id)
+      if (model.id) {
+        await repository.update(model.id, changes)
+      } else {
+        const id = await repository.insert(changes)
+        model.id = id
+      }
       origin = {
         ...model,
-        id: id ? id : model.id
-      }
-      if (id) {
-        model.id = id
       }
     }
     return model

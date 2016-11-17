@@ -16,23 +16,22 @@ const uMetadata = {
 
 describe('createModel', () => {
   it('should extend original object with methods', async () => {
-    const obj = { 
+    const obj = {
       test: 'some'
     }
     // $FlowIgnore fix for model
     createModel({
-      _save(changes, id) {
-        if (id) {
-          assert.equal(id, 1)
-          assert.propertyVal(changes, 'foo', 'bar')
-          assert.notProperty(changes, 'id')
-          assert.notProperty(changes, 'test')
-          assert.notProperty(changes, 'ololo')
-          return Promise.resolve(null)
-        } else {
-          assert.propertyVal(changes, 'test', 'some')
-          return Promise.resolve(1)
-        }
+      insert(changes) {
+        assert.propertyVal(changes, 'test', 'some')
+        return Promise.resolve(1)
+      },
+      update(id, changes) {
+        assert.equal(id, 1)
+        assert.propertyVal(changes, 'foo', 'bar')
+        assert.notProperty(changes, 'id')
+        assert.notProperty(changes, 'test')
+        assert.notProperty(changes, 'ololo')
+        return Promise.resolve(null)
       },
       getMetadata() {
         // $FlowIgnore fix for model
@@ -40,7 +39,7 @@ describe('createModel', () => {
       }
     }, obj, false) // $FlowIgnore fix for model
     await obj.save() // $FlowIgnore fix for model
-    obj.populate({ 
+    obj.populate({
       foo: 'bar',
       ololo: 'test'
     })

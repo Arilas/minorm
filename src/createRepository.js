@@ -38,19 +38,6 @@ export function createRepository(tableName: string, manager: Manager): Repositor
     hydrate(data = {}, fetched: boolean = false) {
       return createModel(repo, data, fetched)
     },
-    // _save(changes, id) {
-    //   let query
-    //   if (id) {
-    //     query = Squel.update()
-    //       .where('id = ?', id)
-    //       .table(tableName)
-    //   } else {
-    //     query = Squel.insert()
-    //       .into(tableName)
-    //   }
-    //   Object.keys(changes).forEach(key => query.set(key, changes[key]))
-    //   return manager.query(query).then(([result]) => result.insertId)
-    // },
     insert(data = {}) {
       const query = manager.startQuery().insert()
         .into(tableName)
@@ -77,6 +64,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       }
       const query = manager.startQuery().delete()
         .criteria(selector)
+      return query.execute().then(result => console.log(result))
     }
   }
 
