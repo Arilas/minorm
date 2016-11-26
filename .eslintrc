@@ -3,14 +3,11 @@
   "env": {
     "node": true,
     "browser": true,
-    "mocha": true
+    "mocha": true,
+    "es6": true
   },
   "globals": {
-    "React$Element": true,
-    "ReactClass": true,
-    "Event": true,
-    "Promise": true,
-    "Generator": true
+    "Uint32Array": true
   },
   "plugins": [
     "flowtype"

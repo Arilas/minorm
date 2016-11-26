@@ -66,6 +66,17 @@ export function createMigrationManager(manager: Manager): MigrationManager {
             createdAt: formattedDate,
             modifiedAt: formattedDate
           }).save()
+        } else {
+          try {
+            const migration = await MigrationsRepo.findOneBy({
+              migration: key
+            })
+            if (migration) {
+              await migration.remove()
+            }
+          } catch(err) {
+            // Everything good. We just removed migrations table :)
+          }
         }
       }
       return true

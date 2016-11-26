@@ -4,7 +4,8 @@ import type {Connection} from 'mysql2'
 export type Model = {
   [key: string]: any,
   save(): Promise<Model>,
-  populate(data: {[key: string]: any}): void
+  populate(data: {[key: string]: any}): void,
+  remove(): Promise<number>
 }
 
 export type Criteria = {
@@ -29,7 +30,9 @@ export type Repository = {
   getMetadata(): Promise<{[key: string]: ColumnMeta}>,
   startQuery(alias: ?string): SelectQuery,
   hydrate(data: {[key: string]: any}, isFetched?: boolean): Model,
-  _save(changes: {[key: string]: any}, id?: number): Promise<number|string|null>
+  insert(changes: {[key: string]: any}): Promise<number>,
+  update(selector: number |  {[key: string]: any}, changes: {[key: string]: any}): Promise<number>,
+  remove(selector: number |  {[key: string]: any}): Promise<number>
 }
 
 export type Relation = {
@@ -47,9 +50,39 @@ export type SelectQuery = {
   tryInclude(fromAlias: string, columnName: string, alias?: string): SelectQuery,
   field(field: string): SelectQuery,
   where(condition: string, value?: any): SelectQuery,
+  criteria(criteria: {[key: string]: any}): SelectQuery,
   limit(limit: number): SelectQuery,
   offset(offset: number): SelectQuery,
-  toParam(): {text: string, values: Array<any>}
+  toParam(): {text: string, values: Array<any>},
+  execute(nestTables?: boolean): Promise<any>
+}
+
+export type InsertQuery = {
+  into(tableName: string): InsertQuery,
+  set(key: string, value: any): InsertQuery,
+  toParam(): {text: string, values: Array<any>},
+  execute(nestTables?: boolean): Promise<any>
+}
+
+export type UpdateQuery = {
+  table(tableName: string): UpdateQuery,
+  where(condition: string, value?: any): UpdateQuery,
+  criteria(criteria: {[key: string]: any}): UpdateQuery,
+  limit(limit: number): UpdateQuery,
+  offset(offset: number): UpdateQuery,
+  set(key: string, value: any): UpdateQuery,
+  toParam(): {text: string, values: Array<any>},
+  execute(nestTables?: boolean): Promise<any>
+}
+
+export type DeleteQuery = {
+  from(tableName: string, alias: ?string): DeleteQuery,
+  where(condition: string, value?: any): DeleteQuery,
+  criteria(criteria: {[key: string]: any}): DeleteQuery,
+  limit(limit: number): DeleteQuery,
+  offset(offset: number): DeleteQuery,
+  toParam(): {text: string, values: Array<any>},
+  execute(nestTables?: boolean): Promise<any>
 }
 
 export type MetadataManager = {
@@ -80,7 +113,13 @@ export type Manager = {
   setMetadataManager(manager: MetadataManager): void,
   getConnection(): Promise<Connection>,
   getConfiguration(): {[key: string]: any},
-  query(query: SelectQuery): Promise<*>,
+  query(query: {toParam(): {text: string, values: Array<any>}}): Promise<*>,
   nestQuery(query: SelectQuery): Promise<*>,
-  startQuery(): {select(): SelectQuery}
+  startQuery(): {
+    insert(): InsertQuery,
+    select(): SelectQuery,
+    update(): UpdateQuery,
+    delete(): DeleteQuery,
+    remove(): DeleteQuery
+  }
 }
