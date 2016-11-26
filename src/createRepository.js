@@ -54,9 +54,9 @@ export function createRepository(tableName: string, manager: Manager): Repositor
         .criteria(selector)
         .table(tableName)
       Object.keys(changes).forEach(key => query.set(key, changes[key]))
-      return query.execute().then(result => console.log(result))
+      return query.execute().then(result => result.affectedRows)
     },
-    delete(selector) {
+    remove(selector) {
       if (typeof selector !== 'object') {
         selector = {
           id: selector
@@ -64,7 +64,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       }
       const query = manager.startQuery().delete()
         .criteria(selector)
-      return query.execute().then(result => console.log(result))
+      return query.execute().then(result => result.affectedRows)
     }
   }
 

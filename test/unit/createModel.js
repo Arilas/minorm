@@ -31,10 +31,18 @@ describe('Unit', () => {
       const obj = {
         test: 'some'
       }
+      let insertCount = 0
       // $FlowIgnore fix for model
       createModel({
         insert(changes) {
-          assert.propertyVal(changes, 'test', 'some')
+          if (insertCount == 0) {
+            assert.propertyVal(changes, 'test', 'some')
+            insertCount = 1
+          } else {
+            assert.propertyVal(changes, 'id', 1)
+            assert.propertyVal(changes, 'test', 'some')
+            assert.propertyVal(changes, 'foo', 'bar')
+          }
           return Promise.resolve(1)
         },
         update(id, changes) {
@@ -43,7 +51,11 @@ describe('Unit', () => {
           assert.notProperty(changes, 'id')
           assert.notProperty(changes, 'test')
           assert.notProperty(changes, 'ololo')
-          return Promise.resolve(null)
+          return Promise.resolve(1)
+        },
+        remove(id) {
+          assert.equal(id, 1)
+          return Promise.resolve(1)
         },
         getMetadata() {
           return Promise.resolve(uMetadata)
@@ -56,6 +68,10 @@ describe('Unit', () => {
       })
       // $FlowIgnore fix for model
       await obj.save()
+      // $FlowIgnore fix for model
+      await obj.save()
+      // $FlowIgnore fix for model
+      await obj.remove()
       // $FlowIgnore fix for model
       await obj.save()
     })

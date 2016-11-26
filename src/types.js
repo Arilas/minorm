@@ -4,7 +4,8 @@ import type {Connection} from 'mysql2'
 export type Model = {
   [key: string]: any,
   save(): Promise<Model>,
-  populate(data: {[key: string]: any}): void
+  populate(data: {[key: string]: any}): void,
+  remove(): Promise<number>
 }
 
 export type Criteria = {
@@ -30,7 +31,8 @@ export type Repository = {
   startQuery(alias: ?string): SelectQuery,
   hydrate(data: {[key: string]: any}, isFetched?: boolean): Model,
   insert(changes: {[key: string]: any}): Promise<number>,
-  update(selector: number |  {[key: string]: any}, changes: {[key: string]: any}): Promise<*>
+  update(selector: number |  {[key: string]: any}, changes: {[key: string]: any}): Promise<number>,
+  remove(selector: number |  {[key: string]: any}): Promise<number>
 }
 
 export type Relation = {

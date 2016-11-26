@@ -20,11 +20,12 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
     }
     : target, {})
     if (Object.keys(changes).length || !model.id) {
-      if (model.id) {
+      if (isFetched && model.id) {
         await repository.update(model.id, changes)
       } else {
         const id = await repository.insert(changes)
         model.id = id
+        isFetched = true
       }
       origin = {
         ...model,
@@ -34,6 +35,14 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
   })
   definePrivate(model, 'populate', data => {
     Object.keys(data).forEach(key => model[key] = data[key])
+  })
+  definePrivate(model, 'remove', async () => {
+    if (isFetched) {
+      await repository.remove(model.id)
+      isFetched = false
+      origin = {}
+    }
+    return 1
   })
 
   return model

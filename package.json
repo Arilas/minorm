@@ -7,7 +7,9 @@
     "dist": "babel -d lib/ src/",
     "watch": "babel --watch -d lib/ src/",
     "prepublish": "npm run dist",
-    "test": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test"
+    "test": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test",
+    "test:integration": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/integration",
+    "test:unit": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/unit"
   },
   "repository": {
     "type": "git",

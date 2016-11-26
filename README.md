@@ -76,6 +76,8 @@ MinORM uses Repositories for working with tables. One table == one Repository. I
 * `create(data)` - adds Model methods to any object with structure
 * `hydrate(data, isFetched)` - helper method that attach Model methods to any object and accept argument that promise that this object is fetched from DB without changes.
 * `getMetadata()` - returns object with all table columns
+* `update(selector: number| Criteria, changes: Object): Promise<affectedRows>` - update single or many rows in table
+* `remove(selector: number| Criteria): Promise<affectedRows>` - remove single or many rows in table
 
 Criteria is a plain object with `key` is a column name, `value` is a simple string, number, etc or object with operator like `$in`, `$not`, `$like` and `$notIn`.
 
@@ -85,10 +87,11 @@ MinORM don't have any column mappers and/or hydrators. So Models is just result 
 
 * `save()` - UPDATE or INSERT data to DB
 * `populate(data)` - populate data to model
+* `remove()` - remove model in DB
 
 ## Debug
 
-`createManager` supports second parameter as logger, you can choose logger to use it can be simple `console`, `winston` or any other logger.
+`createManager` supports second parameter as logger, you can choose logger to use it can be simple `winston` or any other logger.
 
 ## Schema Tool and Migrations
 
