@@ -22,11 +22,11 @@ export function createFixtureManager(manager: Manager) {
       .save()
   }
 
-  function createUsers(count = 1) {
+  function createUsers(count: number = 1) {
     return Promise.all(range(0, count).map(createUser))
   }
 
-  function createPostToUser(id) {
+  function createPostToUser(id: number) {
     return manager.getRepository('posts')
       .create({
         title: 'post ' + randomString(),
@@ -41,16 +41,16 @@ export function createFixtureManager(manager: Manager) {
     return createPostToUser(user.id)
   }
 
-  function createPostsToUser(count = 1, id) {
+  function createPostsToUser(count: number = 1, id: number) {
     return Promise.all(range(0, count).map(createPostsToUser.bind(id)))
   }
 
-  async function createPosts(userCount = 1, postsPerUser = 1) {
+  async function createPosts(userCount?: number = 1, postsPerUser?: number = 1) {
     const users = await createUsers(usersCount)
     return Promise.all(users.map(user => createPostsToUser(postsPerUser, user.id)))
   }
 
-  function createPostComment(postId, userId) {
+  function createPostComment(postId: number, userId: number) {
     return manager.getRepository('comments')
       .create({
         creator_id: userId,
@@ -60,12 +60,12 @@ export function createFixtureManager(manager: Manager) {
       .save()
   }
 
-  async function createPostCommentWithUser(postId) {
+  async function createPostCommentWithUser(postId: number) {
     const user = await createUser()
     return createPostComment(postId, user.id)
   }
 
-  async function createPostWithComments(count = 1) {
+  async function createPostWithComments(count: number = 1) {
     const post = await createPost()
     return Promise.all(range(0, count).map(createPostCommentWithUser.bind(post.id)))
   }

@@ -4,12 +4,24 @@ import {createModel} from '../../src/createModel'
 
 const uMetadata = {
   id: {
+    tableName: 'u',
+    dataType: '',
+    isNullable: 0,
+    dataLength: 0,
     columnName: 'id'
   },
   foo: {
+    tableName: 'u',
+    dataType: '',
+    isNullable: 0,
+    dataLength: 0,
     columnName: 'some'
   },
   test: {
+    tableName: 'u',
+    dataType: '',
+    isNullable: 0,
+    dataLength: 0,
     columnName: 'test'
   }
 }
@@ -34,7 +46,6 @@ describe('Unit', () => {
           return Promise.resolve(null)
         },
         getMetadata() {
-          // $FlowIgnore fix for model
           return Promise.resolve(uMetadata)
         }
       }, obj, false) // $FlowIgnore fix for model

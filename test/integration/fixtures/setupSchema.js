@@ -1,7 +1,7 @@
 /** @flow */
 import type {SchemaTool} from '../../../src/schema/types'
 
-export async function setupSchema(schemaTool: SchemaTool, init = true) {
+export async function setupSchema(schemaTool: SchemaTool, init: boolean = true) {
   schemaTool.setSchemaInit({
     up(schema) {
       schema.table('users', ctx => {

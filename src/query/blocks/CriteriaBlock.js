@@ -1,8 +1,9 @@
 /** @flow */
 import Squel from 'squel'
+import type {Criteria} from '../../types'
 
 export default class CriteriaBlock extends Squel.cls.WhereBlock {
-  criteria(criteria) {
+  criteria(criteria: Criteria) {
     Object.keys(criteria).map(key => {
       if (
         ['string', 'number'].indexOf(typeof criteria[key]) != -1
