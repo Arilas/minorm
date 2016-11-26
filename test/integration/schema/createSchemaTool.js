@@ -1,10 +1,10 @@
 /** @flow */
-import {createManager} from '../../src/index'
-import {createSchemaTool} from '../../src/schema'
+import {createManager} from '../../../src/index'
+import {createSchemaTool} from '../../../src/schema'
 import Config from '../config'
 
-describe('Smoke', () => {
-  describe('Schema Tool', () => {
+describe('Integration', () => {
+  describe('Schema', () => {
     it('should init Database schema', async function() {
       this.timeout(10000)
       const manager = createManager(Config.connection)
@@ -27,7 +27,7 @@ describe('Smoke', () => {
             ctx.column('creator_id').int().unsigned()
             ctx.column('createdAt').date()
             ctx.index('title')
-            ctx.ref('creator_id', 'users', 'id')
+            ctx.ref('creator_id', 'users', 'id', 'FK_creator_id')
           })
         },
         down(schema) {

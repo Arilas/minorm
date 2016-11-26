@@ -2,6 +2,10 @@
 import {createColumnContext} from './createColumnContext'
 import type {SchemaToolCreateTableContext, SchemaToolGateway} from './types'
 
+function randomString() {
+  return Math.random().toString(36).substring(7)
+}
+
 function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableContext {
   if (!ctx) {
     throw new Error('Gateway API must be specified')
@@ -33,7 +37,7 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
     },
     ref(columnName: string, referencedTableName: string, referencedColumnName: string, indexName = null) {
       if (!indexName) {
-        indexName = `FK_${columnName}`
+        indexName = `FK_${columnName}_${randomString()}`
       }
       alterAdd(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
     },
