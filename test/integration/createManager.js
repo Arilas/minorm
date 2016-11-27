@@ -30,6 +30,42 @@ describe('Integration', () => {
       assert.isNumber(creator.id)
     })
 
+    it('should update models', async () => {
+      const user = await fixtureManager.createUser()
+      assert.isNumber(user.id)
+      user.populate({
+        login: 'testUser',
+        ololo: 'da'
+      })
+      await user.save()
+      const fetchedUser = await manager.getRepository('users').find(user.id)
+      if (!fetchedUser) {
+        throw new Error('User must be in database')
+      }
+      assert.equal(user.login, fetchedUser.login)
+      assert.equal(user.password, fetchedUser.password)
+      assert.property(user, 'ololo')
+      assert.notProperty(fetchedUser, 'ololo')
+    })
+
+    it('should remove and insert models', async () => {
+      const user = await fixtureManager.createUser()
+      assert.isNumber(user.id)
+      await user.remove()
+      assert.isNumber(user.id)
+      const fetchedUser = await manager.getRepository('users').find(user.id)
+      assert.isNull(fetchedUser)
+      await user.save()
+      const existUser = await manager.getRepository('users').find(user.id)
+      if (!existUser) {
+        throw new Error('User must be in database')
+      }
+      assert.isNotNull(existUser)
+      assert.equal(user.id, existUser.id)
+      assert.equal(user.login, existUser.login)
+      assert.equal(user.password, existUser.password)
+    })
+
     afterEach(async function() {
       this.timeout(5000)
       await schemaTool.dropSchema()

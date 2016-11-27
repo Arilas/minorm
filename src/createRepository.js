@@ -63,6 +63,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
         }
       }
       const query = manager.startQuery().delete()
+        .from(tableName)
         .criteria(selector)
       return query.execute().then(result => result.affectedRows)
     }
