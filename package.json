@@ -1,6 +1,6 @@
 {
   "name": "minorm",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "MinORM - minimal MySQL ORM with performance as the Goal",
   "main": "lib/index.js",
   "scripts": {
@@ -42,8 +42,8 @@
     "nyc": "^8.3.0"
   },
   "dependencies": {
-    "mysql2": "^1.1.0",
-    "squel": "^5.4.3"
+    "mysql2": "^1.1.2",
+    "squel": "^5.5.0"
   },
   "engines": {
     "node": ">=6.0"

@@ -9,7 +9,6 @@ const MIGRATIONS_QUERY = `SELECT migration FROM ${MINORM_MIGRATIONS_TABLE}`
 type MigrationsMap = Map<string, Migration>
 
 export function createMigrationManager(manager: Manager): MigrationManager {
-  const logger = manager.getLogger()
   const initializers:MigrationsMap = new Map()
   const migrations: MigrationsMap = new Map()
 
