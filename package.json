@@ -42,8 +42,8 @@
     "nyc": "^8.3.0"
   },
   "dependencies": {
-    "mysql2": "^1.1.0",
-    "squel": "^5.4.3"
+    "mysql2": "^1.1.2",
+    "squel": "^5.5.0"
   },
   "engines": {
     "node": ">=6.0"
