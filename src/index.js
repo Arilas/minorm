@@ -8,3 +8,7 @@ export {
 export {
   createManager
 } from './createManager'
+export {
+  createSchemaTool
+} from './schema'
+
