@@ -1,7 +1,7 @@
 {
   "name": "minorm",
   "version": "0.1.0",
-  "description": "MinORM - minimal MySQL ORM with performance as the Goal",
+  "description": "MinORM - Light high-performance ORM for MySQL",
   "main": "lib/index.js",
   "scripts": {
     "dist": "babel -d lib/ src/",
