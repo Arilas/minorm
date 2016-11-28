@@ -125,14 +125,8 @@ export function createTableGateway(tableName: string): SchemaToolGateway {
   }
 }
 
-export function createTableBuilder(tableName: string, callback: Function) {
+export function createTableBuilder(tableName: string, callback: Function, isNew: boolean = true) {
   const wrapper = createTableGateway(tableName)
-  callback(createTableContext(wrapper.getApi()))
-  return wrapper
-}
-
-export function useTableBuilder(tableName: string, callback: Function) {
-  const wrapper = createTableGateway(tableName)
-  callback(createTableContext(wrapper.getApi(), false))
+  callback(createTableContext(wrapper.getApi(), isNew))
   return wrapper
 }
