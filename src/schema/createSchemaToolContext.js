@@ -1,7 +1,8 @@
 /** @flow */
 
-import {createTableBuilder, useTableBuilder} from './tablebuilder'
+import {createTableBuilder} from './tablebuilder'
 import type {SchemaToolGateway, SchemaToolContext} from './types'
+import type {MetadataManager} from '../types'
 
 type CreateContext = {
   context: SchemaToolContext,
@@ -11,20 +12,17 @@ type CreateContext = {
   getDropAlters(): Array<string>
 }
 
-export function createSchemaToolContext(): CreateContext {
+export function createSchemaToolContext(metadataManager: MetadataManager): CreateContext {
   const gateways: Array<SchemaToolGateway> = []
+  function getTableGateway(tableName, callback) {
+    const gateway = createTableBuilder(tableName, callback, !metadataManager.hasTable(tableName))
+    gateways.push(gateway)
+    return gateway
+  }
   return {
     context: {
-      table(tableName, callback): SchemaToolGateway {
-        const gateway = createTableBuilder(tableName, callback)
-        gateways.push(gateway)
-        return gateway
-      },
-      use(tableName: string, callback): SchemaToolGateway {
-        const gateway = useTableBuilder(tableName, callback)
-        gateways.push(gateway)
-        return gateway
-      },
+      table: getTableGateway,
+      use: getTableGateway,
       dropTable(tableName): SchemaToolGateway {
         const gateway = {
           getAddQuery() {

@@ -45,7 +45,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
     async execute(migrations, method) {
       const MigrationsRepo = manager.getRepository(MINORM_MIGRATIONS_TABLE)
       for(const [key, handler] of migrations) {
-        const {context, getAddQueries, getDropQueries, getAddAlters, getDropAlters} = createSchemaToolContext()
+        const {context, getAddQueries, getDropQueries, getAddAlters, getDropAlters} = createSchemaToolContext(manager.getMetadataManager())
         handler[method](context)
         await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
         // Because some of people don't drop foreign keys before and order is matter
