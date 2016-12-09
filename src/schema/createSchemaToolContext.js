@@ -66,6 +66,27 @@ export function createSchemaToolContext(metadataManager: MetadataManager): Creat
             ]
           }
         })
+      },
+      addSql(sql: string): void {
+        gateways.push({
+          getAddQuery() {
+            return []
+          },
+          getDropQuery() {
+            return []
+          },
+          getDropAlters() {
+            return []
+          },
+          getApi() {
+            return null
+          },
+          getAddAlters() {
+            return [
+              sql
+            ]
+          }
+        })
       }
     },
     getAddQueries(): Array<string> {

@@ -11,7 +11,8 @@ export type SchemaToolContext = {
   table(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   use(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   dropTable(tableName: string): SchemaToolGateway,
-  put(tableName: string, entities: Array<{[key: string]: any}>): void
+  put(tableName: string, entities: Array<{[key: string]: any}>): void,
+  addSql(sql: string): void
 }
 
 export type SchemaToolGatewayApi = {
