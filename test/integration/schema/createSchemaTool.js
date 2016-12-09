@@ -29,6 +29,16 @@ describe('Integration', () => {
             ctx.index('title')
             ctx.ref('creator_id', 'users', 'id', 'FK_creator_id')
           })
+          schema.put('users', [
+            {
+              login: 'test',
+              password: 'test'
+            },
+            {
+              login: 'test2',
+              password: 'test2'
+            }
+          ])
         },
         down(schema) {
           // Will be executed correctly cause we remove FK
