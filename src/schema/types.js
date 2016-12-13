@@ -33,6 +33,7 @@ export type SchemaToolGateway = {
 export type SchemaToolCreateTableContext = {
   column(columnName: string): SchemaToolColumnContext,
   id(): SchemaToolColumnContext,
+  refColumn(columnName: string, targetTableName: string, targetColumnName?: string): SchemaToolColumnContext,
   createdAndModified(): SchemaToolColumnContext,
   dropColumn(columnName: string): void,
   dropIndex(indexName: string): void,
@@ -61,6 +62,7 @@ export type SchemaToolColumnContext = {
   primary(): SchemaToolColumnContext,
   unsigned(): SchemaToolColumnContext,
   autoIncrement(): SchemaToolColumnContext,
+  defaultValue(value: any): SchemaToolColumnContext,
   build(): string,
   toString(): string
 }

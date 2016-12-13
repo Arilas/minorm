@@ -19,6 +19,10 @@ function createTableContext(ctx, isNew: boolean = true, tableName: string): Sche
     id() {
       return this.column('id').int().unsigned().primary().autoIncrement()
     },
+    refColumn(columnName, targetTableName, targetColumnName = 'id') {
+      this.ref(columnName, targetTableName, targetColumnName)
+      return this.column(columnName).int().unsigned()
+    },
     createdAndModified() {
       this.column('createdAt').dateTime()
       return this.column('modifiedAt').dateTime()
