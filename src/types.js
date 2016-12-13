@@ -107,6 +107,7 @@ export type Manager = {
   connect(): void,
   getRepository(tableName: string): Repository,
   extendRepository(tableName: string, callback: (repo: Repository) => Repository): void,
+  setRepositoryFactory(factory: (tableName: string, manager: Manager) => Repository): void,
   getLogger(): ?typeof console,
   ready(): Promise<any>,
   getPool(): Pool,
