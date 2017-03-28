@@ -68,6 +68,39 @@ describe('Integration', () => {
       assert.equal(user.password, existUser.password)
     })
 
+    it('should save extended repository', () => {
+      manager.extendRepository('users', repo => ({
+        ...repo,
+        findById(id: number) {
+          return repo.startQuery('user')
+            .where('id = ?', id)
+            .execute(false)
+        }
+      }))
+      const repo = manager.getRepository('users')
+      assert.property(repo, 'findById')
+      // $FlowIgnore
+      assert.isFunction(repo.findById)
+    })
+
+    it('should add ability to replace repository factory', () => {
+      manager.setRepositoryFactory((tableName, manager) => ({
+        getTableName() {
+          return tableName
+        },
+        getManager() {
+          return manager
+        }
+      }))
+      const repo = manager.getRepository('users')
+      assert.property(repo, 'getTableName')
+      assert.property(repo, 'getManager')
+      // $FlowIgnore
+      assert.strictEqual(repo.getManager(), manager)
+      // $FlowIgnore
+      assert.equal(repo.getTableName(), 'users')
+    })
+
     afterEach(async function() {
       this.timeout(10000)
       await schemaTool.dropSchema()
