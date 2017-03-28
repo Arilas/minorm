@@ -10,7 +10,9 @@ export type SchemaTool = {
 export type SchemaToolContext = {
   table(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   use(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
-  dropTable(tableName: string): SchemaToolGateway
+  dropTable(tableName: string): SchemaToolGateway,
+  put(tableName: string, entities: Array<{[key: string]: any}>): void,
+  addSql(sql: string): void
 }
 
 export type SchemaToolGatewayApi = {
@@ -31,10 +33,15 @@ export type SchemaToolGateway = {
 export type SchemaToolCreateTableContext = {
   column(columnName: string): SchemaToolColumnContext,
   id(): SchemaToolColumnContext,
+  refColumn(columnName: string, targetTableName: string, targetColumnName?: string): SchemaToolColumnContext,
   createdAndModified(): SchemaToolColumnContext,
   dropColumn(columnName: string): void,
   dropIndex(indexName: string): void,
-  dropRef(foreignKey: string): void,
+  dropRef(indexName: string): void,
+  dropColumnRef(columnName: string): void,
+  dropColumnUnique(columnName: string): void,
+  dropColumnIndex(columnName: string): void,
+  dropColumnKey(columnName: string): void,
   ref(columnName: string, referencedTableName: string, referencedColumnName: string): void,
   unique(columnName: string, indexName?: string): void,
   index(columnName: string, indexName?: string): void,
@@ -55,6 +62,7 @@ export type SchemaToolColumnContext = {
   primary(): SchemaToolColumnContext,
   unsigned(): SchemaToolColumnContext,
   autoIncrement(): SchemaToolColumnContext,
+  defaultValue(value: any): SchemaToolColumnContext,
   build(): string,
   toString(): string
 }

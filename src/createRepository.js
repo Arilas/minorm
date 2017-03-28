@@ -45,6 +45,9 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       return query.execute().then(result => result.insertId)
     },
     update(selector, changes) {
+      if (!selector || !changes) {
+        throw new Error('Please check that you provide selector and changes for update')
+      }
       if (typeof selector !== 'object') {
         selector = {
           id: selector
@@ -57,6 +60,9 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       return query.execute().then(result => result.affectedRows)
     },
     remove(selector) {
+      if (!selector) {
+        throw new Error('Please provide selector for remove')
+      }
       if (typeof selector !== 'object') {
         selector = {
           id: selector

@@ -11,7 +11,7 @@ describe('Integration', () => {
     let schemaTool
     const fixtureManager = createFixtureManager(manager)
     beforeEach(async function () {
-      this.timeout(5000)
+      this.timeout(10000)
       manager.connect()
       await manager.ready()
       schemaTool = createSchemaTool(manager)
@@ -22,6 +22,8 @@ describe('Integration', () => {
       await fixtureManager.createPost()
       const [{post, creator}] = await manager.startQuery().select()
         .from('posts', 'post')
+        .field('post.*')
+        .field('creator.*')
         .include('post', 'creator_id')
         .execute(true)
       assert.isObject(post)
@@ -67,7 +69,7 @@ describe('Integration', () => {
     })
 
     afterEach(async function() {
-      this.timeout(5000)
+      this.timeout(10000)
       await schemaTool.dropSchema()
       manager.clear()
     })
