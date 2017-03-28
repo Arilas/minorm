@@ -4,6 +4,7 @@ import {createManager} from '../../src'
 import {createSchemaTool} from '../../src/schema'
 import {setupSchema, createFixtureManager} from './fixtures'
 import Config from './config'
+import type {Repository} from '../../src/types'
 
 describe('Integration', () => {
   describe('createManager', () => {
@@ -84,7 +85,8 @@ describe('Integration', () => {
     })
 
     it('should add ability to replace repository factory', () => {
-      manager.setRepositoryFactory((tableName, manager) => ({
+      // $FlowIgnore
+      manager.setRepositoryFactory((tableName, manager): Repository => ({
         getTableName() {
           return tableName
         },
