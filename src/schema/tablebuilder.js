@@ -2,17 +2,14 @@
 import {createColumnContext} from './createColumnContext'
 import type {SchemaToolCreateTableContext, SchemaToolGateway} from './types'
 
-function randomString() {
-  return Math.random().toString(36).substring(7)
-}
-
-function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableContext {
+function createTableContext(ctx, isNew: boolean = true, tableName: string): SchemaToolCreateTableContext {
   if (!ctx) {
     throw new Error('Gateway API must be specified')
   }
   const lineAdd = isNew ? ctx.lineAdd : ctx.alterAdd
   const alterDrop = ctx.alterDrop
   const alterAdd = ctx.alterAdd
+  const lineDrop = ctx.lineDrop
   return {
     column(columnName) {
       const column = createColumnContext(columnName, isNew)
@@ -22,6 +19,10 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
     id() {
       return this.column('id').int().unsigned().primary().autoIncrement()
     },
+    refColumn(columnName, targetTableName, targetColumnName = 'id') {
+      this.ref(columnName, targetTableName, targetColumnName)
+      return this.column(columnName).int().unsigned()
+    },
     createdAndModified() {
       this.column('createdAt').dateTime()
       return this.column('modifiedAt').dateTime()
@@ -30,32 +31,44 @@ function createTableContext(ctx, isNew: boolean = true): SchemaToolCreateTableCo
       alterDrop(`COLUMN \`${columnName}\``)
     },
     dropIndex(indexName: string) {
-      alterDrop(`INDEX \`${indexName}\``)
+      lineDrop(`DROP INDEX \`${indexName}\` ON \`${tableName}\``)
     },
-    dropRef(foreignKey: string) {
-      alterDrop(`FOREIGN KEY \`${foreignKey}\``)
+    dropRef(indexName: string) {
+      alterDrop(`FOREIGN KEY \`${indexName}\``)
+    },
+    dropColumnRef(columnName: string) {
+      alterDrop(`FOREIGN KEY \`FK_${tableName}_${columnName}\``)
+    },
+    dropColumnUnique(columnName: string) {
+      lineDrop(`DROP INDEX \`UNI_${tableName}_${columnName}\` ON \`${tableName}\``)
+    },
+    dropColumnIndex(columnName: string) {
+      lineDrop(`DROP INDEX \`IDX_${tableName}_${columnName}\` ON \`${tableName}\``)
+    },
+    dropColumnKey(columnName: string) {
+      lineDrop(`DROP INDEX \`KEY_${tableName}_${columnName}\` ON \`${tableName}\``)
     },
     ref(columnName: string, referencedTableName: string, referencedColumnName: string, indexName = null) {
       if (!indexName) {
-        indexName = `FK_${columnName}_${randomString()}`
+        indexName = `FK_${tableName}_${columnName}`
       }
       alterAdd(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
     },
     unique(columnName, indexName = null) {
       if (!indexName) {
-        indexName = 'IDX_' + columnName
+        indexName = `UNI_${tableName}_${columnName}`
       }
       lineAdd(`UNIQUE KEY \`${indexName}\` (\`${columnName}\`)`)
     },
     index(columnName, indexName = null) {
       if (!indexName) {
-        indexName = 'IDX_' + columnName
+        indexName = `IDX_${tableName}_${columnName}`
       }
       lineAdd(`INDEX \`${indexName}\` (\`${columnName}\`)`)
     },
     key(columnName, indexName = null) {
       if (!indexName) {
-        indexName = 'IDX_' + columnName
+        indexName = `KEY_${tableName}_${columnName}`
       }
       lineAdd(`KEY \`${indexName}\` (\`${columnName}\`)`)
     }
@@ -127,6 +140,6 @@ export function createTableGateway(tableName: string): SchemaToolGateway {
 
 export function createTableBuilder(tableName: string, callback: Function, isNew: boolean = true) {
   const wrapper = createTableGateway(tableName)
-  callback(createTableContext(wrapper.getApi(), isNew))
+  callback(createTableContext(wrapper.getApi(), isNew, tableName))
   return wrapper
 }

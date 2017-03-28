@@ -52,6 +52,10 @@ export function createColumnContext(columnName: string, isNew?: boolean = true):
       autoIncrement = true
       return this
     },
+    defaultValue(value) {
+      defaultValue = value
+      return this
+    },
     build() {
       const typePart = length ? `${type}(${length})` : type
       const unsignedPart = unsigned ? ' UNSIGNED' : ''

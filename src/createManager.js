@@ -17,6 +17,7 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
    */
   let repos = {}
   let metadataManager: MetadataManager
+  let reposirotyFactory = createRepository
 
   function getPool() {
     if (!pool) {
@@ -46,10 +47,16 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
     },
     getRepository(tableName) {
       if (!repos.hasOwnProperty(tableName)) {
-        repos[tableName] = createRepository(tableName, this)
+        repos[tableName] = reposirotyFactory(tableName, this)
       }
 
       return repos[tableName]
+    },
+    setRepositoryFactory(factory) {
+      if (typeof factory != 'function') {
+        throw new Error ('Repository Factory must be a function')
+      }
+      reposirotyFactory = factory
     },
     getLogger() {
       return logger

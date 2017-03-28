@@ -1,6 +1,7 @@
 /** @flow */
 
 import {createTableBuilder} from './tablebuilder'
+import insert from '../query/insert'
 import type {SchemaToolGateway, SchemaToolContext} from './types'
 import type {MetadataManager} from '../types'
 
@@ -43,6 +44,49 @@ export function createSchemaToolContext(metadataManager: MetadataManager): Creat
         }
         gateways.push(gateway)
         return gateway
+      },
+      put(tableName, entities): void {
+        gateways.push({
+          getAddQuery() {
+            return []
+          },
+          getDropQuery() {
+            return []
+          },
+          getDropAlters() {
+            return []
+          },
+          getApi() {
+            return null
+          },
+          getAddAlters() {
+            return [
+              // $FlowIgnore
+              insert({}).into(tableName).setFieldsRows(entities).toString()
+            ]
+          }
+        })
+      },
+      addSql(sql: string): void {
+        gateways.push({
+          getAddQuery() {
+            return []
+          },
+          getDropQuery() {
+            return []
+          },
+          getDropAlters() {
+            return []
+          },
+          getApi() {
+            return null
+          },
+          getAddAlters() {
+            return [
+              sql
+            ]
+          }
+        })
       }
     },
     getAddQueries(): Array<string> {

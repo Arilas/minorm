@@ -60,6 +60,8 @@ export type SelectQuery = {
 export type InsertQuery = {
   into(tableName: string): InsertQuery,
   set(key: string, value: any): InsertQuery,
+  setFields(entity: {[key: string]: any}): InsertQuery,
+  setFieldsRows(entities: Array<{[key: string]: any}>): InsertQuery,
   toParam(): {text: string, values: Array<any>},
   execute(nestTables?: boolean): Promise<any>
 }
@@ -105,6 +107,7 @@ export type Manager = {
   connect(): void,
   getRepository(tableName: string): Repository,
   extendRepository(tableName: string, callback: (repo: Repository) => Repository): void,
+  setRepositoryFactory(factory: (tableName: string, manager: Manager) => Repository): void,
   getLogger(): ?typeof console,
   ready(): Promise<any>,
   getPool(): Pool,
