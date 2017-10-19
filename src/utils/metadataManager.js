@@ -1,5 +1,5 @@
 /** @flow */
-import type {Relation, Manager, MetadataManager} from '../types'
+import type {Manager, MetadataManager} from '../types'
 
 const TABLE_COLUMNS_META_QUERY = `
   SELECT 

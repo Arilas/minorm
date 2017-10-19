@@ -1,10 +1,7 @@
 /** @flow */
 import {createRepository} from './createRepository'
 import {connect} from './connectionManager'
-import insert from './query/insert'
-import select from './query/select'
-import update from './query/update'
-import remove from './query/delete'
+import {makeQueryBuilder} from './query'
 import createMetadataManager from './utils/metadataManager'
 import type {Manager, MetadataManager} from './types'
 
@@ -96,13 +93,7 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
       }, values)
     },
     startQuery() {
-      return {
-        insert: options => insert(this, options),
-        update: options => update(this, options),
-        select: options => select(this, options),
-        delete: options => remove(this, options),
-        remove: options => remove(this, options)
-      }
+      return makeQueryBuilder(this)
     }
   }
 }
