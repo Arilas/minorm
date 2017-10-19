@@ -1,5 +1,5 @@
 /** @flow */
-import {createTableBuilder} from '../../../src/schema/tablebuilder'
+import {createTableBuilder} from '../../../src/schema/gateways/tableGateway'
 import {assert} from 'chai'
 
 describe('Unit', () => {

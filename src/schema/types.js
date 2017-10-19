@@ -11,8 +11,8 @@ export type SchemaToolContext = {
   table(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   use(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   dropTable(tableName: string): SchemaToolGateway,
-  put(tableName: string, entities: Array<{[key: string]: any}>): void,
-  addSql(sql: string): void
+  put(tableName: string, entities: Array<{[key: string]: any}>): SchemaToolGateway,
+  addSql(sql: string): SchemaToolGateway
 }
 
 export type SchemaToolGatewayApi = {
@@ -23,11 +23,13 @@ export type SchemaToolGatewayApi = {
 }
 
 export type SchemaToolGateway = {
-  getAddQuery(): Array<string>,
-  getDropQuery(): Array<string>,
-  getAddAlters(): Array<string>,
-  getDropAlters(): Array<string>,
-  getApi(): ?SchemaToolGatewayApi
+  getApi(): ?SchemaToolGatewayApi,
+  getPreQueries(): Array<string>,
+  getAddQueries(): Array<string>,
+  getDropQueries(): Array<string>,
+  getAddAlterQueries(): Array<string>,
+  getDropAlterQueries(): Array<string>,
+  getPostQueries(): Array<string>
 }
 
 export type SchemaToolCreateTableContext = {

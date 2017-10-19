@@ -1,6 +1,8 @@
 /** @flow */
-import {createColumnContext} from './createColumnContext'
-import type {SchemaToolCreateTableContext, SchemaToolGateway} from './types'
+import { createBaseGateway } from './createBaseGateway'
+import type {SchemaToolGateway, SchemaToolCreateTableContext} from '../types'
+import type {MetadataManager} from '../../types'
+import {createColumnContext} from './table/createColumnContext'
 
 function createTableContext(ctx, isNew: boolean = true, tableName: string): SchemaToolCreateTableContext {
   if (!ctx) {
@@ -101,6 +103,7 @@ export function createTableGateway(tableName: string): SchemaToolGateway {
     }
   }
   return {
+    ...createBaseGateway(),
     getApi() {
       return api
     },
@@ -113,7 +116,7 @@ export function createTableGateway(tableName: string): SchemaToolGateway {
       ]
       return blocks.join('\n')
     },
-    getAddQuery() {
+    getAddQueries() {
       if (!parts.lines.add.length) {
         return []
       }
@@ -126,13 +129,13 @@ export function createTableGateway(tableName: string): SchemaToolGateway {
         blocks.join('\n')
       ]
     },
-    getDropQuery() {
+    getDropQueries() {
       return parts.lines.drop.map(line => line.toString())
     },
-    getAddAlters() {
+    getAddAlterQueries() {
       return parts.alters.add.map(line => `ALTER TABLE ${tableName} ADD ${line.toString()}`)
     },
-    getDropAlters() {
+    getDropAlterQueries() {
       return parts.alters.drop.map(line => `ALTER TABLE ${tableName} DROP ${line.toString()}`)
     }
   }
@@ -142,4 +145,8 @@ export function createTableBuilder(tableName: string, callback: Function, isNew:
   const wrapper = createTableGateway(tableName)
   callback(createTableContext(wrapper.getApi(), isNew, tableName))
   return wrapper
+}
+
+export function tableGateway(metadataManager: MetadataManager): (tableName: string, callback: Function) => SchemaToolGateway {
+  return (tableName, callback) => createTableBuilder(tableName, callback, !metadataManager.hasTable(tableName))
 }

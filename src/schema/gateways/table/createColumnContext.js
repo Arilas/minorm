@@ -1,5 +1,5 @@
 /** @flow */
-import type {SchemaToolColumnContext} from './types'
+import type {SchemaToolColumnContext} from '../../types'
 
 export const TYPE_VARCHAR = 'VARCHAR'
 export const TYPE_TEXT = 'TEXT'

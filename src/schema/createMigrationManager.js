@@ -1,5 +1,5 @@
 /** @flow */
-import {createSchemaToolContext} from './createSchemaToolContext'
+import {createMigrationContext} from './createMigrationContext'
 import {MINORM_MIGRATIONS_TABLE} from './constants'
 import type {MigrationManager, Migration} from './types'
 import type {Manager} from '../types'
@@ -45,8 +45,9 @@ export function createMigrationManager(manager: Manager): MigrationManager {
     async execute(migrations, method) {
       const MigrationsRepo = manager.getRepository(MINORM_MIGRATIONS_TABLE)
       for(const [key, handler] of migrations) {
-        const {context, getAddQueries, getDropQueries, getAddAlters, getDropAlters} = createSchemaToolContext(manager.getMetadataManager())
+        const {context, getPreQueries, getAddQueries, getDropQueries, getAddAlters, getDropAlters, getPostQueries} = createMigrationContext(manager.getMetadataManager())
         handler[method](context)
+        await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
         await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
         // Because some of people don't drop foreign keys before and order is matter
         for(const line of getDropQueries()) {
@@ -54,6 +55,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
         }
         await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
         await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
+        await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
         manager.clear()
         manager.connect()
         await manager.ready()
