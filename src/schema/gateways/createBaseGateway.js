@@ -7,6 +7,9 @@ export function createBaseGateway(): SchemaToolGateway {
     getApi() {
       return null
     },
+    getAction() {
+      return null
+    },
     getPreQueries() {
       return []
     },

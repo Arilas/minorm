@@ -24,6 +24,7 @@ export type SchemaToolGatewayApi = {
 
 export type SchemaToolGateway = {
   getApi(): ?SchemaToolGatewayApi,
+  getAction(): ?Object,
   getPreQueries(): Array<string>,
   getAddQueries(): Array<string>,
   getDropQueries(): Array<string>,

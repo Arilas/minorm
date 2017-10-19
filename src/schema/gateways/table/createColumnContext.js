@@ -1,5 +1,6 @@
 /** @flow */
 import type {SchemaToolColumnContext} from '../../types'
+import type {MetadataManager} from '../../../types'
 
 export const TYPE_VARCHAR = 'VARCHAR'
 export const TYPE_TEXT = 'TEXT'
@@ -10,7 +11,7 @@ export const TYPE_DATETIME = 'DATETIME'
 export const TYPE_TIME = 'TIME'
 export const TYPE_TINYINT = 'TINYINT'
 
-export function createColumnContext(columnName: string, isNew?: boolean = true): SchemaToolColumnContext {
+export function createColumnContext(columnName: string, metadataManager: MetadataManager, tableName: string): SchemaToolColumnContext {
   let type = TYPE_VARCHAR
   let nullable = true
   let primary = false
@@ -63,7 +64,7 @@ export function createColumnContext(columnName: string, isNew?: boolean = true):
       const incrementPart = autoIncrement ? ' AUTO_INCREMENT' : ''
       const nullablePart = !nullable ? ' NOT NULL' : ''
       const primaryPart = primary ? ' PRIMARY KEY' : ''
-      return `${!isNew? 'COLUMN ' : ''}\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
+      return `${metadataManager.hasTable(tableName) ? 'COLUMN ' : ''}\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
     },
     toString() {
       return this.build()

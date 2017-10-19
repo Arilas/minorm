@@ -23,12 +23,12 @@ export function registerGateway(name: string, gatewayCreator: () => SchemaToolGa
 
 type ContextWrapper = {
   context: SchemaToolContext,
-  gateways: Array<SchemaToolGateway>
+  getGateways(): Array<SchemaToolGateway>
 }
 
 export function createContext(metadataManager: MetadataManager): ContextWrapper {
   const context = {}
-  const gateways = []
+  let gateways = []
   for (const name of Object.keys(registeredGateways)) {
     // $FlowIgnore this is not what Flow should control in this application. It's abstract API
     const handler = registeredGateways[name](metadataManager)
@@ -45,6 +45,11 @@ Please check your arguments: ${JSON.stringify(opts, null, ' ')}`)
   }
   return {
     context,
-    gateways
+    getGateways() {
+      return gateways
+    },
+    reset() {
+      gateways = []
+    }
   }
 }
