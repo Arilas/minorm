@@ -117,8 +117,7 @@ describe('Integration', () => {
             }
           ])
           yield schema.asyncExecute()
-          const users = yield schema.asyncQuery('SELECT * FROM users WHERE login = \'test\'')
-          console.log(JSON.stringify(users, null, '  '))
+          const [users] = yield schema.asyncQuery('SELECT * FROM users WHERE login = \'test\'')
           assert.lengthOf(users, 1)
           schema.table('posts', ctx => {
             ctx.column('id').int().unsigned().primary().autoIncrement()
