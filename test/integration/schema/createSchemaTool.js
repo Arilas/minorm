@@ -27,8 +27,18 @@ describe('Integration', () => {
             ctx.column('creator_id').int().unsigned()
             ctx.column('createdAt').date()
             ctx.index('title')
-            ctx.ref('creator_id', 'users', 'id', 'FK_creator_id')
+            ctx.ref('creator_id', 'users', 'id')
           })
+          schema.put('users', [
+            {
+              login: 'test',
+              password: 'test'
+            },
+            {
+              login: 'test2',
+              password: 'test2'
+            }
+          ])
         },
         down(schema) {
           // Will be executed correctly cause we remove FK
@@ -36,7 +46,7 @@ describe('Integration', () => {
           schema.dropTable('posts')
           // Must be executed before DROP TABLE
           schema.use('posts', table => {
-            table.dropRef('FK_creator_id')
+            table.dropColumnRef('creator_id')
           })
         }
       })

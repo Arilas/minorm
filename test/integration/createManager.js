@@ -4,6 +4,7 @@ import {createManager} from '../../src'
 import {createSchemaTool} from '../../src/schema'
 import {setupSchema, createFixtureManager} from './fixtures'
 import Config from './config'
+import type {Repository} from '../../src/types'
 
 describe('Integration', () => {
   describe('createManager', () => {
@@ -11,7 +12,7 @@ describe('Integration', () => {
     let schemaTool
     const fixtureManager = createFixtureManager(manager)
     beforeEach(async function () {
-      this.timeout(5000)
+      this.timeout(10000)
       manager.connect()
       await manager.ready()
       schemaTool = createSchemaTool(manager)
@@ -22,6 +23,8 @@ describe('Integration', () => {
       await fixtureManager.createPost()
       const [{post, creator}] = await manager.startQuery().select()
         .from('posts', 'post')
+        .field('post.*')
+        .field('creator.*')
         .include('post', 'creator_id')
         .execute(true)
       assert.isObject(post)
@@ -66,8 +69,42 @@ describe('Integration', () => {
       assert.equal(user.password, existUser.password)
     })
 
+    it('should save extended repository', () => {
+      manager.extendRepository('users', repo => ({
+        ...repo,
+        findById(id: number) {
+          return repo.startQuery('user')
+            .where('id = ?', id)
+            .execute(false)
+        }
+      }))
+      const repo = manager.getRepository('users')
+      assert.property(repo, 'findById')
+      // $FlowIgnore
+      assert.isFunction(repo.findById)
+    })
+
+    it('should add ability to replace repository factory', () => {
+      // $FlowIgnore
+      manager.setRepositoryFactory((tableName, manager): Repository => ({
+        getTableName() {
+          return tableName
+        },
+        getManager() {
+          return manager
+        }
+      }))
+      const repo = manager.getRepository('users')
+      assert.property(repo, 'getTableName')
+      assert.property(repo, 'getManager')
+      // $FlowIgnore
+      assert.strictEqual(repo.getManager(), manager)
+      // $FlowIgnore
+      assert.equal(repo.getTableName(), 'users')
+    })
+
     afterEach(async function() {
-      this.timeout(5000)
+      this.timeout(10000)
       await schemaTool.dropSchema()
       manager.clear()
     })
