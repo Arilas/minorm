@@ -58,43 +58,56 @@ export function createMigrationManager(manager: Manager): MigrationManager {
         } = createMigrationContext(manager.getMetadataManager())
         if (isGenerator(handler[method])) {
           const generator = handler[method](context)
-          for (const gateway of generator) {
+          let send = null
+          while (true) { // eslint-disable-line
+            const result = generator.next(send)
+            if (result.done) {
+              break
+            }
+            const gateway = result.value
             if (!gateway || !gateway.getAction().type) {
               continue
             }
             const action = gateway.getAction()
-            if (action.type === 'APPLY') {
-              await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
-              await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
-              // Because some of people don't drop foreign keys before and order is matter
-              for(const line of getDropQueries()) {
-                await manager.getPool().execute(line)
+            switch (action.type) {
+              case 'QUERY': {
+                send = await manager.getPool().query(action.payload.sql)
+                break
               }
-              await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
-              await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
-              await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
-              manager.clear()
-              manager.connect()
-              await manager.ready()
-
-              resetQueries()
+              case 'APPLY': {
+                await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
+                await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
+                // Because some of people don't drop foreign keys before and order is matter
+                for(const line of getDropQueries()) {
+                  await manager.getPool().execute(line)
+                }
+                await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
+                await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
+                await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
+                manager.clear()
+                manager.connect()
+                await manager.ready()
+  
+                resetQueries()
+                break  
+              }
             }
           }
         } else {
           handler[method](context)
-          await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
-          await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
-          // Because some of people don't drop foreign keys before and order is matter
-          for(const line of getDropQueries()) {
-            await manager.getPool().execute(line)
-          }
-          await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
-          await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
-          await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
-          manager.clear()
-          manager.connect()
-          await manager.ready()  
         }
+        await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
+        await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
+        // Because some of people don't drop foreign keys before and order is matter
+        for(const line of getDropQueries()) {
+          await manager.getPool().execute(line)
+        }
+        await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
+        await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
+        await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
+        manager.clear()
+        manager.connect()
+        await manager.ready()
         if (method === 'up') {
           const date = new Date
           const formattedDate = `${date.getFullYear()}-${date.getUTCMonth()}-${date.getDate()} ${date.getUTCHours()}:${date.getUTCMinutes()}:${date.getUTCSeconds()}`

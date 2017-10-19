@@ -5,6 +5,7 @@ import {dropTableGateway} from './dropTableGateway'
 import {putGateway} from './putGateway'
 import {tableGateway} from './tableGateway'
 import { executeGateway } from './async/executeGateway'
+import {queryGateway} from './async/queryGateway'
 import type {MetadataManager} from '../../types'
 import type {SchemaToolContext, SchemaToolGateway} from '../types'
 
@@ -17,7 +18,8 @@ const registeredGateways = {
   table: tableGateway,
   use: tableGateway,
 
-  asyncExecute: executeGateway
+  asyncExecute: executeGateway,
+  asyncQuery: queryGateway
 }
 
 export function registerGateway(name: string, gatewayCreator: () => SchemaToolGateway) {

@@ -15,7 +15,8 @@ export type SchemaToolContext = {
   put(tableName: string, entities: Array<{[key: string]: any}>): SchemaToolGateway,
   addSql(sql: string): SchemaToolGateway,
   findAndUpdate(tableName: string, criteria: Criteria, changes: Object): SchemaToolGateway,
-  asyncExecute(): SchemaToolGateway
+  asyncExecute(): SchemaToolGateway,
+  asyncQuery(sql: string): SchemaToolGateway
 }
 
 export type SchemaToolGatewayApi = {

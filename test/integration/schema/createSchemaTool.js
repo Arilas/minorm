@@ -106,17 +106,6 @@ describe('Integration', () => {
             ctx.column('columnToDrop')
             ctx.column('createdAt').dateTime()
           })
-          yield schema.asyncExecute()
-          schema.table('posts', ctx => {
-            ctx.column('id').int().unsigned().primary().autoIncrement()
-            ctx.column('title').notNull()
-            ctx.column('body').text()
-            ctx.column('creator_id').int().unsigned()
-            ctx.column('createdAt').date()
-            ctx.index('title')
-            ctx.ref('creator_id', 'users', 'id')
-          })
-          yield schema.asyncExecute()
           schema.put('users', [
             {
               login: 'test',
@@ -127,6 +116,19 @@ describe('Integration', () => {
               password: 'test2'
             }
           ])
+          yield schema.asyncExecute()
+          const users = yield schema.asyncQuery('SELECT * FROM users WHERE login = \'test\'')
+          assert.lengthOf(users, 1)
+          schema.table('posts', ctx => {
+            ctx.column('id').int().unsigned().primary().autoIncrement()
+            ctx.column('title').notNull()
+            ctx.column('body').text()
+            ctx.column('creator_id').int().unsigned()
+            ctx.column('createdAt').date()
+            ctx.index('title')
+            ctx.ref('creator_id', 'users', 'id')
+          })
+          yield schema.asyncExecute()
         },
         down(schema) {
           // Will be executed correctly cause we remove FK
