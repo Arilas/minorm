@@ -4,6 +4,7 @@ import {findAndUpdateGateway} from './findAndUpdateGateway'
 import {dropTableGateway} from './dropTableGateway'
 import {putGateway} from './putGateway'
 import {tableGateway} from './tableGateway'
+import { executeGateway } from './async/executeGateway'
 import type {MetadataManager} from '../../types'
 import type {SchemaToolContext, SchemaToolGateway} from '../types'
 
@@ -14,7 +15,9 @@ const registeredGateways = {
   dropTable: dropTableGateway,
   put: putGateway,
   table: tableGateway,
-  use: tableGateway
+  use: tableGateway,
+
+  asyncExecute: executeGateway
 }
 
 export function registerGateway(name: string, gatewayCreator: () => SchemaToolGateway) {
@@ -23,7 +26,8 @@ export function registerGateway(name: string, gatewayCreator: () => SchemaToolGa
 
 type ContextWrapper = {
   context: SchemaToolContext,
-  getGateways(): Array<SchemaToolGateway>
+  getGateways(): Array<SchemaToolGateway>,
+  reset(): void
 }
 
 export function createContext(metadataManager: MetadataManager): ContextWrapper {

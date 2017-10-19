@@ -1,4 +1,5 @@
 /** @flow */
+import type {Criteria} from '../types'
 
 export type SchemaTool = {
   setSchemaInit(handler: Migration): void,
@@ -12,7 +13,9 @@ export type SchemaToolContext = {
   use(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   dropTable(tableName: string): SchemaToolGateway,
   put(tableName: string, entities: Array<{[key: string]: any}>): SchemaToolGateway,
-  addSql(sql: string): SchemaToolGateway
+  addSql(sql: string): SchemaToolGateway,
+  findAndUpdate(tableName: string, criteria: Criteria, changes: Object): SchemaToolGateway,
+  asyncExecute(): SchemaToolGateway
 }
 
 export type SchemaToolGatewayApi = {
@@ -71,8 +74,8 @@ export type SchemaToolColumnContext = {
 }
 
 export type Migration = {
-  up(SchemaTool: SchemaToolContext): void,
-  down(SchemaTool: SchemaToolContext): void
+  up(SchemaTool: SchemaToolContext): any,
+  down(SchemaTool: SchemaToolContext): any
 }
 
 export type MigrationManager = {
