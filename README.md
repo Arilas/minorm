@@ -10,6 +10,16 @@ It's really lightweight, provide simple solutions that just works without a lot 
 
 ## Why use MinORM
 
+Main features:
+
+1. High performance
+2. Native SQL queries
+3. Automated left and inner joins by column name
+4. Insert and Update models without declaring Model structure (ORM works with database Metadata and know all tables and fields)
+5. Migrations manager and Schema Tool
+6. Built-in Query Builder based on extended [Squel](https://github.com/hiddentao/squel)
+7. Fetching related data from joined tables by the same query using nestQuery
+
 If you are tired by highweight ORMs like [Bookshelf](https://github.com/tgriesser/bookshelf) or [Sequelize](https://github.com/sequelize/sequelize), and want just some basic functionality
 from it - MinORM can be a good start point. MinORM also have build-in Migrations module that you can use.
 
