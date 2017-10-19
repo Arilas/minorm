@@ -57,8 +57,9 @@ export function createMigrationManager(manager: Manager): MigrationManager {
           getPostQueries
         } = createMigrationContext(manager.getMetadataManager())
         if (isGenerator(handler[method])) {
-          for (const gateway of handler[method](context)) {
-            if (!gateway || !gateway.type) {
+          const generator = handler[method](context)
+          for (const gateway of generator) {
+            if (!gateway || !gateway.getAction().type) {
               continue
             }
             const action = gateway.getAction()
