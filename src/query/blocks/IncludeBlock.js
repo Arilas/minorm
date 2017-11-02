@@ -1,13 +1,14 @@
 /** @flow */
 import Squel from 'squel'
-import type {Relation, Manager} from '../../types'
+import type {Relation, Manager, SelectQueryMapper} from '../../types'
 
 export default class IncludeBlock extends Squel.cls.JoinBlock {
 
-  constructor(manager: Manager, fromTableBlock: typeof Squel.cls.FromTableBlock, options: any) {
+  constructor(manager: Manager, fromTableBlock: typeof Squel.cls.FromTableBlock, options: any, mapper: SelectQueryMapper) {
     super(options)
 
     this._manager = manager
+    this._mapper = mapper
     this._fromTableBlock = fromTableBlock
   }
 
@@ -31,6 +32,7 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
       const msg = `Foreign key ${columnName} is not found in ${originTableName}. Try to get Repository for ${originTableName} to load relations.`
       throw new Error(msg)
     }
+    this._mapper.addRelation(fromAlias, alias)
     const relation: Relation = this._manager.getMetadataManager().getTable(originTableName).relations[columnName]
     const onPart = `${alias}.${relation.referencedColumnName} = ${fromAlias}.${relation.columnName}`
     return [relation.referencedTableName, alias, onPart]

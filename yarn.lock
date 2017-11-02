@@ -103,6 +103,10 @@ arr-flatten@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arr-flatten/-/arr-flatten-1.0.1.tgz#e5ffe54d45e19f32f216e91eb99c8ce892bb604b"
 
+array-aggregate@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/array-aggregate/-/array-aggregate-0.1.7.tgz#e814f6009c731344ddd6bff4028ed46c651a0aca"
+
 array-union@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-1.0.2.tgz#9a34410e4f4e3da23dea375be5be70f24778ec39"

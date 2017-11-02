@@ -42,6 +42,14 @@ export type Relation = {
   referencedColumnName: string
 }
 
+export type SelectQueryMapper = {
+  setRelation(from: string, alias: string): void,
+  setEntryPoint(alias: string): void,
+  build(): Object,
+  map(rawData: {[key: string]: ?Object}): Object | null
+
+}
+
 export type SelectQuery = {
   from(tableName: string, alias: ?string): SelectQuery,
   join(tableName: string, alias: string, on: string): SelectQuery,

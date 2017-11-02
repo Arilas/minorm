@@ -9,6 +9,7 @@
     "prepublish": "npm run dist",
     "test": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test",
     "test:integration": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/integration",
+    "test:functional": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/functional",
     "test:unit": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/unit"
   },
   "repository": {
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/Arilas/minorm#readme",
   "devDependencies": {
+    "array-aggregate": "^0.1.7",
     "babel-cli": "^6.16.0",
     "babel-eslint": "^7.0.0",
     "babel-plugin-istanbul": "^2.0.1",
