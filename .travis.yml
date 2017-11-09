@@ -25,6 +25,12 @@ matrix:
       env: DB=mariadb NODE=8.9 MYSQL_USER=root MYSQL_PASS=''
       node_js:
         - 8.9
+    - services:
+        - mysql
+      env: DB=mysql NODE=8.9 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
+        - 8.9
+
     # - dist: trusty
     #   sudo: required
     #   group: edge # until the next update
