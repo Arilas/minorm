@@ -17,12 +17,12 @@ matrix:
         - 6.9
     - addons:
         mariadb: 10.0
-      env: DB=mariadb NODE=7.0 MYSQL_USER=root MYSQL_PASS=''
+      env: DB=mariadb NODE=8.0 MYSQL_USER=root MYSQL_PASS=''
       node_js:
         - 8.0
     - addons:
         mariadb: 10.0
-      env: DB=mariadb NODE=7.2 MYSQL_USER=root MYSQL_PASS=''
+      env: DB=mariadb NODE=8.9 MYSQL_USER=root MYSQL_PASS=''
       node_js:
         - 8.9
     # - dist: trusty
