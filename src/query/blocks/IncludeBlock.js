@@ -32,7 +32,7 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
       const msg = `Foreign key ${columnName} is not found in ${originTableName}. Try to get Repository for ${originTableName} to load relations.`
       throw new Error(msg)
     }
-    this._mapper.addRelation(fromAlias, alias)
+    this._mapper.setRelation(fromAlias, alias)
     const relation: Relation = this._manager.getMetadataManager().getTable(originTableName).relations[columnName]
     const onPart = `${alias}.${relation.referencedColumnName} = ${fromAlias}.${relation.columnName}`
     return [relation.referencedTableName, alias, onPart]
