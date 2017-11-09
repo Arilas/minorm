@@ -47,7 +47,10 @@ export type SelectQueryMapper = {
   setEntryPoint(alias: string): void,
   build(): Object,
   map(rawData: {[key: string]: ?Object}): Object | null
+}
 
+export type Mapper = {
+  fetch(): Promise<any>
 }
 
 export type SelectQuery = {
@@ -62,7 +65,8 @@ export type SelectQuery = {
   limit(limit: number): SelectQuery,
   offset(offset: number): SelectQuery,
   toParam(): {text: string, values: Array<any>},
-  execute(nestTables?: boolean): Promise<any>
+  execute(nestTables?: boolean): Promise<any>,
+  getMapper(): Mapper
 }
 
 export type InsertQuery = {
