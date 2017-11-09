@@ -46,7 +46,7 @@ export class SelectQuery extends Squel.cls.QueryBuilder {
     return {
       fetch: async () => {
         const result = await this._manager.nestQuery(this)
-        return this._mapper.map(result)
+        return result.map(item => this._mapper.map(item))
       }
     }
   }

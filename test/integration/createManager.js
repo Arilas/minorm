@@ -35,7 +35,7 @@ describe('Integration', () => {
 
     it('should map related rows', async () => {
       await fixtureManager.createPost()
-      const post = await manager.startQuery().select()
+      const [post] = await manager.startQuery().select()
         .from('posts', 'post')
         .field('post.*')
         .field('creator.*')
