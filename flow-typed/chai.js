@@ -66,7 +66,7 @@ declare module chai {
 
   declare var assert: Assert
 
-  declare var exports: {
+  declare module.exports: {
     assert: Assert
   }
 }
