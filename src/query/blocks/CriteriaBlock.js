@@ -5,7 +5,11 @@ import type {Criteria} from '../../types'
 export default class CriteriaBlock extends Squel.cls.WhereBlock {
   criteria(criteria: Criteria) {
     Object.keys(criteria).map(key => {
-      if (
+      if (criteria[key] === null || criteria[key] === undefined) {
+        this.where(
+          `${key} IS NULL`
+        )
+      } else if (
         ['string', 'number'].indexOf(typeof criteria[key]) != -1
       ) {
         this.where(

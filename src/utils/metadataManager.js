@@ -24,7 +24,7 @@ const TABLE_RELATION_META_QUERY = `
   WHERE
     TABLE_SCHEMA = ?
         AND REFERENCED_TABLE_NAME IS NOT NULL
-  GROUP BY TABLE_NAME , COLUMN_NAME
+  GROUP BY TABLE_NAME , COLUMN_NAME , REFERENCED_TABLE_NAME , REFERENCED_COLUMN_NAME
 `
 
 export default function createMetadataManager(): (manager: Manager) => MetadataManager {
