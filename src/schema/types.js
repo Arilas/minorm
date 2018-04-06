@@ -1,4 +1,5 @@
 /** @flow */
+import type {Criteria} from '../types'
 
 export type SchemaTool = {
   setSchemaInit(handler: Migration): void,
@@ -11,8 +12,11 @@ export type SchemaToolContext = {
   table(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   use(tableName: string, callback: (ctx: SchemaToolCreateTableContext) => void): SchemaToolGateway,
   dropTable(tableName: string): SchemaToolGateway,
-  put(tableName: string, entities: Array<{[key: string]: any}>): void,
-  addSql(sql: string): void
+  put(tableName: string, entities: Array<{[key: string]: any}>): SchemaToolGateway,
+  addSql(sql: string): SchemaToolGateway,
+  findAndUpdate(tableName: string, criteria: Criteria, changes: Object): SchemaToolGateway,
+  asyncExecute(): SchemaToolGateway,
+  asyncQuery(sql: string): SchemaToolGateway
 }
 
 export type SchemaToolGatewayApi = {
@@ -23,11 +27,14 @@ export type SchemaToolGatewayApi = {
 }
 
 export type SchemaToolGateway = {
-  getAddQuery(): Array<string>,
-  getDropQuery(): Array<string>,
-  getAddAlters(): Array<string>,
-  getDropAlters(): Array<string>,
-  getApi(): ?SchemaToolGatewayApi
+  getApi(): ?SchemaToolGatewayApi,
+  getAction(): ?Object,
+  getPreQueries(): Array<string>,
+  getAddQueries(): Array<string>,
+  getDropQueries(): Array<string>,
+  getAddAlterQueries(): Array<string>,
+  getDropAlterQueries(): Array<string>,
+  getPostQueries(): Array<string>
 }
 
 export type SchemaToolCreateTableContext = {
@@ -68,8 +75,8 @@ export type SchemaToolColumnContext = {
 }
 
 export type Migration = {
-  up(SchemaTool: SchemaToolContext): void,
-  down(SchemaTool: SchemaToolContext): void
+  up(SchemaTool: SchemaToolContext): any,
+  down(SchemaTool: SchemaToolContext): any
 }
 
 export type MigrationManager = {

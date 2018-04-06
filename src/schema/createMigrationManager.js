@@ -1,5 +1,6 @@
 /** @flow */
-import {createSchemaToolContext} from './createSchemaToolContext'
+import isGenerator from 'is-generator-function'
+import {createMigrationContext} from './createMigrationContext'
 import {MINORM_MIGRATIONS_TABLE} from './constants'
 import type {MigrationManager, Migration} from './types'
 import type {Manager} from '../types'
@@ -45,8 +46,57 @@ export function createMigrationManager(manager: Manager): MigrationManager {
     async execute(migrations, method) {
       const MigrationsRepo = manager.getRepository(MINORM_MIGRATIONS_TABLE)
       for(const [key, handler] of migrations) {
-        const {context, getAddQueries, getDropQueries, getAddAlters, getDropAlters} = createSchemaToolContext(manager.getMetadataManager())
-        handler[method](context)
+        const {
+          context,
+          resetQueries,
+          getPreQueries,
+          getAddQueries,
+          getDropQueries,
+          getAddAlters,
+          getDropAlters,
+          getPostQueries
+        } = createMigrationContext(manager.getMetadataManager())
+        if (isGenerator(handler[method])) {
+          const generator = handler[method](context)
+          let send = null
+          while (true) { // eslint-disable-line
+            const result = generator.next(send)
+            if (result.done) {
+              break
+            }
+            const gateway = result.value
+            if (!gateway || !gateway.getAction().type) {
+              continue
+            }
+            const action = gateway.getAction()
+            switch (action.type) {
+              case 'QUERY': {
+                send = await manager.getPool().query(action.payload.sql)
+                break
+              }
+              case 'APPLY': {
+                await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
+                await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
+                // Because some of people don't drop foreign keys before and order is matter
+                for(const line of getDropQueries()) {
+                  await manager.getPool().execute(line)
+                }
+                await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
+                await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
+                await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
+                manager.clear()
+                manager.connect()
+                await manager.ready()
+  
+                resetQueries()
+                break  
+              }
+            }
+          }
+        } else {
+          handler[method](context)
+        }
+        await Promise.all(getPreQueries().map(line => manager.getPool().execute(line)))
         await Promise.all(getDropAlters().map(line => manager.getPool().execute(line)))
         // Because some of people don't drop foreign keys before and order is matter
         for(const line of getDropQueries()) {
@@ -54,6 +104,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
         }
         await Promise.all(getAddQueries().map(line => manager.getPool().execute(line)))
         await Promise.all(getAddAlters().map(line => manager.getPool().execute(line)))
+        await Promise.all(getPostQueries().map(line => manager.getPool().execute(line)))
         manager.clear()
         manager.connect()
         await manager.ready()

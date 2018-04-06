@@ -3,9 +3,11 @@ import Squel from 'squel'
 import IncludeBlock from './blocks/IncludeBlock'
 import CriteriaBlock from './blocks/CriteriaBlock'
 import type {Manager, SelectQuery as $SelectQuery} from '../types'
+import { createMapper } from '../utils/createMapper'
 
 export class SelectQuery extends Squel.cls.QueryBuilder {
   constructor(manager: Manager, options: any, blocks: ?Array<typeof Squel.cls.QueryBlock> = null) {
+    const mapper = createMapper()
     // For include functionality we need fromTableBlock inside IncludeBlock
     const fromTableBlock = new Squel.cls.FromTableBlock(options)
     blocks = blocks || [
@@ -14,7 +16,7 @@ export class SelectQuery extends Squel.cls.QueryBuilder {
       new Squel.cls.DistinctBlock(options),
       new Squel.cls.GetFieldBlock(options),
       fromTableBlock,
-      new IncludeBlock(manager, fromTableBlock, options),
+      new IncludeBlock(manager, fromTableBlock, options, mapper),
       new CriteriaBlock(options),
       new Squel.cls.GroupByBlock(options),
       new Squel.cls.HavingBlock(options),
@@ -27,6 +29,8 @@ export class SelectQuery extends Squel.cls.QueryBuilder {
     super(options, blocks)
 
     this._manager = manager
+    this._mapper = mapper
+    this._fromTableBlock = fromTableBlock
   }
 
   execute(nested: boolean = false) {
@@ -34,6 +38,16 @@ export class SelectQuery extends Squel.cls.QueryBuilder {
       return this._manager.nestQuery(this).then(([result]) => result)
     } else {
       return this._manager.query(this).then(([result]) => result)
+    }
+  }
+
+  getMapper() {
+    this._mapper.setEntryPoint(this._fromTableBlock._tables[0].alias)
+    return {
+      fetch: async () => {
+        const [result] = await this._manager.nestQuery(this)
+        return result.map(item => this._mapper.map(item))
+      }
     }
   }
 }

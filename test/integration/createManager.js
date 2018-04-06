@@ -33,6 +33,22 @@ describe('Integration', () => {
       assert.isNumber(creator.id)
     })
 
+    it('should map related rows', async () => {
+      await fixtureManager.createPost()
+      const [post] = await manager.startQuery().select()
+        .from('posts', 'post')
+        .field('post.*')
+        .field('creator.*')
+        .include('post', 'creator_id')
+        .getMapper()
+        .fetch()
+      assert.isObject(post)
+      assert.isObject(post.creator)
+      assert.isNumber(post.id)
+      assert.isNumber(post.creator.id)
+      assert.equal(post.creator_id, post.creator.id)
+    })
+
     it('should update models', async () => {
       const user = await fixtureManager.createUser()
       assert.isNumber(user.id)
