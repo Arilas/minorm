@@ -1,12 +1,12 @@
 {
   "name": "minorm",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MinORM - Light high-performance ORM for MySQL",
   "main": "lib/index.js",
   "scripts": {
     "dist": "babel -d lib/ src/",
     "watch": "babel --watch -d lib/ src/",
-    "prepublish": "npm run dist",
+    "prepublish": "in-publish && npm run dist || echo 'Bad mode'",
     "test": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test",
     "test:integration": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/integration",
     "test:functional": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/functional",
@@ -40,6 +40,7 @@
     "chai": "^3.5.0",
     "eslint": "^3.7.1",
     "eslint-plugin-flowtype": "^2.19.0",
+    "in-publish": "^2.0.0",
     "mocha": "^3.1.0",
     "nyc": "^8.3.0"
   },
