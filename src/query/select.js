@@ -35,9 +35,13 @@ export class SelectQuery extends Squel.cls.QueryBuilder {
 
   execute(nested: boolean = false) {
     if (nested) {
-      return this._manager.nestQuery(this).then(([result]) => result)
+      return this._manager.nestQuery(this).then(
+        ([result]) => result
+      )
     } else {
-      return this._manager.query(this).then(([result]) => result)
+      return this._manager.query(this).then(
+        ([result]) => result
+      )
     }
   }
 

@@ -26,6 +26,11 @@ describe('Integration', () => {
       assert.equal(comment.creator_id, user.id)
       user.login = 'updated'
       await user.save()
+      try {
+        await manager.startQuery().select().from('users').execute()
+      } catch (err) {
+        // Should be wrapped
+      }
     })
   })
 })

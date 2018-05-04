@@ -77,20 +77,39 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
       if (typeof query.toParam !== 'function') {
         throw new Error(`manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`)
       }
+      const { stack } = new Error
       const {text, values} = query.toParam()
       logger && logger.debug(`SQL query: ${text}`)
-      return getPool().query(text, values)
+      return getPool().query(text, values).catch(
+        err => {
+          const newErr = new Error(`${err.message}
+Query: ${text}
+Call stack for query: ${stack}
+`)
+          // newErr.stack = stack
+          throw newErr
+        }
+      )
     },
     nestQuery(query) {
       if (typeof query.toParam !== 'function') {
         throw new Error(`manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`)
       }
+      const { stack } = new Error
       const {text, values} = query.toParam()
       logger && logger.debug(`SQL query: ${text}`)
       return getPool().query({
         sql: text,
         nestTables: true
-      }, values)
+      }, values).catch(
+        err => {
+          const newErr = new Error(`${err.message}
+Query: ${text}
+Call stack for query: ${stack}
+`)
+          throw newErr
+        }
+      )
     },
     startQuery() {
       return makeQueryBuilder(this)

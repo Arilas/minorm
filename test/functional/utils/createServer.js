@@ -125,7 +125,10 @@ export function createServer() {
         return
       }
       if (!queries[sql]) {
-        conn.writeOk(0)
+        conn.writeError({
+          message: 'Wrong query',
+          code: 8888
+        })
         return
       }
       const rows = queries[sql]()
