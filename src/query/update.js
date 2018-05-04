@@ -19,12 +19,8 @@ export class UpdateQuery extends Squel.cls.QueryBuilder {
     this._manager = manager
   }
 
-  execute(nested: boolean = false) {
-    if (nested) {
-      return this._manager.nestQuery(this).then(([result]) => result)
-    } else {
-      return this._manager.query(this).then(([result]) => result)
-    }
+  execute() {
+    return this._manager.query(this).then(([result]) => result)
   }
 }
 
