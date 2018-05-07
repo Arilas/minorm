@@ -39,7 +39,7 @@
     "babel-register": "^6.16.3",
     "chai": "^3.5.0",
     "eslint": "^3.7.1",
-    "eslint-plugin-flowtype": "^2.19.0",
+    "eslint-plugin-flowtype": "^2.46.3",
     "in-publish": "^2.0.0",
     "mocha": "^3.1.0",
     "nyc": "^8.3.0"

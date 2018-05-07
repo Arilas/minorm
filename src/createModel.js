@@ -1,19 +1,19 @@
 /** @flow */
-import type {Repository, Model} from './types'
+import type { BaseRecord, Repository, Model} from './types'
 
-function definePrivate(obj: {[key: string]: any}, name, method) {
+function definePrivate<T, O>(obj: O, name: string, method: T) {
   Object.defineProperty(obj, name, {
     enumerable: false,
     configurable: false,
-    get: () => method
+    get: (): T => method
   })
 }
 
-export function createModel(repository: Repository, model: {[key: string]: any} = {}, isFetched: boolean = true): Model {
+export function createModel<T: BaseRecord>(repository: Repository<T>, model: T, isFetched: boolean = true): Model<T> {
   let origin = isFetched ? {...model} : {}
-  definePrivate(model, 'save', async () => {
+  definePrivate(model, 'save', async (): Promise<Model<T>> => {
     const columnsMeta = await repository.getMetadata()
-    const changes = Object.keys(columnsMeta).reduce((target, key) => origin[key] != model[key]
+    const changes = Object.keys(columnsMeta).reduce((target: any, key: string): any => origin[key] != model[key]
     ? {
       ...target,
       [key]: model[key]
@@ -23,6 +23,7 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
       if (isFetched && model.id) {
         await repository.update(model.id, changes)
       } else {
+        // $FlowIgnore
         const id = await repository.insert(changes)
         model.id = id
         isFetched = true
@@ -31,13 +32,13 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
         ...model,
       }
     }
-    return model
+    return this
   })
-  definePrivate(model, 'populate', data => {
-    Object.keys(data).forEach(key => model[key] = data[key])
+  definePrivate(model, 'populate', (data: T) => {
+    Object.keys(data).forEach((key: string): void => model[key] = data[key])
   })
-  definePrivate(model, 'remove', async () => {
-    if (isFetched) {
+  definePrivate(model, 'remove', async (): Promise<number> => {
+    if (isFetched && model.id) {
       await repository.remove(model.id)
       isFetched = false
       origin = {}
@@ -45,5 +46,6 @@ export function createModel(repository: Repository, model: {[key: string]: any} 
     return 1
   })
 
+  // $FlowIgnore
   return model
 }

@@ -47,15 +47,42 @@ export const PostsRepo = {
           $not: 'Bad title'
         }
       })
-    const [result] = await manager.nestQuery(postQuery)
+    const result = await postQuery.getMapper().fetch() // Automatically map relations
+    return result
     //Or:
     const result = await postQuery.execute(true)
-    return result.map(({post, creator}) => ({
+    return result.map(({post, creator, avatar}) => ({
       ...post,
-      creator
+      creator: {
+        ...creator,
+        avatar
+      }
     }))
   }
 }
+```
+
+Both options result with following result:
+
+```json
+[
+  {
+    "id": 1, // Post id
+    "title": "Some",
+    // ...Other fields from post
+    "creator_id": 1,
+    "creator": {
+      "id": 1,
+      // ...Other fields from post creator
+      "avatar_id": 1,
+      "avatar": {
+        "id": 1,
+        // ...Other fields for user avatar
+      }
+    }
+  },
+  // ...Other posts
+]
 ```
 
 ## Manager

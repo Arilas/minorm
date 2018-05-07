@@ -1,50 +1,54 @@
 /** @flow */
 import {createModel} from './createModel'
-import type {Repository, Manager} from './types'
+import type { InsertQuery, UpdateQuery, Repository, Manager, BaseRecord, TableMetadata, Model, Criteria, SelectQuery } from './types'
 
-export function createRepository(tableName: string, manager: Manager): Repository {
+export function createRepository<T: BaseRecord>(tableName: string, manager: Manager): Repository<T> {
   const repo = {
-    async getMetadata() {
+    async getMetadata(): Promise<TableMetadata> {
       await manager.getMetadataManager().ready()
       return manager.getMetadataManager().getColumns(tableName)
     },
-    find(id: any) {
-      const query = this.startQuery()
+    find(id: number): Promise<Model<T> | null> {
+      const query: SelectQuery<T> = this.startQuery()
         .where('id = ?', id)
-      return query.execute().then(result => result.length ? createModel(repo, result[0]) : null)
+      return query
+        .execute()
+        .then((result: Array<T>): Model<T> | null => result.length > 0 ? this.hydrate(result.pop(), true) : null)
     },
-    findOneBy(criteria) {
-      const query = this.startQuery()
+    findOneBy(criteria: Criteria): Promise<Model<T> | null> {
+      const query: SelectQuery<T> = this.startQuery()
         .limit(1)
         .criteria(criteria)
-      return query.execute().then(result => result.length ? createModel(repo, result[0]) : null)
+      return query
+        .execute()
+        .then((result: Array<T>): Model<T> | null => result.length > 0 ? this.hydrate(result.pop(), true) : null)
     },
-    findBy(criteria, orderBy = {}, limit, offset) {
-      const query = this.startQuery()
+    findBy(criteria: Criteria, orderBy?: { [key: string]: string } = {}, limit?: number, offset?: number): Promise<Array<Model<T>>> {
+      const query: SelectQuery<T> = this.startQuery()
         .criteria(criteria)
       limit && query.limit(limit)
       offset && query.offset(offset)
-      return query.execute().then(result => result.map(createModel.bind(null, repo)))
+      return query.execute().then((result: Array<T>): Array<Model<T>> => result.map((entry: T): Model<T> => this.hydrate(entry, true)))
     },
-    startQuery(alias: ?string = null) {
+    startQuery(alias: ?string = null): SelectQuery<T> {
       return manager.startQuery()
         .select()
         .from(tableName, alias)
         .field(alias ? `${alias}.*` : '*')
     },
-    create(data = {}) {
+    create<Q: T>(data: Q): Model<Q> {
       return this.hydrate(data)
     },
-    hydrate(data = {}, fetched: boolean = false) {
-      return createModel(repo, data, fetched)
+    hydrate(data: T, fetched: boolean = false): Model<T> {
+      return createModel(this, data, fetched)
     },
-    insert(data = {}) {
+    insert(data: T): Promise<number> {
       const query = manager.startQuery().insert()
         .into(tableName)
-      Object.keys(data).forEach(key => query.set(key, data[key]))
-      return query.execute().then(result => result.insertId)
+      Object.keys(data).forEach((key: string): InsertQuery => query.set(key, data[key]))
+      return query.execute().then((result: any): number => result.insertId)
     },
-    update(selector, changes) {
+    update(selector: number | { [key: string]: any }, changes: { [key: string]: any }): Promise<number> {
       if (!selector || !changes) {
         throw new Error('Please check that you provide selector and changes for update')
       }
@@ -56,10 +60,10 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       const query = manager.startQuery().update()
         .criteria(selector)
         .table(tableName)
-      Object.keys(changes).forEach(key => query.set(key, changes[key]))
-      return query.execute().then(result => result.affectedRows)
+      Object.keys(changes).forEach((key: string): UpdateQuery => query.set(key, changes[key]))
+      return query.execute().then((result: any): number => result.affectedRows)
     },
-    remove(selector) {
+    remove(selector: number | { [key: string]: any }): Promise<number> {
       if (!selector) {
         throw new Error('Please provide selector for remove')
       }
@@ -71,7 +75,7 @@ export function createRepository(tableName: string, manager: Manager): Repositor
       const query = manager.startQuery().delete()
         .from(tableName)
         .criteria(selector)
-      return query.execute().then(result => result.affectedRows)
+      return query.execute().then((result: any): number => result.affectedRows)
     }
   }
 

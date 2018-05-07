@@ -17,7 +17,7 @@
       "onlyFilesWithFlowAnnotation": true
     }
   },
-  "extends": ["eslint:recommended"],
+  "extends": ["eslint:recommended", "plugin:flowtype/recommended"],
   "rules": {
     "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
     "semi": [2, "never"],
@@ -28,19 +28,21 @@
     "arrow-body-style": [2, "as-needed"],
     "arrow-parens": [2, "as-needed"],
     "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
-    "flowtype/require-parameter-type": 0,
-    "flowtype/require-return-type": 0,
-    "flowtype/space-after-type-colon": [
-      1,
-      "always"
+    "flowtype/require-parameter-type": 2,
+    "flowtype/require-return-type": [
+      2,
+      "always",
+      {
+        "annotateUndefined": "never"
+      }
     ],
-    "flowtype/space-before-type-colon": [
-      1,
+    "flowtype/semi": [
+      2,
       "never"
     ],
     "flowtype/type-id-match": [
-      1,
-      "^([A-Z][a-z0-9\\$]+)+$"
+      2,
+      "^([A-Z][a-z0-9]+)+$"
     ]
   }
 }
