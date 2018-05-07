@@ -1,11 +1,12 @@
 /** @flow */
 import type { BaseRecord, Repository, Model} from './types'
 
-function definePrivate<T, O>(obj: O, name: string, method: T) {
+function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
+  const wrappedMethod = method.bind(obj)
   Object.defineProperty(obj, name, {
     enumerable: false,
     configurable: false,
-    get: (): T => method
+    get: (): T => wrappedMethod
   })
 }
 
