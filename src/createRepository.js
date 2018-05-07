@@ -36,7 +36,7 @@ export function createRepository<T: BaseRecord>(tableName: string, manager: Mana
         .from(tableName, alias)
         .field(alias ? `${alias}.*` : '*')
     },
-    create<Q: T>(data: Q): Model<Q> {
+    create<Q: T>(data: any = {}): Model<Q> {
       return this.hydrate(data)
     },
     hydrate(data: T, fetched: boolean = false): Model<T> {
