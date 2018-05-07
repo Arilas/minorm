@@ -12,7 +12,7 @@ function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
 
 export function createModel<T: BaseRecord>(repository: Repository<T>, model: T, isFetched: boolean = true): Model<T> {
   let origin = isFetched ? {...model} : {}
-  definePrivate(model, 'save', async (): Promise<Model<T>> => {
+  definePrivate(model, 'save', async function(): Promise<Model<T>> {
     const columnsMeta = await repository.getMetadata()
     const changes = Object.keys(columnsMeta).reduce((target: any, key: string): any => origin[key] != model[key]
     ? {
