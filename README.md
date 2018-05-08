@@ -39,6 +39,8 @@ export const PostsRepo = {
   ...manager.getRepository('posts'),
   async getPostsFromUser(id) {
     const postQuery = this.startQuery('post')
+      .field('creator.*')
+      .field('avatar.*')
       .include('post', 'creator_id')
       .tryInclude('creator', 'avatar_id')
       .where('post.creator_id = ?', id)
