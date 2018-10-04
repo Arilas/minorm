@@ -5,8 +5,7 @@ import Config from '../config'
 
 describe('Integration', () => {
   describe('Schema', () => {
-    test('should init Database schema', async function () {
-      this.timeout(10000)
+    test('should init Database schema', async () => {
       const manager = createManager(Config.connection)
       manager.connect()
       await manager.ready()
@@ -90,8 +89,7 @@ describe('Integration', () => {
       await schemaTool.dropSchema()
     })
 
-    test('should apply changes when I directly ask for this', async function () {
-      this.timeout(10000)
+    test('should apply changes when I directly ask for this', async () => {
       const manager = createManager(Config.connection)
       manager.connect()
       await manager.ready()

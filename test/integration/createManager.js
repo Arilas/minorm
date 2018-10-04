@@ -10,8 +10,7 @@ describe('Integration', () => {
     const manager = createManager(Config.connection)
     let schemaTool
     const fixtureManager = createFixtureManager(manager)
-    beforeEach(async function () {
-      this.timeout(10000)
+    beforeEach(async () => {
       manager.connect()
       await manager.ready()
       schemaTool = createSchemaTool(manager)
@@ -118,8 +117,7 @@ describe('Integration', () => {
       expect(repo.getTableName()).toEqual('users')
     })
 
-    afterEach(async function () {
-      this.timeout(10000)
+    afterEach(async () => {
       await schemaTool.dropSchema()
       manager.clear()
     })
