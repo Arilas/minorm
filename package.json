@@ -7,7 +7,7 @@
     "dist": "babel -d lib/ src/",
     "prepublish": "in-publish && npm run dist || echo 'Bad mode'",
     "lint": "eslint .",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test:integration": "jest test/integration",
     "test:functional": "jest test/functional",
     "test:unit": "jest test/unit"

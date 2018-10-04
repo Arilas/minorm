@@ -41,7 +41,6 @@ export function createServer() {
   const queries = {}
   server.listen(config.connection.port)
   server.on('connection', conn => {
-
     conn.serverHandshake({
       protocolVersion: 10,
       serverVersion: '5.6.10', // 'node.js rocks',
@@ -56,9 +55,10 @@ export function createServer() {
     conn.on('field_list', () => {
       conn.writeEof()
     })
+    conn.on('error', () => {})
 
     conn.on('query', sql => {
-      console.log('Dump query:' + sql) // eslint-disable-line no-console
+      // console.log('Dump query:' + sql) // eslint-disable-line no-console
       // remote.query(sql, function (err) {
       // overloaded args, either (err, result :object)
       // or (err, rows :array, columns :array)

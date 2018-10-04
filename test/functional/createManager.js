@@ -8,7 +8,14 @@ import { createFixtureManager } from '../integration/fixtures/createFixtureManag
 describe('Integration', () => {
   describe('createManager', () => {
     test('should insert data', async () => {
-      createServer()
+      const server = createServer()
+      const oldError = console.error // eslint-disable-line no-console
+      console.error = (...opts) => { // eslint-disable-line no-console
+        if (opts[0].indexOf('packets out of order') !== -1) {
+          return
+        }
+        return oldError(...opts)
+      }
       const manager = createManager(Config.connection)
       manager.setMetadataManager(createMetadataManager())
       manager.connect()
@@ -30,6 +37,9 @@ describe('Integration', () => {
       } catch (err) {
         // Should be wrapped
       }
+      await manager.getPool().end()
+      console.error = oldError // eslint-disable-line no-console
+      server.close()
     })
   })
 })

@@ -119,6 +119,7 @@ describe('Integration', () => {
 
     afterEach(async () => {
       await schemaTool.dropSchema()
+      await manager.getPool().end()
       manager.clear()
     })
   })
