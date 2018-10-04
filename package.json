@@ -60,7 +60,8 @@
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,  
     "testPathIgnorePatterns": [
-      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]"
+      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]",
+      "(config|fixtures|utils)"
     ],
     "testEnvironment": "node",
     "transform": {
