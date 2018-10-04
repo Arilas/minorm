@@ -2,9 +2,8 @@
   "parser": "babel-eslint",
   "env": {
     "node": true,
-    "browser": true,
-    "mocha": true,
-    "es6": true
+    "es6": true,
+    "jest": true
   },
   "globals": {
     "Uint32Array": true
@@ -28,14 +27,7 @@
     "arrow-body-style": [2, "as-needed"],
     "arrow-parens": [2, "as-needed"],
     "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
-    "flowtype/require-parameter-type": 2,
-    "flowtype/require-return-type": [
-      2,
-      "always",
-      {
-        "annotateUndefined": "never"
-      }
-    ],
+    "flowtype/require-parameter-type": 0,
     "flowtype/semi": [
       2,
       "never"

@@ -15,11 +15,11 @@ export function createModel<T: BaseRecord>(repository: Repository<T>, model: T, 
   definePrivate(model, 'save', async function(): Promise<Model<T>> {
     const columnsMeta = await repository.getMetadata()
     const changes = Object.keys(columnsMeta).reduce((target: any, key: string): any => origin[key] != model[key]
-    ? {
-      ...target,
-      [key]: model[key]
-    }
-    : target, {})
+      ? {
+        ...target,
+        [key]: model[key]
+      }
+      : target, {})
     if (Object.keys(changes).length || !model.id) {
       if (isFetched && model.id) {
         await repository.update(model.id, changes)

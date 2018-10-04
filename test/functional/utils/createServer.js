@@ -60,8 +60,8 @@ export function createServer() {
     conn.on('query', sql => {
       console.log('Dump query:' + sql) // eslint-disable-line no-console
       // remote.query(sql, function (err) {
-        // overloaded args, either (err, result :object)
-        // or (err, rows :array, columns :array)
+      // overloaded args, either (err, result :object)
+      // or (err, rows :array, columns :array)
       if (sql.indexOf('INSERT') !== -1) {
         const [table, rawValues] = sql.split('VALUES')
         const into = {

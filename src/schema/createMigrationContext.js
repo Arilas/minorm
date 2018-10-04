@@ -21,11 +21,11 @@ export function createMigrationContext(metadataManager: MetadataManager): Create
     context,
     getPreQueries(): Array<string> {
       return getGateways()
-      .map(gateway => gateway.getPreQueries())
-      .reduce((target, query) => !query ? target : [
-        ...target,
-        ...query
-      ], [])
+        .map(gateway => gateway.getPreQueries())
+        .reduce((target, query) => !query ? target : [
+          ...target,
+          ...query
+        ], [])
 
     },
     getAddQueries(): Array<string> {

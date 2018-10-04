@@ -1,6 +1,5 @@
 /** @flow */
-import {assert} from 'chai'
-import {createManager} from '../../src'
+import { createManager } from '../../src'
 import {createSchemaTool} from '../../src/schema'
 import {setupSchema, createFixtureManager} from './fixtures'
 import Config from './config'
@@ -19,7 +18,7 @@ describe('Integration', () => {
       await setupSchema(schemaTool)
     })
 
-    it('should assign related rows', async () => {
+    test('should assign related rows', async () => {
       await fixtureManager.createPost()
       const [{post, creator}] = await manager.startQuery().select()
         .from('posts', 'post')
@@ -27,13 +26,13 @@ describe('Integration', () => {
         .field('creator.*')
         .include('post', 'creator_id')
         .execute(true)
-      assert.isObject(post)
-      assert.isObject(creator)
-      assert.isNumber(post.id)
-      assert.isNumber(creator.id)
+      expect(typeof post).toBe('object')
+      expect(typeof creator).toBe('object')
+      expect(typeof post.id).toBe('number')
+      expect(typeof creator.id).toBe('number')
     })
 
-    it('should map related rows', async () => {
+    test('should map related rows', async () => {
       await fixtureManager.createPost()
       const [post] = await manager.startQuery().select()
         .from('posts', 'post')
@@ -42,16 +41,16 @@ describe('Integration', () => {
         .include('post', 'creator_id')
         .getMapper()
         .fetch()
-      assert.isObject(post)
-      assert.isObject(post.creator)
-      assert.isNumber(post.id)
-      assert.isNumber(post.creator.id)
-      assert.equal(post.creator_id, post.creator.id)
+      expect(typeof post).toBe('object')
+      expect(typeof post.creator).toBe('object')
+      expect(typeof post.id).toBe('number')
+      expect(typeof post.creator.id).toBe('number')
+      expect(post.creator_id).toEqual(post.creator.id)
     })
 
-    it('should update models', async () => {
+    test('should update models', async () => {
       const user = await fixtureManager.createUser()
-      assert.isNumber(user.id)
+      expect(typeof user.id).toBe('number')
       user.populate({
         login: 'testUser',
         ololo: 'da'
@@ -61,31 +60,31 @@ describe('Integration', () => {
       if (!fetchedUser) {
         throw new Error('User must be in database')
       }
-      assert.equal(user.login, fetchedUser.login)
-      assert.equal(user.password, fetchedUser.password)
-      assert.property(user, 'ololo')
-      assert.notProperty(fetchedUser, 'ololo')
+      expect(user.login).toEqual(fetchedUser.login)
+      expect(user.password).toEqual(fetchedUser.password)
+      expect('ololo' in user).toBeTruthy()
+      expect('ololo' in fetchedUser).toBeFalsy()
     })
 
-    it('should remove and insert models', async () => {
+    test('should remove and insert models', async () => {
       const user = await fixtureManager.createUser()
-      assert.isNumber(user.id)
+      expect(typeof user.id).toBe('number')
       await user.remove()
-      assert.isNumber(user.id)
+      expect(typeof user.id).toBe('number')
       const fetchedUser = await manager.getRepository('users').find(user.id)
-      assert.isNull(fetchedUser)
+      expect(fetchedUser).toBeNull()
       await user.save()
       const existUser = await manager.getRepository('users').find(user.id)
       if (!existUser) {
         throw new Error('User must be in database')
       }
-      assert.isNotNull(existUser)
-      assert.equal(user.id, existUser.id)
-      assert.equal(user.login, existUser.login)
-      assert.equal(user.password, existUser.password)
+      expect(existUser).not.toBeNull()
+      expect(user.id).toEqual(existUser.id)
+      expect(user.login).toEqual(existUser.login)
+      expect(user.password).toEqual(existUser.password)
     })
 
-    it('should save extended repository', () => {
+    test('should save extended repository', () => {
       manager.extendRepository('users', repo => ({
         ...repo,
         findById(id: number) {
@@ -95,12 +94,12 @@ describe('Integration', () => {
         }
       }))
       const repo = manager.getRepository('users')
-      assert.property(repo, 'findById')
+      expect('findById' in repo).toBeTruthy()
       // $FlowIgnore
-      assert.isFunction(repo.findById)
+      expect(typeof repo.findById).toBe('function')
     })
 
-    it('should add ability to replace repository factory', () => {
+    test('should add ability to replace repository factory', () => {
       // $FlowIgnore
       manager.setRepositoryFactory((tableName, manager): Repository => ({
         getTableName() {
@@ -111,15 +110,15 @@ describe('Integration', () => {
         }
       }))
       const repo = manager.getRepository('users')
-      assert.property(repo, 'getTableName')
-      assert.property(repo, 'getManager')
+      expect('getTableName' in repo).toBeTruthy()
+      expect('getManager' in repo).toBeTruthy()
       // $FlowIgnore
-      assert.strictEqual(repo.getManager(), manager)
+      expect(repo.getManager()).toBe(manager)
       // $FlowIgnore
-      assert.equal(repo.getTableName(), 'users')
+      expect(repo.getTableName()).toEqual('users')
     })
 
-    afterEach(async function() {
+    afterEach(async function () {
       this.timeout(10000)
       await schemaTool.dropSchema()
       manager.clear()
