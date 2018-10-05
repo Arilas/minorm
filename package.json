@@ -5,12 +5,12 @@
   "main": "lib/index.js",
   "scripts": {
     "dist": "babel -d lib/ src/",
-    "watch": "babel --watch -d lib/ src/",
     "prepublish": "in-publish && npm run dist || echo 'Bad mode'",
-    "test": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test",
-    "test:integration": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/integration",
-    "test:functional": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/functional",
-    "test:unit": "nyc --reporter=lcov --require babel-register ./node_modules/.bin/_mocha --recursive test/unit"
+    "lint": "eslint .",
+    "test": "jest --runInBand --forceExit",
+    "test:integration": "jest test/integration --runInBand --forceExit",
+    "test:functional": "jest test/functional --runInBand --forceExit",
+    "test:unit": "jest test/unit --runInBand --forceExit"
   },
   "repository": {
     "type": "git",
@@ -29,27 +29,49 @@
   },
   "homepage": "https://github.com/Arilas/minorm#readme",
   "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/register": "^7.0.0",
     "array-aggregate": "^0.1.7",
-    "babel-cli": "^6.16.0",
-    "babel-eslint": "^7.0.0",
-    "babel-plugin-istanbul": "^2.0.1",
-    "babel-preset-nodejs6": "^1.0.0",
-    "babel-preset-react": "^6.16.0",
-    "babel-preset-stage-1": "^6.16.0",
-    "babel-register": "^6.16.3",
-    "chai": "^3.5.0",
-    "eslint": "^3.7.1",
-    "eslint-plugin-flowtype": "^2.46.3",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.6.1",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "flow-bin": "^0.82.0",
+    "flow-typed": "^2.5.1",
     "in-publish": "^2.0.0",
-    "mocha": "^3.1.0",
-    "nyc": "^8.3.0"
+    "jest": "^23.6.0"
   },
   "dependencies": {
-    "is-generator-function": "^1.0.6",
-    "mysql2": "^1.4.2",
+    "is-generator-function": "^1.0.7",
+    "mysql2": "^1.6.1",
     "squel": "^5.12.0"
   },
   "engines": {
-    "node": ">=6.0"
+    "node": ">=6.10"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,  
+    "testPathIgnorePatterns": [
+      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]",
+      "(config|fixtures|utils)"
+    ],
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.js$"
+    ],
+    "testMatch": [
+      "**/test/**/*.js"
+    ]
   }
 }

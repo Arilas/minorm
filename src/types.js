@@ -34,7 +34,7 @@ export type TableMetadata = {
 export type Repository<T: BaseRecord = { [key: string]: any }> = {
   find(id: number): Promise<Model<T> | null>,
   findOneBy(criteria: Criteria): Promise<Model<T> | null>,
-  findBy(criteria: Criteria, orderBy?: { [key: string]: string }, limit?: number, offset?: number): Promise<Array<Model<T>>>,
+  findBy(criteria: Criteria, orderBy?: { [key: string]: boolean }, limit?: number, offset?: number): Promise<Array<Model<T>>>,
   create<Q: T>(data: Q): Model<Q>,
   getMetadata(): Promise<TableMetadata>,
   startQuery(alias: ?string): SelectQueryInternal<T>,
@@ -131,7 +131,8 @@ export type MetadataManager = {
 export type Pool = {
   getConnection(): Promise<Connection>,
   query(sql: string | Object, values?: Array<any>): Promise<*>,
-  execute(sql: string | Object, values?: Array<any>): Promise<*>
+  execute(sql: string | Object, values?: Array<any>): Promise<*>,
+  end(): Promise<void>
 }
 
 export type Manager = {

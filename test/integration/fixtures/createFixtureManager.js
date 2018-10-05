@@ -45,7 +45,7 @@ export function createFixtureManager(manager: Manager) {
     return Promise.all(range(0, count).map(createPostsToUser.bind(id)))
   }
 
-  async function createPosts(userCount?: number = 1, postsPerUser?: number = 1): Promise<Array<Array<Object>>> {
+  async function createPosts(usersCount?: number = 1, postsPerUser?: number = 1): Promise<Array<Array<Object>>> {
     const users = await createUsers(usersCount)
     return Promise.all(users.map(user => createPostsToUser(postsPerUser, user.id)))
   }

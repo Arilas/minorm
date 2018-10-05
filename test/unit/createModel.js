@@ -1,6 +1,5 @@
 /** @flow */
-import {assert} from 'chai'
-import {createModel} from '../../src/createModel'
+import { createModel } from '../../src/createModel'
 
 const uMetadata = {
   id: {
@@ -27,7 +26,7 @@ const uMetadata = {
 }
 describe('Unit', () => {
   describe('createModel', () => {
-    it('should extend original object with methods', async () => {
+    test('should extend original object with methods', async () => {
       const obj = {
         test: 'some'
       }
@@ -36,25 +35,24 @@ describe('Unit', () => {
       createModel({
         insert(changes) {
           if (insertCount == 0) {
-            assert.propertyVal(changes, 'test', 'some')
+            expect(changes['test']).toBe('some')
             insertCount = 1
           } else {
-            assert.propertyVal(changes, 'id', 1)
-            assert.propertyVal(changes, 'test', 'some')
-            assert.propertyVal(changes, 'foo', 'bar')
+            expect(changes['id']).toBe(1)
+            expect(changes['test']).toBe('some')
           }
           return Promise.resolve(1)
         },
         update(id, changes) {
-          assert.equal(id, 1)
-          assert.propertyVal(changes, 'foo', 'bar')
-          assert.notProperty(changes, 'id')
-          assert.notProperty(changes, 'test')
-          assert.notProperty(changes, 'ololo')
+          expect(id).toEqual(1)
+          expect(changes['foo']).toBe('bar')
+          expect('id' in changes).toBeFalsy()
+          expect('test' in changes).toBeFalsy()
+          expect('ololo' in changes).toBeFalsy()
           return Promise.resolve(1)
         },
         remove(id) {
-          assert.equal(id, 1)
+          expect(id).toEqual(1)
           return Promise.resolve(1)
         },
         getMetadata() {

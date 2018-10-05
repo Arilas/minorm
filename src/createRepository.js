@@ -23,11 +23,12 @@ export function createRepository<T: BaseRecord>(tableName: string, manager: Mana
         .execute()
         .then((result: Array<T>): Model<T> | null => result.length > 0 ? this.hydrate(result.pop(), true) : null)
     },
-    findBy(criteria: Criteria, orderBy?: { [key: string]: string } = {}, limit?: number, offset?: number): Promise<Array<Model<T>>> {
+    findBy(criteria: Criteria, orderBy?: { [key: string]: boolean } = {}, limit?: number, offset?: number): Promise<Array<Model<T>>> {
       const query: SelectQuery<T> = this.startQuery()
         .criteria(criteria)
       limit && query.limit(limit)
       offset && query.offset(offset)
+      orderBy && Object.keys(orderBy).forEach(key => query.order(key, orderBy[key]))
       return query.execute().then((result: Array<T>): Array<Model<T>> => result.map((entry: T): Model<T> => this.hydrate(entry, true)))
     },
     startQuery(alias: ?string = null): SelectQuery<T> {

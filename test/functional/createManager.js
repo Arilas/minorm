@@ -1,6 +1,5 @@
 /** @flow */
-import {assert} from 'chai'
-import {createManager} from '../../src'
+import { createManager } from '../../src'
 import { createMetadataManager } from './utils/createMetadataManager'
 import { createServer } from './utils/createServer'
 import Config from './config'
@@ -8,22 +7,30 @@ import { createFixtureManager } from '../integration/fixtures/createFixtureManag
 
 describe('Integration', () => {
   describe('createManager', () => {
-    it('should insert data', async () => {
-      createServer()
+    test('should insert data', async () => {
+      const server = createServer()
+      const oldError = console.error // eslint-disable-line no-console
+      // $FlowIgnore
+      console.error = (...opts) => { // eslint-disable-line no-console
+        if (opts[0].indexOf('packets out of order') !== -1) {
+          return
+        }
+        return oldError(...opts)
+      }
       const manager = createManager(Config.connection)
       manager.setMetadataManager(createMetadataManager())
       manager.connect()
       await manager.ready()
       const fixtureManager = createFixtureManager(manager)
       const user = await fixtureManager.createUser()
-      assert.equal(user.id, 1)
+      expect(user.id).toEqual(1)
       const post = await fixtureManager.createPost()
-      assert.equal(post.id, 1)
-      assert.equal(post.creator_id, 2)
+      expect(post.id).toEqual(1)
+      expect(post.creator_id).toEqual(2)
       const comment = await fixtureManager.createPostComment(post.id, user.id)
-      assert.equal(comment.id, 1)
-      assert.equal(comment.post_id, post.id)
-      assert.equal(comment.creator_id, user.id)
+      expect(comment.id).toEqual(1)
+      expect(comment.post_id).toEqual(post.id)
+      expect(comment.creator_id).toEqual(user.id)
       user.login = 'updated'
       await user.save()
       try {
@@ -31,6 +38,10 @@ describe('Integration', () => {
       } catch (err) {
         // Should be wrapped
       }
+      await manager.getPool().end()
+      //$FlowIgnore
+      console.error = oldError // eslint-disable-line no-console
+      server.close()
     })
   })
 })

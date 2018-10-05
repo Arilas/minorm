@@ -1,6 +1,5 @@
 /** @flow */
-import {assert} from 'chai'
-import {createRepository} from '../../src/createRepository'
+import { createRepository } from '../../src/createRepository'
 import insert from '../../src/query/insert'
 import select from '../../src/query/select'
 import update from '../../src/query/update'
@@ -46,15 +45,15 @@ function createStubManager() {
 }
 describe('Unit', () => {
   describe('createRepository', () => {
-    it('should find data by id', async () => {
+    test('should find data by id', async () => {
       const QUERY = 'SELECT * FROM u WHERE (id = ?)'
       const manager = {
         ...createStubManager(),
         query(query) {
           const {text, values} = query.toParam()
-          assert.equal(text, QUERY)
-          assert.lengthOf(values, 1)
-          assert.include(values || [], 1)
+          expect(text).toEqual(QUERY)
+          expect(values.length).toBe(1)
+          expect(values || []).toContain(1)
           return Promise.resolve([[{
             id: 1,
             some: 'field'
@@ -64,20 +63,20 @@ describe('Unit', () => {
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
       const record = await uRepo.find(1)
-      assert.isNotNull(record)
+      expect(record).not.toBeNull()
       if (record == null) return //Flow hack
-      assert.propertyVal(record, 'id', 1)
-      assert.propertyVal(record, 'some', 'field')
+      expect(record['id']).toBe(1)
+      expect(record['some']).toBe('field')
     })
-    it('should findOne data by criteria', async () => {
+    test('should findOne data by criteria', async () => {
       const QUERY = 'SELECT * FROM u WHERE (id = ?) LIMIT ?'
       const manager = {
         ...createStubManager(),
         query(query) {
           const {text, values} = query.toParam()
-          assert.equal(text, QUERY)
-          assert.lengthOf(values, 2)
-          assert.include(values || [], 1)
+          expect(text).toEqual(QUERY)
+          expect(values.length).toBe(2)
+          expect(values || []).toContain(1)
           return Promise.resolve([[{
             id: 1,
             some: 'field'
@@ -87,20 +86,20 @@ describe('Unit', () => {
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
       const record = await uRepo.findOneBy({id: 1})
-      assert.isNotNull(record)
+      expect(record).not.toBeNull()
       if (record == null) return //Flow hack
-      assert.propertyVal(record, 'id', 1)
-      assert.propertyVal(record, 'some', 'field')
+      expect(record['id']).toBe(1)
+      expect(record['some']).toBe('field')
     })
-    it('should find data by criteria', async () => {
+    test('should find data by criteria', async () => {
       const QUERY = 'SELECT * FROM u WHERE (id = ?)'
       const manager = {
         ...createStubManager(),
         query(query) {
           const {text, values} = query.toParam()
-          assert.equal(text, QUERY)
-          assert.lengthOf(values, 1)
-          assert.include(values || [], 1)
+          expect(text).toEqual(QUERY)
+          expect(values.length).toBe(1)
+          expect(values || []).toContain(1)
           return Promise.resolve([[{
             id: 1,
             some: 'field'
@@ -110,23 +109,23 @@ describe('Unit', () => {
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
       const result = await uRepo.findBy({id: 1})
-      assert.lengthOf(result, 1)
+      expect(result.length).toBe(1)
       const [record] = result
-      assert.isNotNull(record)
+      expect(record).not.toBeNull()
       if (record == null) return //Flow hack
-      assert.propertyVal(record, 'id', 1)
-      assert.propertyVal(record, 'some', 'field')
+      expect(record['id']).toBe(1)
+      expect(record['some']).toBe('field')
     })
-    it('should findOne data by hard criteria', async () => {
+    test('should findOne data by hard criteria', async () => {
       const QUERY = 'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?) AND (foo NOT IN (?, ?))'
       const manager = {
         ...createStubManager(),
         query(query) {
           const {text, values} = query.toParam()
-          assert.equal(text, QUERY)
-          assert.lengthOf(values, 6)
-          assert.include(values || [], 1)
-          assert.include(values || [], 2)
+          expect(text).toEqual(QUERY)
+          expect(values.length).toBe(6)
+          expect(values || []).toContain(1)
+          expect(values || []).toContain(2)
           return Promise.resolve([[{
             id: 1,
             some: 'field'
@@ -149,14 +148,14 @@ describe('Unit', () => {
           $notIn: [1,2]
         }
       })
-      assert.lengthOf(result, 1)
+      expect(result.length).toBe(1)
       const [record] = result
-      assert.isNotNull(record)
+      expect(record).not.toBeNull()
       if (record == null) return //Flow hack
-      assert.propertyVal(record, 'id', 1)
-      assert.propertyVal(record, 'some', 'field')
+      expect(record['id']).toBe(1)
+      expect(record['some']).toBe('field')
     })
-    it('should create data', async () => {
+    test('should create data', async () => {
       const QUERY = 'INSERT INTO u (test, ololo) VALUES (?, ?)'
       const changes = {
         test : 'some',
@@ -166,8 +165,8 @@ describe('Unit', () => {
         ...createStubManager(),
         query(query) {
           const {text, values} = query.toParam()
-          assert.equal(text, QUERY)
-          assert.lengthOf(values, 2)
+          expect(text).toEqual(QUERY)
+          expect(values.length).toBe(2)
           return Promise.resolve([{
             insertId: 1
           }])
@@ -176,9 +175,9 @@ describe('Unit', () => {
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
       const result = await uRepo.insert(changes)
-      assert.equal(result, 1)
+      expect(result).toEqual(1)
     })
-    it('should update data', async () => {
+    test('should update data', async () => {
       const QUERY = 'UPDATE u SET id = ?, test = ?, ololo = ? WHERE (id = ?)'
       const changes = {
         id: 1,
@@ -189,8 +188,8 @@ describe('Unit', () => {
         ...createStubManager(),
         query(query) {
           const {text, values} = query.toParam()
-          assert.equal(text, QUERY)
-          assert.lengthOf(values, 4)
+          expect(text).toEqual(QUERY)
+          expect(values.length).toBe(4)
           return Promise.resolve([{}])
         }
       }

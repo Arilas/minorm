@@ -1,11 +1,10 @@
 /** @flow */
 import {createTableBuilder} from '../../../src/schema/gateways/tableGateway'
-import {assert} from 'chai'
 
 describe('Unit', () => {
   describe('Schema', () => {
     describe('Table Builder', () => {
-      it('should create sql for columns', () => {
+      test('should create sql for columns', () => {
         const usersBlock = `CREATE TABLE IF NOT EXISTS \`users\` (
 \`id\` INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 \`login\` VARCHAR(255) NOT NULL,
@@ -20,7 +19,7 @@ describe('Unit', () => {
           gateway.column('createdAt').date()
         })
         // $FlowIgnore inner method usage
-        assert.equal(builder.build(), usersBlock)
+        expect(builder.build()).toEqual(usersBlock)
       })
     })
   })

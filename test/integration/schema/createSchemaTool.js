@@ -1,13 +1,11 @@
 /** @flow */
-import {assert} from 'chai'
-import {createManager} from '../../../src/index'
+import { createManager } from '../../../src/index'
 import {createSchemaTool} from '../../../src/schema'
 import Config from '../config'
 
 describe('Integration', () => {
   describe('Schema', () => {
-    it('should init Database schema', async function() {
-      this.timeout(10000)
+    test('should init Database schema', async () => {
       const manager = createManager(Config.connection)
       manager.connect()
       await manager.ready()
@@ -86,13 +84,14 @@ describe('Integration', () => {
         } 
       )
       await schemaTool.initSchema()
-      assert.isTrue(manager.getMetadataManager().hasTable('users'))
-      assert.isTrue(manager.getMetadataManager().hasTable('posts'))
+      expect(manager.getMetadataManager().hasTable('users')).toBe(true)
+      expect(manager.getMetadataManager().hasTable('posts')).toBe(true)
       await schemaTool.dropSchema()
+      await manager.getPool().end()
+      manager.clear()
     })
 
-    it('should apply changes when I directly ask for this', async function () {
-      this.timeout(10000)
+    test('should apply changes when I directly ask for this', async () => {
       const manager = createManager(Config.connection)
       manager.connect()
       await manager.ready()
@@ -118,7 +117,7 @@ describe('Integration', () => {
           ])
           yield schema.asyncExecute()
           const [users] = yield schema.asyncQuery('SELECT * FROM users WHERE login = \'test\'')
-          assert.lengthOf(users, 1)
+          expect(users.length).toBe(1)
           schema.table('posts', ctx => {
             ctx.column('id').int().unsigned().primary().autoIncrement()
             ctx.column('title').notNull()
@@ -141,9 +140,11 @@ describe('Integration', () => {
         }
       })
       await schemaTool.initSchema()
-      assert.isTrue(manager.getMetadataManager().hasTable('users'))
-      assert.isTrue(manager.getMetadataManager().hasTable('posts'))
+      expect(manager.getMetadataManager().hasTable('users')).toBe(true)
+      expect(manager.getMetadataManager().hasTable('posts')).toBe(true)
       await schemaTool.dropSchema()
+      await manager.getPool().end()
+      manager.clear()
     })
   })
 })

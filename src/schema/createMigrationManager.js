@@ -10,7 +10,7 @@ const MIGRATIONS_QUERY = `SELECT migration FROM ${MINORM_MIGRATIONS_TABLE}`
 type MigrationsMap = Map<string, Migration>
 
 export function createMigrationManager(manager: Manager): MigrationManager {
-  const initializers:MigrationsMap = new Map()
+  const initializers: MigrationsMap = new Map()
   const migrations: MigrationsMap = new Map()
 
   return {
@@ -35,9 +35,9 @@ export function createMigrationManager(manager: Manager): MigrationManager {
       await manager.ready()
       const migrationsToRevert = new Map(
         Array.from(migrations.keys())
-        .sort()
-        .reverse()
-        .map(migration => [migration, migrations.get(migration)])
+          .sort()
+          .reverse()
+          .map(migration => [migration, migrations.get(migration)])
       )
       await this.execute(migrationsToRevert, 'down')
       await this.execute(initializers, 'down')
@@ -140,10 +140,10 @@ export function createMigrationManager(manager: Manager): MigrationManager {
 
       return new Map(
         Array.from(migrations.keys())
-        .filter(migration => !appliedMigrations.hasOwnProperty(migration))
-        .sort()
+          .filter(migration => !appliedMigrations.hasOwnProperty(migration))
+          .sort()
         // $FlowIgnore fix for model
-        .map(migration => [migration, migrations.get(migration)])
+          .map(migration => [migration, migrations.get(migration)])
       )
     }
   }
