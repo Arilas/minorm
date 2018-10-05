@@ -7,10 +7,10 @@
     "dist": "babel -d lib/ src/",
     "prepublish": "in-publish && npm run dist || echo 'Bad mode'",
     "lint": "eslint .",
-    "test": "jest --detectOpenHandles",
-    "test:integration": "jest test/integration",
-    "test:functional": "jest test/functional",
-    "test:unit": "jest test/unit"
+    "test": "jest --runInBand --forceExit",
+    "test:integration": "jest test/integration --runInBand --forceExit",
+    "test:functional": "jest test/functional --runInBand --forceExit",
+    "test:unit": "jest test/unit --runInBand --forceExit"
   },
   "repository": {
     "type": "git",

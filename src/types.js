@@ -131,7 +131,8 @@ export type MetadataManager = {
 export type Pool = {
   getConnection(): Promise<Connection>,
   query(sql: string | Object, values?: Array<any>): Promise<*>,
-  execute(sql: string | Object, values?: Array<any>): Promise<*>
+  execute(sql: string | Object, values?: Array<any>): Promise<*>,
+  end(): Promise<void>
 }
 
 export type Manager = {

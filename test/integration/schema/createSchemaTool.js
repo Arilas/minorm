@@ -88,6 +88,7 @@ describe('Integration', () => {
       expect(manager.getMetadataManager().hasTable('posts')).toBe(true)
       await schemaTool.dropSchema()
       await manager.getPool().end()
+      manager.clear()
     })
 
     test('should apply changes when I directly ask for this', async () => {
@@ -143,6 +144,7 @@ describe('Integration', () => {
       expect(manager.getMetadataManager().hasTable('posts')).toBe(true)
       await schemaTool.dropSchema()
       await manager.getPool().end()
+      manager.clear()
     })
   })
 })
