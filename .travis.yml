@@ -32,16 +32,17 @@ cache:
   directories:
     - node_modules
 
-before_script:
-  - "docker --version"
-  - "docker exec mysql mysql -ulocal -pfreeware -e 'select version()'"
-
 install:
-  - "docker run -d --name mysql -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_USER=local -e MYSQL_PASSWORD=freeware -e MYSQL_DATABASE=minorm_test $DOCKER_MYSQL_TYPE:$DOCKER_MYSQL_VERSION --default-authentication-plugin=mysql_native_password"
+  - "docker run -d --name mysql -p 3306:3306 -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_USER=local -e MYSQL_PASSWORD=freeware -e MYSQL_DATABASE=minorm_test $DOCKER_MYSQL_TYPE:$DOCKER_MYSQL_VERSION --default-authentication-plugin=mysql_native_password"
   - npm i -g yarn
   - yarn global add codecov
   - yarn install
   - "docker run --link mysql:db -e CHECK_PORT=3306 -e CHECK_HOST=db giorgos/takis"
+
+before_script:
+  - "docker --version"
+  - "docker exec mysql mysql -ulocal -pfreeware -e 'select version()'"
+
 script:
   - yarn test
   - yarn lint
