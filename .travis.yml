@@ -37,7 +37,7 @@ install:
   - npm i -g yarn
   - yarn global add codecov
   - yarn install
-  - "docker run --link mysql:db -e CHECK_PORT=3306 -e CHECK_HOST=db giorgos/takis"
+  - "docker run --net=host -e CHECK_PORT=3306 -e CHECK_HOST=localhost giorgos/takis"
 
 before_script:
   - "docker --version"
