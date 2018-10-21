@@ -1,52 +1,38 @@
 language: node_js
-node_js:
-  - "6.14"
-  - "8.12"
-  - "10.3"
-env:
-  global:
-    # Necessary to build Node.js 0.6 on Travis CI images
-    - "CC=gcc-4.6 CXX=g++-4.6"
-  matrix:
-    - "DOCKER_MYSQL_TYPE=mysql DOCKER_MYSQL_VERSION=8.0"
-
-matrix:
-  include:
-    - node_js: "6.14"
-      env: "DOCKER_MYSQL_TYPE=mysql DOCKER_MYSQL_VERSION=5.7"
-    - node_js: "6.14"
-      env: "DOCKER_MYSQL_TYPE=mariadb DOCKER_MYSQL_VERSION=10.2"
-    - node_js: "6.14"
-      env: "DOCKER_MYSQL_TYPE=mariadb DOCKER_MYSQL_VERSION=10.3"
-
-dist: trusty
-addons:
-  apt:
-    packages:
-      - g++-4.6
-sudo: required
-services:
-  - docker
-
 cache:
   directories:
-    - node_modules
+  - node_modules # NPM packages
+matrix:
+  fast_finish: true
+  include:
+    - addons:
+        mariadb: 10.3
+      env: DB=mariadb NODE=6.12 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
+        - 6
+    - addons:
+        mariadb: 10.3
+      env: DB=mariadb NODE=8.9 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
+        - 8
+    - services:
+        - mysql
+      env: DB=mysql NODE=8.9 MYSQL_USER=root MYSQL_PASS=''
+      node_js:
+        - 10
 
+
+before_script:
+ - mysql -u root -e 'create database minorm_test;'
 install:
-  - "docker run -d --name mysql --net=host -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_USER=local -e MYSQL_PASSWORD=freeware -e MYSQL_DATABASE=minorm_test $DOCKER_MYSQL_TYPE:$DOCKER_MYSQL_VERSION --default-authentication-plugin=mysql_native_password"
   - npm i -g yarn
   - yarn global add codecov
   - yarn install
-  - "docker run --net=host -e CHECK_PORT=3306 -e CHECK_HOST=localhost giorgos/takis"
-
-before_script:
-  - "docker --version"
-  - "docker exec mysql mysql -ulocal -pfreeware -e 'select version()'"
-
 script:
   - yarn test
   - yarn lint
   - yarn flow check
-after_script:
+after_success:
   - codecov
+after_script:
   - mysql -u root -e 'drop database minorm_test;'
