@@ -21,7 +21,6 @@ matrix:
       node_js:
         - 10
 
-
 before_script:
  - mysql -u root -e 'create database minorm_test;'
 install:
@@ -29,9 +28,8 @@ install:
   - yarn global add codecov
   - yarn install
 script:
-  - yarn test
-  - yarn lint
-  - yarn flow check
+  - yarn lerna run test
+  - yarn lerna run lint
 after_success:
   - codecov
 after_script:
