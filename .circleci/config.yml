@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
 shared: &shared
   working_directory: ~/repo
 
@@ -82,24 +82,28 @@ jobs:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
+    parameters:
+      is_next:
+        type: bool
+        default: no
     steps:
       - checkout
-
       # Download and cache dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
-
       - run: yarn install
-      - run: yarn version --patch
-      - add_ssh_keys:
-          fingerprints:
-            - "28:2d:f3:d2:ca:63:07:fb:51:fe:b5:0e:ce:f8:3e:79"
-      - run: git push --follow-tags
       - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - run: npm publish --dry-run
+      - when:
+          condition: <<parameters.is_next>>
+          steps:
+            - run: npm publish --tag next
+      - unless:
+          condition: <<parameters.is_next>>
+          steps:
+            - run: npm publish
 
 workflows:
   version: 2
@@ -118,3 +122,17 @@ workflows:
           filters:
             branches:
               only: master
+            tags:
+              only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
+      - Version:
+          is_next: true
+          requires:
+            - "Node 6"
+            - "Node 8"
+            - "Node 10 MariaDB 10.3"
+            - "Node 10 MySQL 8"
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)@next$/
