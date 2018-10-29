@@ -28,7 +28,7 @@ shared: &shared
     - run: yarn test
     - run: yarn lint
     - run: yarn flow check
-    - run: codecov
+    - run: $(yarn global bin)/codecov
 
 jobs:
   "Node 10 MariaDB 10.3":
