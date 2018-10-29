@@ -1,0 +1,89 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+shared: &shared
+  working_directory: ~/repo
+
+  steps:
+    - checkout
+  
+    # Download and cache dependencies
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        # fallback to using the latest cache if no exact match is found
+        - v1-dependencies-
+
+    - run: yarn install
+    - run: yarn global add codecov
+
+    - save_cache:
+        paths:
+          - node_modules
+        key: v1-dependencies-{{ checksum "package.json" }}
+        
+    # run tests!
+    - run: yarn test
+    - run: yarn lint
+    - run: yarn flow check
+
+
+jobs:
+  "Node 10 MariaDB 10.3":
+    <<: *shared
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10
+      - image: circleci/mariadb:10.3
+        environment:
+          MYSQL_DATABASE: minorm_test
+          MYSQL_USER: local
+          MYSQL_PASSWORD: freeware
+          MYSQL_RANDOM_ROOT_PASSWORD: yes
+
+  "Node 10 MySQL 8"
+    <<: *shared
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10
+      - image: mysql:8
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+          MYSQL_DATABASE: minorm_test
+          MYSQL_USER: local
+          MYSQL_PASSWORD: freeware
+          MYSQL_RANDOM_ROOT_PASSWORD: yes
+
+  "Node 8":
+    <<: *shared
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:8
+      - image: circleci/mariadb:10.3
+          environment:
+          MYSQL_DATABASE: minorm_test
+          MYSQL_USER: local
+          MYSQL_PASSWORD: freeware
+          MYSQL_RANDOM_ROOT_PASSWORD: yes
+  "Node 6":
+    <<: *shared
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:6
+      - image: circleci/mariadb:10.3
+          environment:
+          MYSQL_DATABASE: minorm_test
+          MYSQL_USER: local
+          MYSQL_PASSWORD: freeware
+          MYSQL_RANDOM_ROOT_PASSWORD: yes
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "Node 6"
+      - "Node 8"
+      - "Node 10 MariaDB 10.3"
+      - "Node 10 MySQL 8"
