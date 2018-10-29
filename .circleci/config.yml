@@ -28,6 +28,7 @@ shared: &shared
     - run: yarn test
     - run: yarn lint
     - run: yarn flow check
+    - run: codecov
 
 jobs:
   "Node 10 MariaDB 10.3":
