@@ -43,7 +43,7 @@ jobs:
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
 
-  "Node 10 MySQL 8"
+  "Node 10 MySQL 8":
     <<: *shared
     docker:
       # specify the version you desire here
