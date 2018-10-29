@@ -8,13 +8,13 @@ shared: &shared
 
   steps:
     - checkout
-  
+
     # Download and cache dependencies
     - restore_cache:
         keys:
-        - v1-dependencies-{{ checksum "package.json" }}
-        # fallback to using the latest cache if no exact match is found
-        - v1-dependencies-
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
 
     - run: yarn install
     - run: yarn global add codecov
@@ -23,12 +23,11 @@ shared: &shared
         paths:
           - node_modules
         key: v1-dependencies-{{ checksum "package.json" }}
-        
+
     # run tests!
     - run: yarn test
     - run: yarn lint
     - run: yarn flow check
-
 
 jobs:
   "Node 10 MariaDB 10.3":
@@ -62,7 +61,7 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:8
       - image: circleci/mariadb:10.3
-          environment:
+        environment:
           MYSQL_DATABASE: minorm_test
           MYSQL_USER: local
           MYSQL_PASSWORD: freeware
@@ -73,7 +72,7 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:6
       - image: circleci/mariadb:10.3
-          environment:
+        environment:
           MYSQL_DATABASE: minorm_test
           MYSQL_USER: local
           MYSQL_PASSWORD: freeware
