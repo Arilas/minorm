@@ -31,7 +31,7 @@ shared: &shared
     - run: $(yarn global bin)/codecov
 
 jobs:
-  "Node 10 MariaDB 10.3":
+  node_10_mariadb_10-3:
     <<: *shared
     docker:
       # specify the version you desire here
@@ -43,7 +43,7 @@ jobs:
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
 
-  "Node 10 MySQL 8":
+  node_10_mysql_8:
     <<: *shared
     docker:
       # specify the version you desire here
@@ -56,7 +56,7 @@ jobs:
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
 
-  "Node 8":
+  node_8:
     <<: *shared
     docker:
       # specify the version you desire here
@@ -67,7 +67,7 @@ jobs:
           MYSQL_USER: local
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
-  "Node 6":
+  node_6:
     <<: *shared
     docker:
       # specify the version you desire here
@@ -78,13 +78,13 @@ jobs:
           MYSQL_USER: local
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
-  Version:
+  version:
     docker:
       - image: circleci/node:10
     working_directory: ~/repo
     parameters:
       is_next:
-        type: bool
+        type: boolean
         default: no
     steps:
       - checkout
@@ -109,28 +109,28 @@ workflows:
   version: 2
   build:
     jobs:
-      - "Node 6"
-      - "Node 8"
-      - "Node 10 MariaDB 10.3"
-      - "Node 10 MySQL 8"
-      - Version:
+      - node_6
+      - node_8
+      - node_10_mariadb_10-3
+      - node_10_mysql_8
+      - version:
           requires:
-            - "Node 6"
-            - "Node 8"
-            - "Node 10 MariaDB 10.3"
-            - "Node 10 MySQL 8"
+            - node_6
+            - node_8
+            - node_10_mariadb_10-3
+            - node_10_mysql_8
           filters:
             branches:
               only: master
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
-      - Version:
+      - version:
           is_next: true
           requires:
-            - "Node 6"
-            - "Node 8"
-            - "Node 10 MariaDB 10.3"
-            - "Node 10 MySQL 8"
+            - node_6
+            - node_8
+            - node_10_mariadb_10-3
+            - node_10_mysql_8
           filters:
             branches:
               only: master
