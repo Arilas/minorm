@@ -58,7 +58,7 @@
       "src/**/*.js"
     ],
     "coverageDirectory": "./coverage/",
-    "collectCoverage": true,  
+    "collectCoverage": true,
     "testPathIgnorePatterns": [
       "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]",
       "(config|fixtures|utils)"
