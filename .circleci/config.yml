@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2.1
+version: 2
 shared: &shared
   working_directory: ~/repo
 
@@ -78,33 +78,38 @@ jobs:
           MYSQL_USER: local
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
-  version:
+  version-1:
     docker:
-      - image: circleci/node:10
+    - image: circleci/node:10
     working_directory: ~/repo
-    parameters:
-      is_next:
-        type: boolean
-        default: no
     steps:
-      - checkout
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
-      - run: yarn install
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      - when:
-          condition: <<parameters.is_next>>
-          steps:
-            - run: npm publish --tag next
-      - unless:
-          condition: <<parameters.is_next>>
-          steps:
-            - run: npm publish
-
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        - v1-dependencies-
+    - run:
+        command: yarn install
+    - run:
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+    - run:
+        command: npm publish
+  version-2:
+    docker:
+    - image: circleci/node:10
+    working_directory: ~/repo
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dependencies-{{ checksum "package.json" }}
+        - v1-dependencies-
+    - run:
+        command: yarn install
+    - run:
+        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+    - run:
+        command: npm publish --tag next
 workflows:
   version: 2
   build:
@@ -113,26 +118,25 @@ workflows:
       - node_8
       - node_10_mariadb_10-3
       - node_10_mysql_8
-      - version:
-          requires:
-            - node_6
-            - node_8
-            - node_10_mariadb_10-3
-            - node_10_mysql_8
+      - version-1:
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
-      - version:
-          is_next: true
           requires:
-            - node_6
-            - node_8
-            - node_10_mariadb_10-3
-            - node_10_mysql_8
+          - node_6
+          - node_8
+          - node_10_mariadb_10-3
+          - node_10_mysql_8
+      - version-2:
           filters:
             branches:
               ignore: /.*/
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)-next\.([0-9]+)$/
+          requires:
+          - node_6
+          - node_8
+          - node_10_mariadb_10-3
+          - node_10_mysql_8

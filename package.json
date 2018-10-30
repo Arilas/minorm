@@ -60,7 +60,7 @@
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
     "testPathIgnorePatterns": [
-      "<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]",
+      "<rootDir>[/\\\\](build|docs|node_modules|scriptslib/)[/\\\\]",
       "(config|fixtures|utils)"
     ],
     "testEnvironment": "node",
