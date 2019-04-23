@@ -1,6 +1,6 @@
 /** @flow */
 import { createBaseGateway } from '../createBaseGateway'
-import type {SchemaToolGateway} from '../../types'
+import type { SchemaToolGateway } from '../../types'
 import { APPLY } from './constants'
 
 export function executeGateway(): () => SchemaToolGateway {
@@ -8,8 +8,8 @@ export function executeGateway(): () => SchemaToolGateway {
     ...createBaseGateway(),
     getAction() {
       return {
-        type: APPLY
+        type: APPLY,
       }
-    }
+    },
   })
 }

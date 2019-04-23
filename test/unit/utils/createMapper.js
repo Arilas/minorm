@@ -13,14 +13,14 @@ describe('Unit', () => {
         const mapper = createMapper()
         mapper.setEntryPoint('post')
         mapper.setRelation('post', 'creator')
-        expect(mapper.build()).toEqual({ creator: {}})
+        expect(mapper.build()).toEqual({ creator: {} })
       })
       test('should build map with nested includes', () => {
         const mapper = createMapper()
         mapper.setEntryPoint('post')
         mapper.setRelation('post', 'creator')
         mapper.setRelation('creator', 'avatar')
-        expect(mapper.build()).toEqual({ creator: { avatar: {} }})
+        expect(mapper.build()).toEqual({ creator: { avatar: {} } })
       })
       test('should build map with multiple nested includes', () => {
         const mapper = createMapper()
@@ -30,38 +30,42 @@ describe('Unit', () => {
         mapper.setRelation('post', 'lastComment')
         mapper.setRelation('creator', 'avatar')
         mapper.setRelation('category', 'company')
-        expect(mapper.build()).toEqual({ creator: { avatar: {} }, category: { company: {} }, lastComment: {}})
+        expect(mapper.build()).toEqual({
+          creator: { avatar: {} },
+          category: { company: {} },
+          lastComment: {},
+        })
       })
 
       const creator = {
-        user: true
+        user: true,
       }
 
       const post = {
-        post: true
+        post: true,
       }
 
       const avatar = {
-        avatar: true
+        avatar: true,
       }
 
       const lastComment = {
-        lastComment: true
+        lastComment: true,
       }
 
       const category = {
-        category: true
+        category: true,
       }
 
       const company = {
-        company: true
+        company: true,
       }
 
       test('should map entity without includes', () => {
         const mapper = createMapper()
         mapper.setEntryPoint('post')
         const postEntity = mapper.map({
-          post
+          post,
         })
         expect(postEntity).toEqual(post)
       })
@@ -71,11 +75,11 @@ describe('Unit', () => {
         mapper.setRelation('post', 'creator')
         const postEntity = mapper.map({
           post,
-          creator
+          creator,
         })
         expect(postEntity).toEqual({
           ...post,
-          creator
+          creator,
         })
       })
       test('should map entities with nested includes', () => {
@@ -86,14 +90,14 @@ describe('Unit', () => {
         const postEntity = mapper.map({
           post,
           creator,
-          avatar
+          avatar,
         })
         expect(postEntity).toEqual({
           ...post,
           creator: {
             ...creator,
-            avatar
-          }
+            avatar,
+          },
         })
       })
       test('should map entities with multiple nested includes', () => {
@@ -110,19 +114,19 @@ describe('Unit', () => {
           avatar,
           category,
           company,
-          lastComment
+          lastComment,
         })
         expect(postEntity).toEqual({
           ...post,
           creator: {
             ...creator,
-            avatar
+            avatar,
           },
           category: {
             ...category,
-            company
+            company,
           },
-          lastComment
+          lastComment,
         })
       })
 
@@ -132,11 +136,11 @@ describe('Unit', () => {
         mapper.setRelation('post', 'creator')
         const postEntity = mapper.map({
           post,
-          creator: null
+          creator: null,
         })
         expect(postEntity).toEqual({
           ...post,
-          creator: null
+          creator: null,
         })
       })
       test('should map entities with missing nested includes', () => {
@@ -147,43 +151,39 @@ describe('Unit', () => {
         const postEntity = mapper.map({
           post,
           creator: null,
-          avatar: null
+          avatar: null,
         })
         expect(postEntity).toEqual({
           ...post,
-          creator: null
+          creator: null,
         })
       })
-      test(
-        'should map entities with missing some of multiple nested includes',
-        () => {
-          const mapper = createMapper()
-          mapper.setEntryPoint('post')
-          mapper.setRelation('post', 'creator')
-          mapper.setRelation('creator', 'avatar')
-          mapper.setRelation('post', 'category')
-          mapper.setRelation('category', 'company')
-          mapper.setRelation('post', 'lastComment')
-          const postEntity = mapper.map({
-            post,
-            creator,
+      test('should map entities with missing some of multiple nested includes', () => {
+        const mapper = createMapper()
+        mapper.setEntryPoint('post')
+        mapper.setRelation('post', 'creator')
+        mapper.setRelation('creator', 'avatar')
+        mapper.setRelation('post', 'category')
+        mapper.setRelation('category', 'company')
+        mapper.setRelation('post', 'lastComment')
+        const postEntity = mapper.map({
+          post,
+          creator,
+          avatar,
+          category: null,
+          company: null,
+          lastComment: null,
+        })
+        expect(postEntity).toEqual({
+          ...post,
+          creator: {
+            ...creator,
             avatar,
-            category: null,
-            company: null,
-            lastComment: null
-          })
-          expect(postEntity).toEqual({
-            ...post,
-            creator: {
-              ...creator,
-              avatar
-            },
-            category: null,
-            lastComment: null
-          })
-
-        }
-      )
+          },
+          category: null,
+          lastComment: null,
+        })
+      })
 
       test('should map entities with one include and named selects', () => {
         const mapper = createMapper()
@@ -193,17 +193,15 @@ describe('Unit', () => {
           post,
           creator,
           '': {
-            named: true
-          }
+            named: true,
+          },
         })
         expect(postEntity).toEqual({
           ...post,
           named: true,
-          creator
+          creator,
         })
       })
-
     })
   })
-
 })

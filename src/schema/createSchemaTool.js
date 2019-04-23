@@ -1,8 +1,8 @@
 /** @flow */
-import {createMigrationManager} from './createMigrationManager'
+import { createMigrationManager } from './createMigrationManager'
 import initMinormMigration from './initMinormSchema'
-import type {SchemaTool} from './types'
-import type {Manager} from '../types'
+import type { SchemaTool } from './types'
+import type { Manager } from '../types'
 
 export function createSchemaTool(manager: Manager): SchemaTool {
   const migrationManager = createMigrationManager(manager)
@@ -19,6 +19,6 @@ export function createSchemaTool(manager: Manager): SchemaTool {
     },
     getMigrationManager() {
       return migrationManager
-    }
+    },
   }
 }

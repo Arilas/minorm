@@ -11,7 +11,8 @@ describe('Integration', () => {
       const server = createServer()
       const oldError = console.error // eslint-disable-line no-console
       // $FlowIgnore
-      console.error = (...opts) => { // eslint-disable-line no-console
+      console.error = (...opts) => {
+        // eslint-disable-line no-console
         if (opts[0].indexOf('packets out of order') !== -1) {
           return
         }
@@ -34,7 +35,11 @@ describe('Integration', () => {
       user.login = 'updated'
       await user.save()
       try {
-        await manager.startQuery().select().from('users').execute()
+        await manager
+          .startQuery()
+          .select()
+          .from('users')
+          .execute()
       } catch (err) {
         // Should be wrapped
       }

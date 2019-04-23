@@ -1,8 +1,4 @@
 /** @flow */
 
-export {
-  setupSchema
-} from './setupSchema'
-export {
-  createFixtureManager
-} from './createFixtureManager'
+export { setupSchema } from './setupSchema'
+export { createFixtureManager } from './createFixtureManager'

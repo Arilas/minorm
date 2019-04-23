@@ -1,25 +1,33 @@
 /** @flow */
-import type { BaseRecord, Repository, Model} from './types'
+import type { BaseRecord, Repository, Model } from './types'
 
 function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
   const wrappedMethod = method.bind(obj)
   Object.defineProperty(obj, name, {
     enumerable: false,
     configurable: false,
-    get: (): T => wrappedMethod
+    get: (): T => wrappedMethod,
   })
 }
 
-export function createModel<T: BaseRecord>(repository: Repository<T>, model: T, isFetched: boolean = true): Model<T> {
-  let origin = isFetched ? {...model} : {}
+export function createModel<T: BaseRecord>(
+  repository: Repository<T>,
+  model: T,
+  isFetched: boolean = true,
+): Model<T> {
+  let origin = isFetched ? { ...model } : {}
   definePrivate(model, 'save', async function(): Promise<Model<T>> {
     const columnsMeta = await repository.getMetadata()
-    const changes = Object.keys(columnsMeta).reduce((target: any, key: string): any => origin[key] != model[key]
-      ? {
-        ...target,
-        [key]: model[key]
-      }
-      : target, {})
+    const changes = Object.keys(columnsMeta).reduce(
+      (target: any, key: string): any =>
+        origin[key] != model[key]
+          ? {
+              ...target,
+              [key]: model[key],
+            }
+          : target,
+      {},
+    )
     if (Object.keys(changes).length || !model.id) {
       if (isFetched && model.id) {
         await repository.update(model.id, changes)
@@ -36,16 +44,20 @@ export function createModel<T: BaseRecord>(repository: Repository<T>, model: T, 
     return this
   })
   definePrivate(model, 'populate', (data: T) => {
-    Object.keys(data).forEach((key: string): void => model[key] = data[key])
+    Object.keys(data).forEach((key: string): void => (model[key] = data[key]))
   })
-  definePrivate(model, 'remove', async (): Promise<number> => {
-    if (isFetched && model.id) {
-      await repository.remove(model.id)
-      isFetched = false
-      origin = {}
-    }
-    return 1
-  })
+  definePrivate(
+    model,
+    'remove',
+    async (): Promise<number> => {
+      if (isFetched && model.id) {
+        await repository.remove(model.id)
+        isFetched = false
+        origin = {}
+      }
+      return 1
+    },
+  )
 
   // $FlowIgnore
   return model

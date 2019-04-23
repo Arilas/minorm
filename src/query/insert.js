@@ -1,9 +1,13 @@
 /** @flow */
 import Squel from 'squel'
-import type {Manager, InsertQuery as $InsertQuery} from '../types'
+import type { Manager, InsertQuery as $InsertQuery } from '../types'
 
 export class InsertQuery extends Squel.cls.Insert {
-  constructor(manager: Manager, options: any, blocks: ?Array<typeof Squel.cls.QueryBlock> = null) {
+  constructor(
+    manager: Manager,
+    options: any,
+    blocks: ?Array<typeof Squel.cls.QueryBlock> = null,
+  ) {
     super(options, blocks)
 
     this._manager = manager

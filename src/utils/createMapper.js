@@ -20,23 +20,22 @@ export function createMapper() {
         if (!hierarchy[entryPoint]) {
           return {}
         }
-        target[entryPoint] = hierarchy[entryPoint]
-          .reduce(
-            (target, path) => Object.assign(
-              target,
-              {
-                [path]: {}
-              }
-            ),
-            target[entryPoint] || {}
-          )
-        hierarchy[entryPoint].forEach(path => populateMap(target[entryPoint], path))
+        target[entryPoint] = hierarchy[entryPoint].reduce(
+          (target, path) =>
+            Object.assign(target, {
+              [path]: {},
+            }),
+          target[entryPoint] || {},
+        )
+        hierarchy[entryPoint].forEach(path =>
+          populateMap(target[entryPoint], path),
+        )
         return target[entryPoint]
       }
 
       return populateMap(map, entryPoint)
     },
-    map(rawData: {[key: string]: ?Object}) {
+    map(rawData: { [key: string]: ?Object }) {
       if (!rawData || !rawData.hasOwnProperty(entryPoint)) {
         return null
       }
@@ -44,7 +43,7 @@ export function createMapper() {
       const result = {
         ...rawData[entryPoint],
         ...map,
-        ...(rawData[''] || {})
+        ...(rawData[''] || {}),
       }
       function populateResult(target, relations) {
         const keys = Object.keys(relations)
@@ -52,7 +51,7 @@ export function createMapper() {
           if (rawData[key]) {
             target[key] = {
               ...rawData[key],
-              ...relations[key]
+              ...relations[key],
             }
             populateResult(target[key], relations[key])
           } else {
@@ -63,6 +62,6 @@ export function createMapper() {
       populateResult(result, map)
 
       return result
-    }
+    },
   }
 }

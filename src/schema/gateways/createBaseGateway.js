@@ -1,8 +1,7 @@
 /** @flow */
-import type {SchemaToolGateway} from '../types'
+import type { SchemaToolGateway } from '../types'
 
 export function createBaseGateway(): SchemaToolGateway {
-
   return {
     getApi() {
       return null
@@ -27,6 +26,6 @@ export function createBaseGateway(): SchemaToolGateway {
     },
     getPostQueries() {
       return []
-    }
+    },
   }
 }

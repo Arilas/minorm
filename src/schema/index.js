@@ -1,5 +1,3 @@
 /** @flow */
 
-export {
-  createSchemaTool
-} from './createSchemaTool'
+export { createSchemaTool } from './createSchemaTool'

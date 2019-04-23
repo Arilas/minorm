@@ -1,10 +1,14 @@
 /** @flow */
 import { createBaseGateway } from './createBaseGateway'
-import type {SchemaToolGateway, SchemaToolCreateTableContext} from '../types'
-import type {MetadataManager} from '../../types'
-import {createColumnContext} from './table/createColumnContext'
+import type { SchemaToolGateway, SchemaToolCreateTableContext } from '../types'
+import type { MetadataManager } from '../../types'
+import { createColumnContext } from './table/createColumnContext'
 
-function createTableContext(ctx, metadataManager, tableName: string): SchemaToolCreateTableContext {
+function createTableContext(
+  ctx,
+  metadataManager,
+  tableName: string,
+): SchemaToolCreateTableContext {
   if (!ctx) {
     throw new Error('Gateway API must be specified')
   }
@@ -19,11 +23,17 @@ function createTableContext(ctx, metadataManager, tableName: string): SchemaTool
       return column
     },
     id() {
-      return this.column('id').int().unsigned().primary().autoIncrement()
+      return this.column('id')
+        .int()
+        .unsigned()
+        .primary()
+        .autoIncrement()
     },
     refColumn(columnName, targetTableName, targetColumnName = 'id') {
       this.ref(columnName, targetTableName, targetColumnName)
-      return this.column(columnName).int().unsigned()
+      return this.column(columnName)
+        .int()
+        .unsigned()
     },
     createdAndModified() {
       this.column('createdAt').dateTime()
@@ -42,19 +52,32 @@ function createTableContext(ctx, metadataManager, tableName: string): SchemaTool
       alterDrop(`FOREIGN KEY \`FK_${tableName}_${columnName}\``)
     },
     dropColumnUnique(columnName: string) {
-      lineDrop(`DROP INDEX \`UNI_${tableName}_${columnName}\` ON \`${tableName}\``)
+      lineDrop(
+        `DROP INDEX \`UNI_${tableName}_${columnName}\` ON \`${tableName}\``,
+      )
     },
     dropColumnIndex(columnName: string) {
-      lineDrop(`DROP INDEX \`IDX_${tableName}_${columnName}\` ON \`${tableName}\``)
+      lineDrop(
+        `DROP INDEX \`IDX_${tableName}_${columnName}\` ON \`${tableName}\``,
+      )
     },
     dropColumnKey(columnName: string) {
-      lineDrop(`DROP INDEX \`KEY_${tableName}_${columnName}\` ON \`${tableName}\``)
+      lineDrop(
+        `DROP INDEX \`KEY_${tableName}_${columnName}\` ON \`${tableName}\``,
+      )
     },
-    ref(columnName: string, referencedTableName: string, referencedColumnName: string, indexName = null) {
+    ref(
+      columnName: string,
+      referencedTableName: string,
+      referencedColumnName: string,
+      indexName = null,
+    ) {
       if (!indexName) {
         indexName = `FK_${tableName}_${columnName}`
       }
-      alterAdd(`CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`)
+      alterAdd(
+        `CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`,
+      )
     },
     unique(columnName, indexName = null) {
       if (!indexName) {
@@ -73,20 +96,23 @@ function createTableContext(ctx, metadataManager, tableName: string): SchemaTool
         indexName = `KEY_${tableName}_${columnName}`
       }
       lineAdd(`KEY \`${indexName}\` (\`${columnName}\`)`)
-    }
+    },
   }
 }
 
-export function createTableGateway(metadataManager: MetadataManager, tableName: string): SchemaToolGateway {
+export function createTableGateway(
+  metadataManager: MetadataManager,
+  tableName: string,
+): SchemaToolGateway {
   const parts = {
     lines: {
       add: [],
-      drop: []
+      drop: [],
     },
     alters: {
       add: [],
-      drop: []
-    }
+      drop: [],
+    },
   }
   const api = {
     lineAdd(line) {
@@ -100,7 +126,7 @@ export function createTableGateway(metadataManager: MetadataManager, tableName: 
     },
     alterDrop(line) {
       parts.alters.drop.push(line)
-    }
+    },
   }
   return {
     ...createBaseGateway(),
@@ -110,9 +136,10 @@ export function createTableGateway(metadataManager: MetadataManager, tableName: 
     build() {
       const blocks = [
         `CREATE TABLE IF NOT EXISTS \`${tableName}\` (`,
-        parts.lines.add.map(line => line.toString()).join(',\n') + (parts.alters.add.length > 0 ? ',' : ''),
+        parts.lines.add.map(line => line.toString()).join(',\n') +
+          (parts.alters.add.length > 0 ? ',' : ''),
         parts.alters.add.map(line => line.toString()).join(',\n'),
-        ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
+        ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;',
       ]
       return blocks.join('\n')
     },
@@ -126,36 +153,45 @@ export function createTableGateway(metadataManager: MetadataManager, tableName: 
       const blocks = [
         `CREATE TABLE IF NOT EXISTS \`${tableName}\` (`,
         parts.lines.add.map(line => line.toString()).join(',\n'),
-        ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;'
+        ') ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;',
       ]
-      return [
-        blocks.join('\n')
-      ]
+      return [blocks.join('\n')]
     },
     getDropQueries() {
       return parts.lines.drop.map(line => line.toString())
     },
     getAddAlterQueries() {
       return [
-        ...(metadataManager.hasTable(tableName) 
-          ? parts.lines.add.map(line => `ALTER TABLE ${tableName} ADD ${line.toString()}`)
-          : []
+        ...(metadataManager.hasTable(tableName)
+          ? parts.lines.add.map(
+              line => `ALTER TABLE ${tableName} ADD ${line.toString()}`,
+            )
+          : []),
+        ...parts.alters.add.map(
+          line => `ALTER TABLE ${tableName} ADD ${line.toString()}`,
         ),
-        ...parts.alters.add.map(line => `ALTER TABLE ${tableName} ADD ${line.toString()}`)
       ]
     },
     getDropAlterQueries() {
-      return parts.alters.drop.map(line => `ALTER TABLE ${tableName} DROP ${line.toString()}`)
-    }
+      return parts.alters.drop.map(
+        line => `ALTER TABLE ${tableName} DROP ${line.toString()}`,
+      )
+    },
   }
 }
 
-export function createTableBuilder(tableName: string, callback: Function, isNew: boolean = true) {
+export function createTableBuilder(
+  tableName: string,
+  callback: Function,
+  isNew: boolean = true,
+) {
   // $FlowIgnore
-  return tableGateway(({hasTable: () => !isNew}))(tableName, callback)
+  return tableGateway({ hasTable: () => !isNew })(tableName, callback)
 }
 
-export function tableGateway(metadataManager: MetadataManager): (tableName: string, callback: Function) => SchemaToolGateway {
+export function tableGateway(
+  metadataManager: MetadataManager,
+): (tableName: string, callback: Function) => SchemaToolGateway {
   return (tableName, callback) => {
     const wrapper = createTableGateway(metadataManager, tableName)
     callback(createTableContext(wrapper.getApi(), metadataManager, tableName))

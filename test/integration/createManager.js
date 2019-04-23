@@ -1,9 +1,9 @@
 /** @flow */
 import { createManager } from '../../src'
-import {createSchemaTool} from '../../src/schema'
-import {setupSchema, createFixtureManager} from './fixtures'
+import { createSchemaTool } from '../../src/schema'
+import { setupSchema, createFixtureManager } from './fixtures'
 import Config from './config'
-import type {Repository} from '../../src/types'
+import type { Repository } from '../../src/types'
 
 describe('Integration', () => {
   describe('createManager', () => {
@@ -19,7 +19,9 @@ describe('Integration', () => {
 
     test('should assign related rows', async () => {
       await fixtureManager.createPost()
-      const [{post, creator}] = await manager.startQuery().select()
+      const [{ post, creator }] = await manager
+        .startQuery()
+        .select()
         .from('posts', 'post')
         .field('post.*')
         .field('creator.*')
@@ -33,7 +35,9 @@ describe('Integration', () => {
 
     test('should map related rows', async () => {
       await fixtureManager.createPost()
-      const [post] = await manager.startQuery().select()
+      const [post] = await manager
+        .startQuery()
+        .select()
         .from('posts', 'post')
         .field('post.*')
         .field('creator.*')
@@ -52,7 +56,7 @@ describe('Integration', () => {
       expect(typeof user.id).toBe('number')
       user.populate({
         login: 'testUser',
-        ololo: 'da'
+        ololo: 'da',
       })
       await user.save()
       const fetchedUser = await manager.getRepository('users').find(user.id)
@@ -87,10 +91,11 @@ describe('Integration', () => {
       manager.extendRepository('users', repo => ({
         ...repo,
         findById(id: number) {
-          return repo.startQuery('user')
+          return repo
+            .startQuery('user')
             .where('id = ?', id)
             .execute(false)
-        }
+        },
       }))
       const repo = manager.getRepository('users')
       expect('findById' in repo).toBeTruthy()
@@ -99,15 +104,17 @@ describe('Integration', () => {
     })
 
     test('should add ability to replace repository factory', () => {
-      // $FlowIgnore
-      manager.setRepositoryFactory((tableName, manager): Repository => ({
-        getTableName() {
-          return tableName
-        },
-        getManager() {
-          return manager
-        }
-      }))
+      manager.setRepositoryFactory(
+        // $FlowIgnore
+        (tableName, manager): Repository<> => ({
+          getTableName() {
+            return tableName
+          },
+          getManager() {
+            return manager
+          },
+        }),
+      )
       const repo = manager.getRepository('users')
       expect('getTableName' in repo).toBeTruthy()
       expect('getManager' in repo).toBeTruthy()

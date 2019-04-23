@@ -7,11 +7,11 @@ import remove from '../../src/query/delete'
 
 const uMetadata = {
   id: {
-    columnName: 'id'
+    columnName: 'id',
   },
   some: {
-    columnName: 'some'
-  }
+    columnName: 'some',
+  },
 }
 
 function createStubManager() {
@@ -23,7 +23,7 @@ function createStubManager() {
         },
         getColumns() {
           return uMetadata
-        }
+        },
       }
     },
     startQuery() {
@@ -32,15 +32,13 @@ function createStubManager() {
         update: options => update(this, options),
         select: options => select(this, options),
         delete: options => remove(this, options),
-        remove: options => remove(this, options)
+        remove: options => remove(this, options),
       }
     },
     query() {
       throw new Error('You must override query method')
     },
-    clear() {
-
-    }
+    clear() {},
   }
 }
 describe('Unit', () => {
@@ -50,15 +48,19 @@ describe('Unit', () => {
       const manager = {
         ...createStubManager(),
         query(query) {
-          const {text, values} = query.toParam()
+          const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(1)
           expect(values || []).toContain(1)
-          return Promise.resolve([[{
-            id: 1,
-            some: 'field'
-          }]])
-        }
+          return Promise.resolve([
+            [
+              {
+                id: 1,
+                some: 'field',
+              },
+            ],
+          ])
+        },
       }
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
@@ -73,19 +75,23 @@ describe('Unit', () => {
       const manager = {
         ...createStubManager(),
         query(query) {
-          const {text, values} = query.toParam()
+          const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(2)
           expect(values || []).toContain(1)
-          return Promise.resolve([[{
-            id: 1,
-            some: 'field'
-          }]])
-        }
+          return Promise.resolve([
+            [
+              {
+                id: 1,
+                some: 'field',
+              },
+            ],
+          ])
+        },
       }
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
-      const record = await uRepo.findOneBy({id: 1})
+      const record = await uRepo.findOneBy({ id: 1 })
       expect(record).not.toBeNull()
       if (record == null) return //Flow hack
       expect(record['id']).toBe(1)
@@ -96,19 +102,23 @@ describe('Unit', () => {
       const manager = {
         ...createStubManager(),
         query(query) {
-          const {text, values} = query.toParam()
+          const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(1)
           expect(values || []).toContain(1)
-          return Promise.resolve([[{
-            id: 1,
-            some: 'field'
-          }]])
-        }
+          return Promise.resolve([
+            [
+              {
+                id: 1,
+                some: 'field',
+              },
+            ],
+          ])
+        },
       }
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
-      const result = await uRepo.findBy({id: 1})
+      const result = await uRepo.findBy({ id: 1 })
       expect(result.length).toBe(1)
       const [record] = result
       expect(record).not.toBeNull()
@@ -117,20 +127,25 @@ describe('Unit', () => {
       expect(record['some']).toBe('field')
     })
     test('should findOne data by hard criteria', async () => {
-      const QUERY = 'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?) AND (foo NOT IN (?, ?))'
+      const QUERY =
+        'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?) AND (foo NOT IN (?, ?))'
       const manager = {
         ...createStubManager(),
         query(query) {
-          const {text, values} = query.toParam()
+          const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(6)
           expect(values || []).toContain(1)
           expect(values || []).toContain(2)
-          return Promise.resolve([[{
-            id: 1,
-            some: 'field'
-          }]])
-        }
+          return Promise.resolve([
+            [
+              {
+                id: 1,
+                some: 'field',
+              },
+            ],
+          ])
+        },
       }
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
@@ -139,14 +154,14 @@ describe('Unit', () => {
           $in: [1, 2],
         },
         status: {
-          $not: 1
+          $not: 1,
         },
         name: {
-          $like: 'test'
+          $like: 'test',
         },
         foo: {
-          $notIn: [1,2]
-        }
+          $notIn: [1, 2],
+        },
       })
       expect(result.length).toBe(1)
       const [record] = result
@@ -158,19 +173,21 @@ describe('Unit', () => {
     test('should create data', async () => {
       const QUERY = 'INSERT INTO u (test, ololo) VALUES (?, ?)'
       const changes = {
-        test : 'some',
-        ololo: 'ololo'
+        test: 'some',
+        ololo: 'ololo',
       }
       const manager = {
         ...createStubManager(),
         query(query) {
-          const {text, values} = query.toParam()
+          const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(2)
-          return Promise.resolve([{
-            insertId: 1
-          }])
-        }
+          return Promise.resolve([
+            {
+              insertId: 1,
+            },
+          ])
+        },
       }
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
@@ -181,22 +198,21 @@ describe('Unit', () => {
       const QUERY = 'UPDATE u SET id = ?, test = ?, ololo = ? WHERE (id = ?)'
       const changes = {
         id: 1,
-        test : 'some',
-        ololo: 'ololo'
+        test: 'some',
+        ololo: 'ololo',
       }
       const manager = {
         ...createStubManager(),
         query(query) {
-          const {text, values} = query.toParam()
+          const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(4)
           return Promise.resolve([{}])
-        }
+        },
       }
       // $FlowIgnore fix for model
       const uRepo = createRepository('u', manager)
       await uRepo.update(1, changes)
     })
   })
-
 })

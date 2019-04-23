@@ -1,6 +1,6 @@
 /** @flow */
-import {MINORM_BENCHMARK_TABLE, MINORM_MIGRATIONS_TABLE} from './constants'
-import type {SchemaToolContext} from './types'
+import { MINORM_BENCHMARK_TABLE, MINORM_MIGRATIONS_TABLE } from './constants'
+import type { SchemaToolContext } from './types'
 
 export default {
   up(schemaTool: SchemaToolContext) {
@@ -23,5 +23,5 @@ export default {
   down(schemaTool: SchemaToolContext) {
     schemaTool.dropTable(MINORM_MIGRATIONS_TABLE)
     schemaTool.dropTable(MINORM_BENCHMARK_TABLE)
-  }
+  },
 }

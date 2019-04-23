@@ -1,40 +1,38 @@
 {
   "parser": "babel-eslint",
-  "env": {
-    "node": true,
-    "es6": true,
-    "jest": true
-  },
-  "globals": {
-    "Uint32Array": true
-  },
-  "plugins": [
-    "flowtype"
+  "plugins": ["flowtype", "prettier"],
+  "extends": [
+    "plugin:flowtype/recommended",
+    "plugin:prettier/recommended",
+    "prettier/flowtype"
   ],
-  "settings": {
-    "flowtype": {
-      "onlyFilesWithFlowAnnotation": true
-    }
-  },
-  "extends": ["eslint:recommended", "plugin:flowtype/recommended"],
   "rules": {
-    "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
-    "semi": [2, "never"],
-    "indent": [2, 2, {"SwitchCase": 1}],
-    "no-var": [2],
-    "prefer-const": [1],
-    "no-duplicate-imports": [2],
-    "arrow-body-style": [2, "as-needed"],
-    "arrow-parens": [2, "as-needed"],
-    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
-    "flowtype/require-parameter-type": 0,
-    "flowtype/semi": [
+    "flowtype/array-style-complex-type": [2, "verbose"],
+    "flowtype/array-style-simple-type": [2, "verbose"],
+
+    "flowtype/boolean-style": [2, "boolean"],
+
+    "flowtype/define-flow-type": 1,
+
+    "flowtype/delimiter-dangle": [2, "only-multiline"],
+
+    "flowtype/no-primitive-constructor-types": 2,
+
+    "flowtype/no-types-missing-file-annotation": 2,
+
+    "flowtype/no-unused-expressions": 2,
+
+    "flowtype/semi": [2, "never"],
+
+    "flowtype/space-before-type-colon": [2, "never"],
+    "flowtype/space-after-type-colon": [
       2,
-      "never"
+      "always",
+      { "allowLineBreak": true }
     ],
-    "flowtype/type-id-match": [
-      2,
-      "^([A-Z][a-z0-9]+)+$"
-    ]
+
+    "flowtype/space-before-generic-bracket": [2, "never"],
+
+    "flowtype/union-intersection-spacing": [2, "always"]
   }
 }

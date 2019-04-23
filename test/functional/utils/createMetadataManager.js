@@ -7,18 +7,17 @@ function createType(type) {
     dataType: type,
     isNullable: 0,
     dataLength: 0,
-    columnName: name
+    columnName: name,
   })
 }
 const col = createType('VARCHAR')
 const cols = {
   int: createType('INT'),
   dateTime: createType('DATETIME'),
-  text: createType('LONGTEXT')
+  text: createType('LONGTEXT'),
 }
 
 export function createMetadataManager(): MetadataManager {
-
   const dbSchema = {
     users: {
       columns: {
@@ -26,7 +25,7 @@ export function createMetadataManager(): MetadataManager {
         createdAt: cols.dateTime('createdAt', 'users'),
         modifiedAt: cols.dateTime('modifiedAt', 'users'),
         login: col('login', 'users'),
-        password: col('password', 'users')
+        password: col('password', 'users'),
       },
       relations: {},
     },
@@ -37,15 +36,15 @@ export function createMetadataManager(): MetadataManager {
         modifiedAt: cols.dateTime('modifiedAt', 'posts'),
         title: col('title', 'posts'),
         body: cols.text('password', 'posts'),
-        creator_id: cols.int('creator_id', 'posts')
+        creator_id: cols.int('creator_id', 'posts'),
       },
       relations: {
         creator_id: {
           tableName: 'posts',
           columnName: 'creator_id',
           referencedTableName: 'users',
-          referencedColumnName: 'id'
-        }
+          referencedColumnName: 'id',
+        },
       },
     },
     comments: {
@@ -55,21 +54,21 @@ export function createMetadataManager(): MetadataManager {
         modifiedAt: cols.dateTime('modifiedAt', 'comments'),
         body: cols.text('password', 'comments'),
         post_id: cols.int('creator_id', 'comments'),
-        creator_id: cols.int('creator_id', 'comments')
+        creator_id: cols.int('creator_id', 'comments'),
       },
       relations: {
         creator_id: {
           tableName: 'comments',
           columnName: 'creator_id',
           referencedTableName: 'users',
-          referencedColumnName: 'id'
+          referencedColumnName: 'id',
         },
         post_id: {
           tableName: 'posts',
           columnName: 'post_id',
           referencedTableName: 'posts',
-          referencedColumnName: 'id'
-        }
+          referencedColumnName: 'id',
+        },
       },
     },
   }
@@ -81,9 +80,7 @@ export function createMetadataManager(): MetadataManager {
     loadRelationsMetadata() {
       return Promise.resolve()
     },
-    initDbSchema() {
-
-    },
+    initDbSchema() {},
     isLoaded() {
       return true
     },
@@ -97,14 +94,15 @@ export function createMetadataManager(): MetadataManager {
       return dbSchema[tableName]
     },
     hasAssociation(tableName, columnName) {
-      return this.hasTable(tableName) && dbSchema[tableName].relations.hasOwnProperty(columnName)
+      return (
+        this.hasTable(tableName) &&
+        dbSchema[tableName].relations.hasOwnProperty(columnName)
+      )
     },
     getColumns(tableName) {
       return this.hasTable(tableName) && dbSchema[tableName].columns
     },
 
-    clear() {
-
-    },
+    clear() {},
   }
 }

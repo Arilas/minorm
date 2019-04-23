@@ -1,11 +1,14 @@
 /** @flow */
-import {createRepository} from './createRepository'
-import {connect} from './connectionManager'
-import {makeQueryBuilder} from './query'
+import { createRepository } from './createRepository'
+import { connect } from './connectionManager'
+import { makeQueryBuilder } from './query'
 import createMetadataManager from './utils/metadataManager'
-import type {Manager, MetadataManager} from './types'
+import type { Manager, MetadataManager } from './types'
 
-export function createManager(connectionConfig: any, logger: ?typeof console = null): Manager {
+export function createManager(
+  connectionConfig: any,
+  logger: ?typeof console = null,
+): Manager {
   let pool
   /**
    * {
@@ -19,7 +22,9 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
   function getPool() {
     if (!pool) {
       const msg = 'Please start connection before'
-      logger && logger.error(msg)
+      if (logger) {
+        logger.error(msg)
+      }
       throw new Error(msg)
     }
     return pool
@@ -51,7 +56,7 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
     },
     setRepositoryFactory(factory) {
       if (typeof factory != 'function') {
-        throw new Error ('Repository Factory must be a function')
+        throw new Error('Repository Factory must be a function')
       }
       reposirotyFactory = factory
     },
@@ -75,44 +80,55 @@ export function createManager(connectionConfig: any, logger: ?typeof console = n
     },
     query(query) {
       if (typeof query.toParam !== 'function') {
-        throw new Error(`manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`)
+        throw new Error(
+          `manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`,
+        )
       }
-      const { stack } = new Error
-      const {text, values} = query.toParam()
-      logger && logger.debug(`SQL query: ${text}`)
-      return getPool().query(text, values).catch(
-        err => {
+      const { stack } = new Error()
+      const { text, values } = query.toParam()
+      if (logger) {
+        logger.debug(`SQL query: ${text}`)
+      }
+      return getPool()
+        .query(text, values)
+        .catch(err => {
           const newErr = new Error(`${err.message}
 Query: ${text}
 Call stack for query: ${stack}
 `)
           // newErr.stack = stack
           throw newErr
-        }
-      )
+        })
     },
     nestQuery(query) {
       if (typeof query.toParam !== 'function') {
-        throw new Error(`manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`)
+        throw new Error(
+          `manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`,
+        )
       }
-      const { stack } = new Error
-      const {text, values} = query.toParam()
-      logger && logger.debug(`SQL query: ${text}`)
-      return getPool().query({
-        sql: text,
-        nestTables: true
-      }, values).catch(
-        err => {
+      const { stack } = new Error()
+      const { text, values } = query.toParam()
+      if (logger) {
+        logger.debug(`SQL query: ${text}`)
+      }
+      return getPool()
+        .query(
+          {
+            sql: text,
+            nestTables: true,
+          },
+          values,
+        )
+        .catch(err => {
           const newErr = new Error(`${err.message}
 Query: ${text}
 Call stack for query: ${stack}
 `)
           throw newErr
-        }
-      )
+        })
     },
     startQuery() {
       return makeQueryBuilder(this)
-    }
+    },
   }
 }

@@ -1,6 +1,6 @@
 /** @flow */
 import { createBaseGateway } from '../createBaseGateway'
-import type {SchemaToolGateway} from '../../types'
+import type { SchemaToolGateway } from '../../types'
 import { QUERY } from './constants'
 
 export function queryGateway(): (sql: string) => SchemaToolGateway {
@@ -10,9 +10,9 @@ export function queryGateway(): (sql: string) => SchemaToolGateway {
       return {
         type: QUERY,
         payload: {
-          sql
-        }
+          sql,
+        },
       }
-    }
+    },
   })
 }

@@ -1,6 +1,6 @@
 /** @flow */
-import type {SchemaToolColumnContext} from '../../types'
-import type {MetadataManager} from '../../../types'
+import type { SchemaToolColumnContext } from '../../types'
+import type { MetadataManager } from '../../../types'
 
 export const TYPE_VARCHAR = 'VARCHAR'
 export const TYPE_TEXT = 'TEXT'
@@ -11,7 +11,11 @@ export const TYPE_DATETIME = 'DATETIME'
 export const TYPE_TIME = 'TIME'
 export const TYPE_TINYINT = 'TINYINT'
 
-export function createColumnContext(columnName: string, metadataManager: MetadataManager, tableName: string): SchemaToolColumnContext {
+export function createColumnContext(
+  columnName: string,
+  metadataManager: MetadataManager,
+  tableName: string,
+): SchemaToolColumnContext {
   let type = TYPE_VARCHAR
   let nullable = true
   let primary = false
@@ -60,11 +64,14 @@ export function createColumnContext(columnName: string, metadataManager: Metadat
     build() {
       const typePart = length ? `${type}(${length})` : type
       const unsignedPart = unsigned ? ' UNSIGNED' : ''
-      const defaultValuePart = defaultValue !== undefined ? ` DEFAULT '${defaultValue}'` : ''
+      const defaultValuePart =
+        defaultValue !== undefined ? ` DEFAULT '${defaultValue}'` : ''
       const incrementPart = autoIncrement ? ' AUTO_INCREMENT' : ''
       const nullablePart = !nullable ? ' NOT NULL' : ''
       const primaryPart = primary ? ' PRIMARY KEY' : ''
-      return `${metadataManager.hasTable(tableName) ? 'COLUMN ' : ''}\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
+      return `${
+        metadataManager.hasTable(tableName) ? 'COLUMN ' : ''
+      }\`${columnName}\` ${typePart}${unsignedPart}${defaultValuePart}${incrementPart}${nullablePart}${primaryPart}`
     },
     toString() {
       return this.build()
@@ -78,6 +85,6 @@ export function createColumnContext(columnName: string, metadataManager: Metadat
     string: makeParametrizedTypeChanger(TYPE_VARCHAR),
     int: makeParametrizedTypeChanger(TYPE_INT, 11),
     tinyInt: makeParametrizedTypeChanger(TYPE_TINYINT),
-    bool: makeParametrizedTypeChanger(TYPE_TINYINT, 1)
+    bool: makeParametrizedTypeChanger(TYPE_TINYINT, 1),
   }
 }

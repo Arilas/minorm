@@ -1,14 +1,13 @@
 /** @flow */
-import {addSqlGateway} from './addSqlGateway'
-import {findAndUpdateGateway} from './findAndUpdateGateway'
-import {dropTableGateway} from './dropTableGateway'
-import {putGateway} from './putGateway'
-import {tableGateway} from './tableGateway'
+import { addSqlGateway } from './addSqlGateway'
+import { findAndUpdateGateway } from './findAndUpdateGateway'
+import { dropTableGateway } from './dropTableGateway'
+import { putGateway } from './putGateway'
+import { tableGateway } from './tableGateway'
 import { executeGateway } from './async/executeGateway'
-import {queryGateway} from './async/queryGateway'
-import type {MetadataManager} from '../../types'
-import type {SchemaToolContext, SchemaToolGateway} from '../types'
-
+import { queryGateway } from './async/queryGateway'
+import type { MetadataManager } from '../../types'
+import type { SchemaToolContext, SchemaToolGateway } from '../types'
 
 const registeredGateways = {
   addSql: addSqlGateway,
@@ -19,20 +18,25 @@ const registeredGateways = {
   use: tableGateway,
 
   asyncExecute: executeGateway,
-  asyncQuery: queryGateway
+  asyncQuery: queryGateway,
 }
 
-export function registerGateway(name: string, gatewayCreator: () => SchemaToolGateway) {
+export function registerGateway(
+  name: string,
+  gatewayCreator: () => SchemaToolGateway,
+) {
   registeredGateways[name] = gatewayCreator
 }
 
 type ContextWrapper = {
   context: SchemaToolContext,
   getGateways(): Array<SchemaToolGateway>,
-  reset(): void
+  reset(): void,
 }
 
-export function createContext(metadataManager: MetadataManager): ContextWrapper {
+export function createContext(
+  metadataManager: MetadataManager,
+): ContextWrapper {
   const context = {}
   let gateways = []
   for (const name of Object.keys(registeredGateways)) {
@@ -56,6 +60,6 @@ Please check your arguments: ${JSON.stringify(opts, null, ' ')}`)
     },
     reset() {
       gateways = []
-    }
+    },
   }
 }

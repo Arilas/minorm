@@ -1,16 +1,20 @@
 /** @flow */
 import Squel from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import type {Manager, DeleteQuery as $DeleteQuery} from '../types'
+import type { Manager, DeleteQuery as $DeleteQuery } from '../types'
 
 export class DeleteQuery extends Squel.cls.QueryBuilder {
-  constructor(manager: Manager, options: any, blocks: ?Array<typeof Squel.cls.QueryBlock> = null) {
+  constructor(
+    manager: Manager,
+    options: any,
+    blocks: ?Array<typeof Squel.cls.QueryBlock> = null,
+  ) {
     blocks = blocks || [
       new Squel.cls.StringBlock(options, 'DELETE'),
       new Squel.cls.TargetTableBlock(options),
       new Squel.cls.FromTableBlock({
         ...options,
-        singleTable: true
+        singleTable: true,
       }),
       new Squel.cls.JoinBlock(options),
       new CriteriaBlock(options),

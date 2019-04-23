@@ -1,7 +1,10 @@
 /** @flow */
-import type {SchemaTool} from '../../../src/schema/types'
+import type { SchemaTool } from '../../../src/schema/types'
 
-export async function setupSchema(schemaTool: SchemaTool, init: boolean = true) {
+export async function setupSchema(
+  schemaTool: SchemaTool,
+  init: boolean = true,
+) {
   schemaTool.setSchemaInit({
     up(schema) {
       schema.table('users', ctx => {
@@ -15,15 +18,24 @@ export async function setupSchema(schemaTool: SchemaTool, init: boolean = true) 
         ctx.createdAndModified()
         ctx.column('title').notNull()
         ctx.column('body').text()
-        ctx.column('creator_id').int().unsigned()
+        ctx
+          .column('creator_id')
+          .int()
+          .unsigned()
         ctx.index('title')
         ctx.ref('creator_id', 'users', 'id')
       })
       schema.table('comments', ctx => {
         ctx.id()
         ctx.createdAndModified()
-        ctx.column('creator_id').int().unsigned()
-        ctx.column('post_id').int().unsigned()
+        ctx
+          .column('creator_id')
+          .int()
+          .unsigned()
+        ctx
+          .column('post_id')
+          .int()
+          .unsigned()
         ctx.column('body')
         ctx.ref('creator_id', 'users', 'id')
         ctx.ref('post_id', 'posts', 'id')
@@ -34,7 +46,7 @@ export async function setupSchema(schemaTool: SchemaTool, init: boolean = true) 
       schema.dropTable('comments')
       schema.dropTable('posts')
       schema.dropTable('users')
-    }
+    },
   })
   if (init) {
     await schemaTool.initSchema()
