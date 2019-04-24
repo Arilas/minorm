@@ -3,7 +3,6 @@ import { createManager } from '../../src'
 import { createSchemaTool } from '../../src/schema'
 import { setupSchema, createFixtureManager } from './fixtures'
 import Config from './config'
-import type { Repository } from '../../src/createRepository'
 
 describe('Integration', () => {
   describe('createManager', () => {
@@ -85,43 +84,6 @@ describe('Integration', () => {
       expect(user.id).toEqual(existUser.id)
       expect(user.login).toEqual(existUser.login)
       expect(user.password).toEqual(existUser.password)
-    })
-
-    test('should save extended repository', () => {
-      manager.extendRepository('users', repo => ({
-        ...repo,
-        findById(id: number) {
-          return repo
-            .startQuery('user')
-            .where('id = ?', id)
-            .execute(false)
-        },
-      }))
-      const repo = manager.getRepository('users')
-      expect('findById' in repo).toBeTruthy()
-      // $FlowIgnore
-      expect(typeof repo.findById).toBe('function')
-    })
-
-    test('should add ability to replace repository factory', () => {
-      manager.setRepositoryFactory(
-        // $FlowIgnore
-        (tableName, manager): Repository<> => ({
-          getTableName() {
-            return tableName
-          },
-          getManager() {
-            return manager
-          },
-        }),
-      )
-      const repo = manager.getRepository('users')
-      expect('getTableName' in repo).toBeTruthy()
-      expect('getManager' in repo).toBeTruthy()
-      // $FlowIgnore
-      expect(repo.getManager()).toBe(manager)
-      // $FlowIgnore
-      expect(repo.getTableName()).toEqual('users')
     })
 
     afterEach(async () => {

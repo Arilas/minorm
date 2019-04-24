@@ -1,6 +1,6 @@
 /** @flow */
 import type { SchemaToolColumnContext } from '../../types'
-import type { MetadataManager } from '../../../types'
+import type { MetadataManager } from '../../../utils/createMetadataManager'
 
 export const TYPE_VARCHAR = 'VARCHAR'
 export const TYPE_TEXT = 'TEXT'

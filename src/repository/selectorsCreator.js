@@ -1,7 +1,8 @@
 /** @flow */
+import selectQuery from '../query/select'
 import { type Model } from '../createModel'
 import type { BaseRecord, Criteria, SelectQuery } from '../types'
-import type { Manager } from '../createManager'
+import type { Metadata } from '../manager'
 
 export type Selectors<T: BaseRecord> = $Exact<{
   find(id: number): Promise<Model<T> | null>,
@@ -17,13 +18,11 @@ export type Selectors<T: BaseRecord> = $Exact<{
 
 export function selectorsCreator<T: BaseRecord>(
   tableName: string,
-  manager: Manager,
+  manager: { ...Metadata },
   hydrator: <Record: T>(entity: T, isSaved?: boolean) => Model<T>,
 ): Selectors<T> {
   function startQuery<Record: T>(alias?: string): SelectQuery<Record> {
-    return manager
-      .startQuery()
-      .select()
+    return selectQuery(manager)
       .from(tableName, alias)
       .field(alias ? `${alias}.*` : '*')
   }

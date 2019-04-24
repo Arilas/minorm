@@ -11,8 +11,7 @@ describe('Integration', () => {
       const server = createServer()
       const oldError = console.error // eslint-disable-line no-console
       // $FlowIgnore
-      console.error = (...opts) => {
-        // eslint-disable-line no-console
+      console.error = (...opts) => /* eslint-disable-line no-console */ {
         if (opts[0].indexOf('packets out of order') !== -1) {
           return
         }

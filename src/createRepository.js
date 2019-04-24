@@ -7,7 +7,7 @@ import {
   type Models,
   type Selectors,
 } from './repository'
-import type { Manager } from './createManager'
+import type { Metadata } from './manager'
 import type { BaseRecord } from './types'
 
 export type Repository<T: BaseRecord = { [key: string]: any }> = $Exact<{
@@ -18,7 +18,7 @@ export type Repository<T: BaseRecord = { [key: string]: any }> = $Exact<{
 
 export function createRepository<T: BaseRecord>(
   tableName: string,
-  manager: Manager,
+  manager: { ...Metadata },
 ): Repository<T> {
   const mutators = mutatorsCreator<T>(tableName, manager)
   const models = modelsCreator<T>(tableName, mutators)

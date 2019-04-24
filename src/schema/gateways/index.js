@@ -6,7 +6,7 @@ import { putGateway } from './putGateway'
 import { tableGateway } from './tableGateway'
 import { executeGateway } from './async/executeGateway'
 import { queryGateway } from './async/queryGateway'
-import type { MetadataManager } from '../../types'
+import type { MetadataManager } from '../../utils/createMetadataManager'
 import type { SchemaToolContext, SchemaToolGateway } from '../types'
 
 const registeredGateways = {

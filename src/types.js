@@ -24,25 +24,6 @@ export type Criteria = {
       },
 }
 
-export type ColumnMeta = {
-  tableName: string,
-  columnName: string,
-  dataType: string,
-  dataLength: number,
-  isNullable: number,
-}
-
-export type TableMetadata = {
-  [key: string]: ColumnMeta,
-}
-
-export type Relation = {
-  tableName: string,
-  columnName: string,
-  referencedTableName: string,
-  referencedColumnName: string,
-}
-
 export type SelectQueryMapper = {
   setRelation(from: string, alias: string): void,
   setEntryPoint(alias: string): void,
@@ -96,16 +77,6 @@ export type UpdateQuery = {
 declare export class DeleteQuery extends $DeleteQuery {
   criteria(criteria: { [key: string]: any }): this;
   execute(): Promise<any>;
-}
-
-export type MetadataManager = {
-  hasTable(tableName: string): boolean,
-  getTable(tableName: string): { [key: string]: Relation },
-  hasAssociation(tableName: string, columnName: string): boolean,
-  getColumns(tableName: string): { [key: string]: ColumnMeta },
-  ready(): Promise<any>,
-  isLoaded(): boolean,
-  clear(): void,
 }
 
 export type Pool = {

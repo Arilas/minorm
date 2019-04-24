@@ -1,13 +1,13 @@
 /** @flow */
 import Squel from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import type { Manager } from '../createManager'
+import type { Queries } from '../manager'
 import type { UpdateQuery as $UpdateQuery } from '../types'
 
 export class UpdateQuery extends Squel.cls.QueryBuilder {
-  _manager: Manager
+  _manager: Queries
   constructor(
-    manager: Manager,
+    manager: Queries,
     options: any,
     blocks: ?Array<Squel.cls.Block> = null,
   ) {
@@ -30,7 +30,10 @@ export class UpdateQuery extends Squel.cls.QueryBuilder {
   }
 }
 
-export default function update(manager: Manager, options: any): $UpdateQuery {
+export default function update(
+  manager: { ...Queries },
+  options: any,
+): $UpdateQuery {
   // $FlowIgnore
   return new UpdateQuery(manager, options)
 }

@@ -1,5 +1,6 @@
 /** @flow */
-import type { MetadataManager } from '../../../src/types'
+
+import type { MetadataManager } from '../../../src/utils/createMetadataManager'
 
 function createType(type) {
   return (name, tableName) => ({

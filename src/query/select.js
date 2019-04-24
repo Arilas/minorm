@@ -2,7 +2,7 @@
 import Squel from 'squel'
 import IncludeBlock from './blocks/IncludeBlock'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import type { Manager } from '../createManager'
+import type { Metadata } from '../manager'
 import type {
   SelectQuery as $SelectQuery,
   BaseRecord,
@@ -12,11 +12,11 @@ import type {
 import { createMapper } from '../utils/createMapper'
 
 export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
-  _manager: Manager
+  _manager: Metadata
   _mapper: SelectQueryMapper
   _fromTableBlock: Squel.cls.FromTableBlock
   constructor(
-    manager: Manager,
+    manager: Metadata,
     options: any,
     blocks: ?Array<Squel.cls.Block> = null,
   ) {
@@ -79,7 +79,7 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
 }
 
 export default function select<T: BaseRecord>(
-  manager: Manager,
+  manager: { ...Metadata },
   options: any,
 ): $SelectQuery<T> {
   // $FlowIgnore

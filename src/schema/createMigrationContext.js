@@ -2,7 +2,7 @@
 
 import { createContext } from './gateways'
 import type { SchemaToolContext } from './types'
-import type { MetadataManager } from '../types'
+import type { MetadataManager } from '../utils/createMetadataManager'
 
 type CreateContext = {
   context: SchemaToolContext,

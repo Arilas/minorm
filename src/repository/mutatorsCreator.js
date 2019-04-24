@@ -1,11 +1,10 @@
 /** @flow */
-import type {
-  InsertQuery,
-  UpdateQuery,
-  BaseRecord,
-  TableMetadata,
-} from '../types'
-import type { Manager } from '../createManager'
+import insertQuery from '../query/insert'
+import updateQuery from '../query/update'
+import deleteQuery from '../query/delete'
+import type { InsertQuery, UpdateQuery, BaseRecord } from '../types'
+import type { TableMetadata } from '../utils/createMetadataManager'
+import type { Metadata } from '../manager'
 
 export type Mutators<T: BaseRecord> = $Exact<{
   getMetadata(): TableMetadata,
@@ -19,7 +18,7 @@ export type Mutators<T: BaseRecord> = $Exact<{
 
 export function mutatorsCreator<T: BaseRecord>(
   tableName: string,
-  manager: Manager,
+  manager: { ...Metadata },
 ): Mutators<T> {
   function getMetadata(): TableMetadata {
     if (!manager.getMetadataManager().hasTable(tableName)) {
@@ -29,10 +28,7 @@ export function mutatorsCreator<T: BaseRecord>(
   }
 
   function insert(data: T): Promise<number> {
-    const query = manager
-      .startQuery()
-      .insert()
-      .into(tableName)
+    const query = insertQuery(manager).into(tableName)
     Object.keys(data).forEach(
       (key: string): InsertQuery => query.set(key, data[key]),
     )
@@ -53,9 +49,7 @@ export function mutatorsCreator<T: BaseRecord>(
         id: selector,
       }
     }
-    const query = manager
-      .startQuery()
-      .update()
+    const query = updateQuery(manager)
       .criteria(selector)
       .table(tableName)
     Object.keys(changes).forEach(
@@ -73,9 +67,7 @@ export function mutatorsCreator<T: BaseRecord>(
         id: selector,
       }
     }
-    const query = manager
-      .startQuery()
-      .delete()
+    const query = deleteQuery(manager)
       .criteria(selector)
       .from(tableName)
     return query.execute().then((result: any): number => result.affectedRows)

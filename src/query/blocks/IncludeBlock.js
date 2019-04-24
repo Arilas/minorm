@@ -1,14 +1,15 @@
 /** @flow */
 import Squel from 'squel'
-import type { Manager } from '../../createManager'
-import type { Relation, SelectQueryMapper } from '../../types'
+import type { Metadata } from '../../manager'
+import type { Relation } from '../../utils/createMetadataManager'
+import type { SelectQueryMapper } from '../../types'
 
 export default class IncludeBlock extends Squel.cls.JoinBlock {
-  _manager: Manager
+  _manager: Metadata
   _mapper: SelectQueryMapper
   _fromTableBlock: Squel.cls.FromTableBlock
   constructor(
-    manager: Manager,
+    manager: Metadata,
     fromTableBlock: Squel.cls.FromTableBlock,
     options: any,
     mapper: SelectQueryMapper,

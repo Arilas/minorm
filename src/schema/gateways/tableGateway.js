@@ -1,7 +1,7 @@
 /** @flow */
 import { createBaseGateway } from './createBaseGateway'
 import type { SchemaToolGateway, SchemaToolCreateTableContext } from '../types'
-import type { MetadataManager } from '../../types'
+import type { MetadataManager } from '../../utils/createMetadataManager'
 import { createColumnContext } from './table/createColumnContext'
 
 function createTableContext(

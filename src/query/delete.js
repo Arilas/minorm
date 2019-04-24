@@ -1,14 +1,14 @@
 /** @flow */
 import Squel from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import type { Manager } from '../createManager'
+import type { Queries } from '../manager'
 import type { DeleteQuery as $DeleteQuery } from '../types'
 
 export class DeleteQuery extends Squel.cls.Delete {
-  _manager: Manager
+  _manager: Queries
 
   constructor(
-    manager: Manager,
+    manager: Queries,
     options: any,
     blocks: ?Array<Squel.cls.Block> = null,
   ) {
@@ -37,7 +37,10 @@ export class DeleteQuery extends Squel.cls.Delete {
   }
 }
 
-export default function remove(manager: Manager, options: any): $DeleteQuery {
+export default function remove(
+  manager: { ...Queries },
+  options: any,
+): $DeleteQuery {
   // $FlowIgnore
   return new DeleteQuery(manager, options)
 }

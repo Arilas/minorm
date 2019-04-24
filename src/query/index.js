@@ -1,12 +1,12 @@
 /** @flow */
-import type { Manager } from '../createManager'
+import type { Metadata } from '../manager'
 import type { BaseRecord, SelectQuery } from '../types'
 import insert from './insert'
 import select from './select'
 import update from './update'
 import remove from './delete'
 
-export function makeQueryBuilder(manager: Manager) {
+export function makeQueryBuilder(manager: { ...Metadata }) {
   return {
     insert: (options?: any) => insert(manager, options),
     update: (options?: any) => update(manager, options),
