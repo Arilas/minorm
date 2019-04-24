@@ -35,7 +35,7 @@ function createStubManager() {
         remove: options => remove(this, options),
       }
     },
-    query() {
+    execute() {
       throw new Error('You must override query method')
     },
     clear() {},
@@ -47,7 +47,7 @@ describe('Unit', () => {
       const QUERY = 'SELECT * FROM u WHERE (id = ?)'
       const manager = {
         ...createStubManager(),
-        query(query) {
+        execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(1)
@@ -74,7 +74,7 @@ describe('Unit', () => {
       const QUERY = 'SELECT * FROM u WHERE (id = ?) LIMIT ?'
       const manager = {
         ...createStubManager(),
-        query(query) {
+        execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(2)
@@ -101,7 +101,7 @@ describe('Unit', () => {
       const QUERY = 'SELECT * FROM u WHERE (id = ?)'
       const manager = {
         ...createStubManager(),
-        query(query) {
+        execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(1)
@@ -131,7 +131,7 @@ describe('Unit', () => {
         'SELECT * FROM u WHERE (id IN (?, ?)) AND (status != ?) AND (name LIKE ?) AND (foo NOT IN (?, ?))'
       const manager = {
         ...createStubManager(),
-        query(query) {
+        execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(6)
@@ -178,7 +178,7 @@ describe('Unit', () => {
       }
       const manager = {
         ...createStubManager(),
-        query(query) {
+        execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(2)
@@ -203,7 +203,7 @@ describe('Unit', () => {
       }
       const manager = {
         ...createStubManager(),
-        query(query) {
+        execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
           expect(values.length).toBe(4)
