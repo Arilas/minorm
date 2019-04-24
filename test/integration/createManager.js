@@ -3,7 +3,7 @@ import { createManager } from '../../src'
 import { createSchemaTool } from '../../src/schema'
 import { setupSchema, createFixtureManager } from './fixtures'
 import Config from './config'
-import type { Repository } from '../../src/types'
+import type { Repository } from '../../src/createRepository'
 
 describe('Integration', () => {
   describe('createManager', () => {

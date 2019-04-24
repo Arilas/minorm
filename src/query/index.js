@@ -1,5 +1,6 @@
 /** @flow */
-import type { Manager, BaseRecord, SelectQuery } from '../types'
+import type { Manager } from '../createManager'
+import type { BaseRecord, SelectQuery } from '../types'
 import insert from './insert'
 import select from './select'
 import update from './update'

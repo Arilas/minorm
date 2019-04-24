@@ -3,7 +3,7 @@ import isGenerator from 'is-generator-function'
 import { createMigrationContext } from './createMigrationContext'
 import { MINORM_MIGRATIONS_TABLE } from './constants'
 import type { MigrationManager, Migration } from './types'
-import type { Manager } from '../types'
+import type { Manager } from '../createManager'
 
 const MIGRATIONS_QUERY = `SELECT migration FROM ${MINORM_MIGRATIONS_TABLE}`
 
@@ -59,8 +59,8 @@ export function createMigrationManager(manager: Manager): MigrationManager {
         if (isGenerator(handler[method])) {
           const generator = handler[method](context)
           let send = null
+          // eslint-disable-next-line
           while (true) {
-            // eslint-disable-line
             const result = generator.next(send)
             if (result.done) {
               break
@@ -77,23 +77,33 @@ export function createMigrationManager(manager: Manager): MigrationManager {
               }
               case 'APPLY': {
                 await Promise.all(
-                  getPreQueries().map(line => manager.getPool().execute(line)),
+                  getPreQueries().map(line =>
+                    manager.getPool().execute({ sql: line }),
+                  ),
                 )
                 await Promise.all(
-                  getDropAlters().map(line => manager.getPool().execute(line)),
+                  getDropAlters().map(line =>
+                    manager.getPool().execute({ sql: line }),
+                  ),
                 )
                 // Because some of people don't drop foreign keys before and order is matter
                 for (const line of getDropQueries()) {
-                  await manager.getPool().execute(line)
+                  await manager.getPool().execute({ sql: line })
                 }
                 await Promise.all(
-                  getAddQueries().map(line => manager.getPool().execute(line)),
+                  getAddQueries().map(line =>
+                    manager.getPool().execute({ sql: line }),
+                  ),
                 )
                 await Promise.all(
-                  getAddAlters().map(line => manager.getPool().execute(line)),
+                  getAddAlters().map(line =>
+                    manager.getPool().execute({ sql: line }),
+                  ),
                 )
                 await Promise.all(
-                  getPostQueries().map(line => manager.getPool().execute(line)),
+                  getPostQueries().map(line =>
+                    manager.getPool().execute({ sql: line }),
+                  ),
                 )
                 manager.clear()
                 manager.connect()
@@ -108,23 +118,25 @@ export function createMigrationManager(manager: Manager): MigrationManager {
           handler[method](context)
         }
         await Promise.all(
-          getPreQueries().map(line => manager.getPool().execute(line)),
+          getPreQueries().map(line => manager.getPool().execute({ sql: line })),
         )
         await Promise.all(
-          getDropAlters().map(line => manager.getPool().execute(line)),
+          getDropAlters().map(line => manager.getPool().execute({ sql: line })),
         )
         // Because some of people don't drop foreign keys before and order is matter
         for (const line of getDropQueries()) {
-          await manager.getPool().execute(line)
+          await manager.getPool().execute({ sql: line })
         }
         await Promise.all(
-          getAddQueries().map(line => manager.getPool().execute(line)),
+          getAddQueries().map(line => manager.getPool().execute({ sql: line })),
         )
         await Promise.all(
-          getAddAlters().map(line => manager.getPool().execute(line)),
+          getAddAlters().map(line => manager.getPool().execute({ sql: line })),
         )
         await Promise.all(
-          getPostQueries().map(line => manager.getPool().execute(line)),
+          getPostQueries().map(line =>
+            manager.getPool().execute({ sql: line }),
+          ),
         )
         manager.clear()
         manager.connect()
@@ -153,7 +165,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
       return true
     },
     async getMigrationsToExecute(): Promise<MigrationsMap> {
-      const [result] = await manager.getPool().query(MIGRATIONS_QUERY)
+      const [result] = await manager.getPool().query({ sql: MIGRATIONS_QUERY })
       const appliedMigrations = result.reduce(
         (target, row) => ({
           ...target,

@@ -1,5 +1,5 @@
 /** @flow */
-import type { Manager } from '../../../src/types'
+import type { Manager } from '../../../src/createManager'
 
 function randomString() {
   return Math.random()

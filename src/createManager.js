@@ -1,15 +1,56 @@
 /** @flow */
-import { createRepository } from './createRepository'
-import { connect } from './connectionManager'
+import { queriesCreator, type Queries } from './manager'
+import { createRepository, type Repository } from './createRepository'
+import {
+  connect as createPool,
+  type Pool,
+  type Connection,
+} from './connectionManager'
 import { makeQueryBuilder } from './query'
 import createMetadataManager from './utils/metadataManager'
-import type { Manager, MetadataManager } from './types'
+import type {
+  MetadataManager,
+  BaseRecord,
+  InsertQuery,
+  SelectQuery,
+  UpdateQuery,
+  DeleteQuery,
+} from './types'
+
+export type Manager = $Exact<{
+  ...Queries,
+  connect(): void,
+  getRepository<T: BaseRecord>(tableName: string): Repository<T>,
+  extendRepository(
+    tableName: string,
+    callback: (repo: Repository<>) => { ...Repository<> },
+  ): void,
+  setRepositoryFactory(
+    factory: (tableName: string, manager: Manager) => Repository<>,
+  ): void,
+  getLogger(): ?typeof console,
+  ready(): Promise<any>,
+  getPool(): Pool,
+  clear(): void,
+  getMetadataManager(): MetadataManager,
+  setMetadataManager(manager: MetadataManager): void,
+  getConnection(): Promise<Connection>,
+  getConfiguration(): { [key: string]: any },
+  startQuery(): {
+    insert(): InsertQuery,
+    select<T: BaseRecord>(): SelectQuery<T>,
+    update(): UpdateQuery,
+    delete(): DeleteQuery,
+    remove(): DeleteQuery,
+  },
+}>
 
 export function createManager(
   connectionConfig: any,
   logger: ?typeof console = null,
 ): Manager {
-  let pool
+  // MySQL2 Connection Pool
+  let pool: ?Pool
   /**
    * {
    *   tableName: Repository
@@ -19,25 +60,27 @@ export function createManager(
   let metadataManager: MetadataManager
   let reposirotyFactory = createRepository
 
+  function connect() {
+    if (!metadataManager) {
+      metadataManager = createMetadataManager()(this)
+    }
+    pool = createPool(connectionConfig)
+    metadataManager.ready()
+  }
+
   function getPool() {
     if (!pool) {
       const msg = 'Please start connection before'
-      if (logger) {
-        logger.error(msg)
-      }
       throw new Error(msg)
     }
     return pool
   }
 
+  const queries = queriesCreator(getPool)
+
   return {
-    connect() {
-      if (!metadataManager) {
-        metadataManager = createMetadataManager()(this)
-      }
-      pool = connect(connectionConfig)
-      metadataManager.ready()
-    },
+    ...queries,
+    connect,
     async ready() {
       return await metadataManager.ready()
     },
@@ -77,55 +120,6 @@ export function createManager(
     },
     getConnection() {
       return getPool().getConnection()
-    },
-    query(query) {
-      if (typeof query.toParam !== 'function') {
-        throw new Error(
-          `manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`,
-        )
-      }
-      const { stack } = new Error()
-      const { text, values } = query.toParam()
-      if (logger) {
-        logger.debug(`SQL query: ${text}`)
-      }
-      return getPool()
-        .query(text, values)
-        .catch(err => {
-          const newErr = new Error(`${err.message}
-Query: ${text}
-Call stack for query: ${stack}
-`)
-          // newErr.stack = stack
-          throw newErr
-        })
-    },
-    nestQuery(query) {
-      if (typeof query.toParam !== 'function') {
-        throw new Error(
-          `manager.query() accepts only queries that implements toParam() method. Try use manager.startQuery()`,
-        )
-      }
-      const { stack } = new Error()
-      const { text, values } = query.toParam()
-      if (logger) {
-        logger.debug(`SQL query: ${text}`)
-      }
-      return getPool()
-        .query(
-          {
-            sql: text,
-            nestTables: true,
-          },
-          values,
-        )
-        .catch(err => {
-          const newErr = new Error(`${err.message}
-Query: ${text}
-Call stack for query: ${stack}
-`)
-          throw newErr
-        })
     },
     startQuery() {
       return makeQueryBuilder(this)

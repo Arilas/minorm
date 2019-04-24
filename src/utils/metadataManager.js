@@ -1,5 +1,6 @@
 /** @flow */
-import type { Manager, MetadataManager } from '../types'
+import type { MetadataManager } from '../types'
+import type { Manager } from '../createManager'
 
 const TABLE_COLUMNS_META_QUERY = `
   SELECT
@@ -41,9 +42,10 @@ export default function createMetadataManager(): (
       loadTablesMetadata() {
         return manager
           .getPool()
-          .query(TABLE_COLUMNS_META_QUERY, [
-            manager.getConfiguration().database,
-          ])
+          .query({
+            sql: TABLE_COLUMNS_META_QUERY,
+            values: [manager.getConfiguration().database],
+          })
           .then(([result]) => {
             dbSchema = result.reduce(
               (target, row) => ({
@@ -67,9 +69,10 @@ export default function createMetadataManager(): (
       loadRelationsMetadata() {
         return manager
           .getPool()
-          .query(TABLE_RELATION_META_QUERY, [
-            manager.getConfiguration().database,
-          ])
+          .query({
+            sql: TABLE_RELATION_META_QUERY,
+            values: [manager.getConfiguration().database],
+          })
           .then(([result]) => {
             dbSchema = result.reduce(
               (target, row) => ({

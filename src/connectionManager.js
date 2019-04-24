@@ -1,8 +1,14 @@
 /** @flow */
-import { type PoolOptions } from 'mysql2'
-import MySQL, { type Pool } from 'mysql2/promise'
+import { type PoolOptions, type QueryOptions } from 'mysql2'
+import MySQL, {
+  type Pool,
+  type Connection,
+  type QueryResult,
+} from 'mysql2/promise'
 
 let connectionProvider = mySQLCreatePool
+
+export type { Pool, Connection, QueryResult, QueryOptions, PoolOptions }
 
 export function mySQLCreatePool(connectionConfig: PoolOptions): Pool {
   return MySQL.createPool(connectionConfig)

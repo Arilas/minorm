@@ -1,11 +1,15 @@
 /** @flow */
 import Squel from 'squel'
-import type { Relation, Manager, SelectQueryMapper } from '../../types'
+import type { Manager } from '../../createManager'
+import type { Relation, SelectQueryMapper } from '../../types'
 
 export default class IncludeBlock extends Squel.cls.JoinBlock {
+  _manager: Manager
+  _mapper: SelectQueryMapper
+  _fromTableBlock: Squel.cls.FromTableBlock
   constructor(
     manager: Manager,
-    fromTableBlock: typeof Squel.cls.FromTableBlock,
+    fromTableBlock: Squel.cls.FromTableBlock,
     options: any,
     mapper: SelectQueryMapper,
   ) {
@@ -28,7 +32,7 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
     if (!table.length) {
       throw new Error(`${fromAlias} not found in query`)
     }
-    const originTableName = table[0].table
+    const originTableName: string = table[0].table.toString()
     if (
       !this._manager.getMetadataManager().hasTable(originTableName) ||
       !this._manager

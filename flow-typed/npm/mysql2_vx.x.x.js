@@ -29,17 +29,15 @@ declare module 'mysql2' {
     ssl?: string | Object,
   }
 
-  declare type QueryOptions =
-    | {
-        sql: string,
-        typeCast?: boolean | ((field: Object, next: Function) => any),
-        nestTables?: boolean | string, // string form is a separator used to produce column names
-        values?: Array<mixed>,
-        timeout?: number,
-      }
-    | string
+  declare export type QueryOptions = {
+    sql: string,
+    typeCast?: boolean | ((field: Object, next: Function) => any),
+    nestTables?: boolean | string, // string form is a separator used to produce column names
+    values?: Array<mixed>,
+    timeout?: number,
+  }
 
-  declare type QueryResults = Array<Object> & {
+  declare export type QueryResults = Array<*> & {
     insertId?: string | number,
     affectedRows?: number,
     changedRows?: number,

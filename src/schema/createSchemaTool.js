@@ -2,7 +2,7 @@
 import { createMigrationManager } from './createMigrationManager'
 import initMinormMigration from './initMinormSchema'
 import type { SchemaTool } from './types'
-import type { Manager } from '../types'
+import type { Manager } from '../createManager'
 
 export function createSchemaTool(manager: Manager): SchemaTool {
   const migrationManager = createMigrationManager(manager)
