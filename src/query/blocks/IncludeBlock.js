@@ -49,7 +49,7 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
     const onPart = `${realAlias}.${
       relation.referencedColumnName
     } = ${fromAlias}.${relation.columnName}`
-    return [relation.referencedTableName, alias, onPart]
+    return [relation.referencedTableName, realAlias, onPart]
   }
 
   include(fromAlias: string, columnName: string, alias?: string) {
