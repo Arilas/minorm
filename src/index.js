@@ -1,5 +1,22 @@
 /** @flow strict */
 
-export { setProvider, resetProvider, connect } from './connectionManager'
-export { createManager } from './createManager'
-export { createSchemaTool } from './schema'
+import { createManager, type Manager } from './createManager'
+import {
+  setProvider,
+  resetProvider,
+  connect,
+  type PoolOptions,
+} from './connectionManager'
+import { createRepository, type Repository } from './createRepository'
+import { createSchemaTool } from './schema'
+
+export {
+  createManager,
+  setProvider,
+  resetProvider,
+  connect,
+  createRepository,
+  createSchemaTool,
+}
+
+export type { Manager, Repository, PoolOptions }

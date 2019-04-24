@@ -74,6 +74,54 @@ describe('Unit', () => {
       await obj.save()
     })
 
+    it('should remove data', async () => {
+      const mutators: any = {
+        insert: sinon.stub().returns(Promise.resolve(1)),
+        update: sinon.stub().returns(Promise.resolve(1)),
+        remove: sinon.stub().returns(Promise.resolve(1)),
+        getMetadata: sinon.stub().returns(uMetadata),
+      }
+      const model = createModel(
+        mutators,
+        {
+          id: 1,
+        },
+        true,
+      )
+      await model.remove()
+      expect(mutators.remove.called).toBeTruthy()
+      expect(mutators.remove.args[0][0]).toBe(1)
+    })
+
+    it('should populate data', async () => {
+      const mutators: any = {
+        insert: sinon.stub().returns(Promise.resolve(1)),
+        update: sinon.stub().returns(Promise.resolve(1)),
+        remove: sinon.stub().returns(Promise.resolve(1)),
+        getMetadata: sinon.stub().returns(uMetadata),
+      }
+      const model = createModel(
+        mutators,
+        {
+          id: 1,
+        },
+        true,
+      )
+      model.populate({
+        foo: 'bar',
+        ololo: 'das',
+      })
+      expect(model.foo).toEqual('bar')
+      expect(model.ololo).toEqual('das')
+      await model.save()
+      expect(mutators.getMetadata.called).toBeTruthy()
+      expect(mutators.update.called).toBeTruthy()
+      expect(mutators.update.args[0][0]).toBe(1)
+      expect(mutators.update.args[0][1]).toMatchObject({
+        foo: 'bar',
+      })
+    })
+
     it('should not call mutators when data is not changed', async () => {
       const mutators: any = {
         insert: sinon.stub().returns(Promise.resolve(1)),
@@ -88,6 +136,7 @@ describe('Unit', () => {
         },
         true,
       )
+      model.bar = 'adfs'
       await model.save()
       expect(mutators.getMetadata.called).toBeTruthy()
       expect(mutators.update.called).toBeFalsy()

@@ -13,7 +13,7 @@ export type Selectors<T: BaseRecord> = $Exact<{
     limit?: number,
     offset?: number,
   ): Promise<Array<Model<T>>>,
-  startQuery(alias?: string): SelectQuery<T>,
+  startQuery<Record: T>(alias?: string): SelectQuery<Record>,
 }>
 
 export function selectorsCreator<T: BaseRecord>(

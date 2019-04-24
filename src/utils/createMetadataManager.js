@@ -1,7 +1,7 @@
 /** @flow strict */
 import type { Queries } from '../manager'
 
-const TABLE_COLUMNS_META_QUERY = `
+export const TABLE_COLUMNS_META_QUERY = `
   SELECT
     TABLE_NAME tableName,
     COLUMN_NAME columnName,
@@ -13,7 +13,7 @@ const TABLE_COLUMNS_META_QUERY = `
   WHERE
     TABLE_SCHEMA = ?
 `
-const TABLE_RELATION_META_QUERY = `
+export const TABLE_RELATION_META_QUERY = `
   SELECT
     TABLE_NAME tableName,
     COLUMN_NAME columnName,
