@@ -26,7 +26,7 @@ export class UpdateQuery extends Squel.cls.QueryBuilder {
   }
 
   execute() {
-    return this._manager.query(this).then(([result]) => result)
+    return this._manager.execute(this).then(([result]) => result)
   }
 }
 

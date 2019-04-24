@@ -33,7 +33,7 @@ export class DeleteQuery extends Squel.cls.Delete {
   criteria: (criteria: { [key: string]: any }) => DeleteQuery
 
   execute() {
-    return this._manager.query(this).then(([result]) => result)
+    return this._manager.execute(this).then(([result]) => result)
   }
 }
 

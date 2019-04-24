@@ -46,6 +46,6 @@ describe('Integration', () => {
       //$FlowIgnore
       console.error = oldError // eslint-disable-line no-console
       server.close()
-    })
+    }, 20000)
   })
 })
