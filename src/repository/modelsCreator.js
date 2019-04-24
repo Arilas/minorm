@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { createModel, type Model } from '../createModel'
 import type { BaseRecord } from '../types'
 import type { Mutators } from './mutatorsCreator'
@@ -13,14 +13,16 @@ export function modelsCreator<T: BaseRecord>(
   mutators: Mutators<T>,
 ): Models<T> {
   function hydrate<Record: T>(
-    entity: Record,
+    entity: $Shape<Record>,
     isSaved: boolean = false,
   ): Model<Record> {
     // $FlowIgnore
     return createModel<Record>(mutators, entity, isSaved)
   }
 
-  function create<Record: T>(data: any = {}): Model<Record> {
+  const defaultObj: BaseRecord = {}
+
+  function create<Record: T>(data: $Shape<Record> = defaultObj): Model<Record> {
     return hydrate(data)
   }
 

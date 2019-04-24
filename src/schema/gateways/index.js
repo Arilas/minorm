@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { addSqlGateway } from './addSqlGateway'
 import { findAndUpdateGateway } from './findAndUpdateGateway'
 import { dropTableGateway } from './dropTableGateway'
@@ -42,6 +42,7 @@ export function createContext(
   for (const name of Object.keys(registeredGateways)) {
     // $FlowIgnore this is not what Flow should control in this application. It's abstract API
     const handler = registeredGateways[name](metadataManager)
+    // $FlowIgnore
     context[name] = (...opts: Array<any>) => {
       if (opts.length > handler.length) {
         throw new Error(`${name} was called with mismatched amount of arguments.

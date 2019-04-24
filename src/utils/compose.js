@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 
 // $FlowIgnore
 const createComposer = (): $Compose => (...funcs) => {

@@ -1,4 +1,5 @@
-/** @flow */
+/** @flow strict */
+import type { BaseRecord } from '../types'
 
 export function createMapper() {
   const hierarchy = {}
@@ -35,7 +36,7 @@ export function createMapper() {
 
       return populateMap(map, entryPoint)
     },
-    map(rawData: { [key: string]: ?Object }) {
+    map(rawData: { [key: string]: ?BaseRecord }) {
       if (!rawData || !rawData.hasOwnProperty(entryPoint)) {
         return null
       }

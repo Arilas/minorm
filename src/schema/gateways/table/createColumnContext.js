@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import type { SchemaToolColumnContext } from '../../types'
 import type { MetadataManager } from '../../../utils/createMetadataManager'
 
@@ -65,7 +65,9 @@ export function createColumnContext(
       const typePart = length ? `${type}(${length})` : type
       const unsignedPart = unsigned ? ' UNSIGNED' : ''
       const defaultValuePart =
-        defaultValue !== undefined ? ` DEFAULT '${defaultValue}'` : ''
+        defaultValue !== undefined
+          ? ` DEFAULT '${defaultValue == null ? 'NULL' : defaultValue}'`
+          : ''
       const incrementPart = autoIncrement ? ' AUTO_INCREMENT' : ''
       const nullablePart = !nullable ? ' NOT NULL' : ''
       const primaryPart = primary ? ' PRIMARY KEY' : ''

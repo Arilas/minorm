@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { deprecate } from '../utils/deprecation'
 import type { QueryBuilder, ParamString } from 'squel'
 import type { QueryResult, QueryOptions } from '../connectionManager'

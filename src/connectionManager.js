@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { type PoolOptions, type QueryOptions } from 'mysql2'
 import MySQL, {
   type Pool,
@@ -18,7 +18,7 @@ export function connect(connectionConfig: PoolOptions): Pool {
   return connectionProvider(connectionConfig)
 }
 
-export function setProvider(provider: Function) {
+export function setProvider(provider: typeof mySQLCreatePool) {
   connectionProvider = provider
 }
 

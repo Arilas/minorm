@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import {
   connect as createPool,
   type Pool,
@@ -13,7 +13,7 @@ export type Connection = $Exact<{
   clear(): void,
 }>
 
-export function connectionCreator<T: any>(
+export function connectionCreator<T: {}>(
   next: ManagerConstructor<T>,
 ): ManagerConstructor<
   $Exact<{
@@ -41,6 +41,7 @@ export function connectionCreator<T: any>(
     }
 
     function clear() {
+      // $FlowIgnore
       if (manager.clear) {
         manager.clear()
       }

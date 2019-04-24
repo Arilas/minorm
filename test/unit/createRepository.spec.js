@@ -44,13 +44,13 @@ function createStubManager() {
 describe('Unit', () => {
   describe('createRepository', () => {
     test('should find data by id', async () => {
-      const QUERY = 'SELECT * FROM u WHERE (id = ?)'
+      const QUERY = 'SELECT * FROM u WHERE (id = ?) LIMIT ?'
       const manager = {
         ...createStubManager(),
         execute(query) {
           const { text, values } = query.toParam()
           expect(text).toEqual(QUERY)
-          expect(values.length).toBe(1)
+          expect(values.length).toBe(2)
           expect(values || []).toContain(1)
           return Promise.resolve([
             [

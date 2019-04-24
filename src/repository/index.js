@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 
 import { modelsCreator, type Models } from './modelsCreator'
 import { mutatorsCreator, type Mutators } from './mutatorsCreator'

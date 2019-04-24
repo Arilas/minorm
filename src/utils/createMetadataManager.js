@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import type { Queries } from '../manager'
 
 const TABLE_COLUMNS_META_QUERY = `
@@ -51,7 +51,7 @@ export type MetadataManager = {
   getTable(tableName: string): { [key: string]: Relation },
   hasAssociation(tableName: string, columnName: string): boolean,
   getColumns(tableName: string): { [key: string]: ColumnMeta },
-  ready(): Promise<any>,
+  ready(): Promise<void>,
   isLoaded(): boolean,
   clear(): void,
 }

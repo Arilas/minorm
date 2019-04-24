@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 
 export { setProvider, resetProvider, connect } from './connectionManager'
 export { createManager } from './createManager'

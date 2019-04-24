@@ -130,7 +130,7 @@ declare module 'squel' {
     rawNesting: boolean;
   }
 
-  declare type QueryBuilderOptions = $Shape<CompleteQueryBuilderOptions>
+  declare export type QueryBuilderOptions = $Shape<CompleteQueryBuilderOptions>
 
   declare export interface ParamString {
     text: string;

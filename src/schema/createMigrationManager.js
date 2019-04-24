@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import isGenerator from 'is-generator-function'
 import { createMigrationContext } from './createMigrationContext'
 import { MINORM_MIGRATIONS_TABLE } from './constants'

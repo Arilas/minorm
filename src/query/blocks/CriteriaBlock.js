@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import Squel from 'squel'
 import type { Criteria } from '../../types'
 

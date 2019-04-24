@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { MINORM_BENCHMARK_TABLE, MINORM_MIGRATIONS_TABLE } from './constants'
 import type { SchemaToolContext } from './types'
 

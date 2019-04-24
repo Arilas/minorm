@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import {
   mutatorsCreator,
   modelsCreator,
@@ -10,7 +10,7 @@ import {
 import type { Metadata } from './manager'
 import type { BaseRecord } from './types'
 
-export type Repository<T: BaseRecord = { [key: string]: any }> = $Exact<{
+export type Repository<T: BaseRecord> = $Exact<{
   ...Mutators<T>,
   ...Models<T>,
   ...Selectors<T>,

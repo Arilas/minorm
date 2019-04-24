@@ -10,7 +10,7 @@
     "test": "jest --runInBand --forceExit",
     "test:integration": "jest test/integration --runInBand --forceExit",
     "test:functional": "jest test/functional --runInBand --forceExit",
-    "test:unit": "jest test/unit --runInBand --forceExit"
+    "test:unit": "jest test/unit"
   },
   "repository": {
     "type": "git",
@@ -45,7 +45,8 @@
     "flow-typed": "^2.5.1",
     "in-publish": "^2.0.0",
     "jest": "^24.7.1",
-    "prettier": "^1.17.0"
+    "prettier": "^1.17.0",
+    "sinon": "^7.3.2"
   },
   "dependencies": {
     "eslint-import-resolver-node": "^0.3.2",
@@ -65,17 +66,10 @@
     "collectCoverage": true,
     "testPathIgnorePatterns": [
       "<rootDir>[/\\\\](build|docs|node_modules|scriptslib/)[/\\\\]",
-      "(config|fixtures|utils)"
+      "(config|fixtures)"
     ],
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.js$"
-    ],
-    "testMatch": [
-      "**/test/**/*.js"
     ]
   }
 }

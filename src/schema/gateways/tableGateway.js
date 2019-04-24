@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { createBaseGateway } from './createBaseGateway'
 import type { SchemaToolGateway, SchemaToolCreateTableContext } from '../types'
 import type { MetadataManager } from '../../utils/createMetadataManager'
@@ -70,31 +70,23 @@ function createTableContext(
       columnName: string,
       referencedTableName: string,
       referencedColumnName: string,
-      indexName = null,
+      idxName = null,
     ) {
-      if (!indexName) {
-        indexName = `FK_${tableName}_${columnName}`
-      }
+      const indexName = idxName || `FK_${tableName}_${columnName}`
       alterAdd(
         `CONSTRAINT \`${indexName}\` FOREIGN KEY (\`${columnName}\`) REFERENCES \`${referencedTableName}\` (\`${referencedColumnName}\`)`,
       )
     },
-    unique(columnName, indexName = null) {
-      if (!indexName) {
-        indexName = `UNI_${tableName}_${columnName}`
-      }
+    unique(columnName, idxName = null) {
+      const indexName = idxName || `UNI_${tableName}_${columnName}`
       lineAdd(`UNIQUE KEY \`${indexName}\` (\`${columnName}\`)`)
     },
-    index(columnName, indexName = null) {
-      if (!indexName) {
-        indexName = `IDX_${tableName}_${columnName}`
-      }
+    index(columnName, idxName = null) {
+      const indexName = idxName || `IDX_${tableName}_${columnName}`
       lineAdd(`INDEX \`${indexName}\` (\`${columnName}\`)`)
     },
-    key(columnName, indexName = null) {
-      if (!indexName) {
-        indexName = `KEY_${tableName}_${columnName}`
-      }
+    key(columnName, idxName = null) {
+      const indexName = idxName || `KEY_${tableName}_${columnName}`
       lineAdd(`KEY \`${indexName}\` (\`${columnName}\`)`)
     },
   }
@@ -182,7 +174,7 @@ export function createTableGateway(
 
 export function createTableBuilder(
   tableName: string,
-  callback: Function,
+  callback: (table: SchemaToolCreateTableContext) => void,
   isNew: boolean = true,
 ) {
   // $FlowIgnore
@@ -191,7 +183,10 @@ export function createTableBuilder(
 
 export function tableGateway(
   metadataManager: MetadataManager,
-): (tableName: string, callback: Function) => SchemaToolGateway {
+): (
+  tableName: string,
+  callback: (table: SchemaToolCreateTableContext) => void,
+) => SchemaToolGateway {
   return (tableName, callback) => {
     const wrapper = createTableGateway(metadataManager, tableName)
     callback(createTableContext(wrapper.getApi(), metadataManager, tableName))

@@ -1,5 +1,5 @@
-/** @flow */
-import Squel from 'squel'
+/** @flow strict */
+import Squel, { type QueryBuilderOptions } from 'squel'
 import IncludeBlock from './blocks/IncludeBlock'
 import CriteriaBlock from './blocks/CriteriaBlock'
 import type { Metadata } from '../manager'
@@ -17,13 +17,13 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
   _fromTableBlock: Squel.cls.FromTableBlock
   constructor(
     manager: Metadata,
-    options: any,
+    options: QueryBuilderOptions,
     blocks: ?Array<Squel.cls.Block> = null,
   ) {
     const mapper = createMapper()
     // For include functionality we need fromTableBlock inside IncludeBlock
     const fromTableBlock = new Squel.cls.FromTableBlock(options)
-    blocks = blocks || [
+    const newBlocks = blocks || [
       new Squel.cls.StringBlock(options, 'SELECT'),
       new Squel.cls.FunctionBlock(options),
       new Squel.cls.DistinctBlock(options),
@@ -39,7 +39,7 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
       new Squel.cls.UnionBlock(options),
     ]
 
-    super(options, blocks)
+    super(options, newBlocks)
 
     this._manager = manager
     this._mapper = mapper
@@ -48,7 +48,7 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
 
   execute(
     nested?: boolean,
-  ): Promise<Array<T>> | Promise<Array<{ [key: string]: ?Object }>> {
+  ): Promise<Array<T>> | Promise<Array<{ [key: string]: ?BaseRecord }>> {
     return this._manager
       .execute(this, { nestTables: !!nested })
       .then(([result]) => result)
@@ -64,7 +64,7 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
       fetch: async (): Promise<
         Array<{
           ...T,
-          [key: string]: any,
+          [key: string]: BaseRecord,
         }>,
       > => {
         // $FlowIgnore
@@ -80,7 +80,7 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
 
 export default function select<T: BaseRecord>(
   manager: { ...Metadata },
-  options: any,
+  options?: QueryBuilderOptions,
 ): $SelectQuery<T> {
   // $FlowIgnore
   return new SelectQuery(manager, options)

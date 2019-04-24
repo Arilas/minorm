@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import {
   createMetadataManager,
   type MetadataManager,
@@ -10,7 +10,7 @@ export type Metadata = $Exact<{
   ...Queries,
   getMetadataManager(): MetadataManager,
   setMetadataManager(newMetadataManager: MetadataManager): void,
-  ready(): Promise<any>,
+  ready(): Promise<void>,
   clear(): void,
 }>
 

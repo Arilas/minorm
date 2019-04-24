@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { createRepository, type Repository } from '../createRepository'
 import type { BaseRecord } from '../types'
 import type { ManagerConstructor } from './types'

@@ -1,11 +1,15 @@
-/** @flow */
-import Squel from 'squel'
+/** @flow strict */
+import Squel, { type QueryBuilderOptions } from 'squel'
 import type { InsertQuery as $InsertQuery } from '../types'
 import type { Queries } from '../manager'
 
 export class InsertQuery extends Squel.cls.Insert {
   _manager: Queries
-  constructor(manager: Queries, options: any, blocks?: Array<Squel.cls.Block>) {
+  constructor(
+    manager: Queries,
+    options: QueryBuilderOptions,
+    blocks?: Array<Squel.cls.Block>,
+  ) {
     // $FlowIgnore
     super(options, blocks)
 
@@ -19,7 +23,7 @@ export class InsertQuery extends Squel.cls.Insert {
 
 export default function insert(
   manager: { ...Queries },
-  options: any,
+  options?: QueryBuilderOptions,
 ): $InsertQuery {
   // $FlowIgnore
   return new InsertQuery(manager, options)

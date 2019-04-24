@@ -1,5 +1,5 @@
-/** @flow */
-import Squel from 'squel'
+/** @flow strict */
+import Squel, { type QueryBuilderOptions } from 'squel'
 import type { Metadata } from '../../manager'
 import type { Relation } from '../../utils/createMetadataManager'
 import type { SelectQueryMapper } from '../../types'
@@ -11,7 +11,7 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
   constructor(
     manager: Metadata,
     fromTableBlock: Squel.cls.FromTableBlock,
-    options: any,
+    options: QueryBuilderOptions,
     mapper: SelectQueryMapper,
   ) {
     super(options)
@@ -22,9 +22,7 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
   }
 
   _prepareJoin(fromAlias: string, columnName: string, alias?: string) {
-    if (!alias) {
-      alias = columnName.replace('_id', '')
-    }
+    const realAlias = alias || columnName.replace('_id', '')
     const tables = [
       ...this._fromTableBlock._tables, //FROM part
       ...this._joins, //JOIN part
@@ -44,13 +42,13 @@ export default class IncludeBlock extends Squel.cls.JoinBlock {
       const msg = `Foreign key ${columnName} is not found in ${originTableName}. Try to get Repository for ${originTableName} to load relations.`
       throw new Error(msg)
     }
-    this._mapper.setRelation(fromAlias, alias)
+    this._mapper.setRelation(fromAlias, realAlias)
     const relation: Relation = this._manager
       .getMetadataManager()
       .getTable(originTableName).relations[columnName]
-    const onPart = `${alias}.${relation.referencedColumnName} = ${fromAlias}.${
-      relation.columnName
-    }`
+    const onPart = `${realAlias}.${
+      relation.referencedColumnName
+    } = ${fromAlias}.${relation.columnName}`
     return [relation.referencedTableName, alias, onPart]
   }
 

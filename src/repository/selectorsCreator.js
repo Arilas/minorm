@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import selectQuery from '../query/select'
 import { type Model } from '../createModel'
 import type { BaseRecord, Criteria, SelectQuery } from '../types'
@@ -28,7 +28,7 @@ export function selectorsCreator<T: BaseRecord>(
   }
 
   async function doSelect<Record: T>(
-    selector: (query: SelectQuery<*>) => any,
+    selector: (query: SelectQuery<*>) => SelectQuery<*> | void,
   ): Promise<Array<Model<Record>>> {
     const query = startQuery<Record>()
     selector(query)

@@ -1,10 +1,10 @@
-/** @flow */
-import type { Criteria } from '../types'
+/** @flow strict */
+import type { Criteria, BaseRecord } from '../types'
 
 export type SchemaTool = {
   setSchemaInit(handler: Migration): void,
-  initSchema(): Promise<any>,
-  dropSchema(): Promise<any>,
+  initSchema(): Promise<boolean>,
+  dropSchema(): Promise<boolean>,
   getMigrationManager(): MigrationManager,
 }
 
@@ -18,15 +18,12 @@ export type SchemaToolContext = {
     callback: (ctx: SchemaToolCreateTableContext) => void,
   ): SchemaToolGateway,
   dropTable(tableName: string): SchemaToolGateway,
-  put(
-    tableName: string,
-    entities: Array<{ [key: string]: any }>,
-  ): SchemaToolGateway,
+  put(tableName: string, entities: Array<BaseRecord>): SchemaToolGateway,
   addSql(sql: string): SchemaToolGateway,
   findAndUpdate(
     tableName: string,
     criteria: Criteria,
-    changes: Object,
+    changes: BaseRecord,
   ): SchemaToolGateway,
   asyncExecute(): SchemaToolGateway,
   asyncQuery(sql: string): SchemaToolGateway,
@@ -41,7 +38,9 @@ export type SchemaToolGatewayApi = {
 
 export type SchemaToolGateway = {
   getApi(): ?SchemaToolGatewayApi,
-  getAction(): ?Object,
+  getAction(): ?{
+    type: string,
+  },
   getPreQueries(): Array<string>,
   getAddQueries(): Array<string>,
   getDropQueries(): Array<string>,
@@ -90,14 +89,14 @@ export type SchemaToolColumnContext = {
   primary(): SchemaToolColumnContext,
   unsigned(): SchemaToolColumnContext,
   autoIncrement(): SchemaToolColumnContext,
-  defaultValue(value: any): SchemaToolColumnContext,
+  defaultValue(value: string | number | null | void): SchemaToolColumnContext,
   build(): string,
   toString(): string,
 }
 
 export type Migration = {
-  up(SchemaTool: SchemaToolContext): any,
-  down(SchemaTool: SchemaToolContext): any,
+  up(SchemaTool: SchemaToolContext): void | Generator<*, *, *>,
+  down(SchemaTool: SchemaToolContext): void | Generator<*, *, *>,
 }
 
 export type MigrationManager = {

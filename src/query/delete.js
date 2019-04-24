@@ -1,5 +1,5 @@
-/** @flow */
-import Squel from 'squel'
+/** @flow strict */
+import Squel, { type QueryBuilderOptions } from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
 import type { Queries } from '../manager'
 import type { DeleteQuery as $DeleteQuery } from '../types'
@@ -9,14 +9,15 @@ export class DeleteQuery extends Squel.cls.Delete {
 
   constructor(
     manager: Queries,
-    options: any,
+    options: QueryBuilderOptions,
     blocks: ?Array<Squel.cls.Block> = null,
   ) {
-    blocks = blocks || [
+    const newBlocks = blocks || [
       new Squel.cls.StringBlock(options, 'DELETE'),
       new Squel.cls.TargetTableBlock(options),
+      // $FlowIgnore
       new Squel.cls.FromTableBlock({
-        ...options,
+        ...(options || {}),
         singleTable: true,
       }),
       new Squel.cls.JoinBlock(options),
@@ -25,12 +26,10 @@ export class DeleteQuery extends Squel.cls.Delete {
       new Squel.cls.LimitBlock(options),
     ]
 
-    super(options, blocks)
+    super(options, newBlocks)
 
     this._manager = manager
   }
-
-  criteria: (criteria: { [key: string]: any }) => DeleteQuery
 
   execute() {
     return this._manager.execute(this).then(([result]) => result)
@@ -39,7 +38,7 @@ export class DeleteQuery extends Squel.cls.Delete {
 
 export default function remove(
   manager: { ...Queries },
-  options: any,
+  options?: QueryBuilderOptions,
 ): $DeleteQuery {
   // $FlowIgnore
   return new DeleteQuery(manager, options)

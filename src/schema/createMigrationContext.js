@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 
 import { createContext } from './gateways'
 import type { SchemaToolContext } from './types'

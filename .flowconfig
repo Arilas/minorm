@@ -5,5 +5,13 @@
 [libs]
 flow-typed/
 
+[strict]
+nonstrict-import
+unclear-type
+unsafe-getters-setters
+untyped-import
+untyped-type-import
+
+
 [options]
 suppress_comment=.*\\$FlowIgnore

@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import type { SchemaToolGateway } from '../types'
 
 export function createBaseGateway(): SchemaToolGateway {

@@ -1,5 +1,6 @@
-/** @flow */
+/** @flow strict */
 import { createBaseManager, type Repositories } from './manager'
+import type { PoolOptions } from './connectionManager'
 import { makeQueryBuilder } from './query'
 import type {
   BaseRecord,
@@ -20,7 +21,7 @@ export type Manager = $Exact<{
   },
 }>
 
-export function createManager(connectionConfig: any): Manager {
+export function createManager(connectionConfig: PoolOptions): Manager {
   const baseManager = createBaseManager(() => ({}))(connectionConfig)
 
   return {

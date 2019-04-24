@@ -1,13 +1,13 @@
-/** @flow */
+/** @flow strict */
 import { createBaseGateway } from './createBaseGateway'
 import updateQuery from '../../query/update'
-import type { Criteria } from '../../types'
+import type { Criteria, BaseRecord } from '../../types'
 import type { SchemaToolGateway } from '../types'
 
 export function findAndUpdateGateway(): (
   tableName: string,
   criteria: Criteria,
-  changes: Object,
+  changes: BaseRecord,
 ) => SchemaToolGateway {
   return (tableName, criteria, changes) => ({
     ...createBaseGateway(),

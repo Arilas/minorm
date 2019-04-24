@@ -1,7 +1,9 @@
-/** @flow */
+/** @flow strict */
 import type { BaseRecord } from './types'
 import type { Mutators } from './repository'
+import type { ColumnMeta } from './utils/createMetadataManager'
 
+// $FlowIgnore
 function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
   const wrappedMethod = method.bind(obj)
   Object.defineProperty(obj, name, {
@@ -14,20 +16,22 @@ function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
 export type Model<Record: BaseRecord> = $Exact<{
   ...Record,
   save(): Promise<Model<Record>>,
-  populate(data: { [key: string]: any }): void,
+  populate(data: $Shape<Record>): void,
   remove(): Promise<number>,
 }>
 
 export function createModel<T: BaseRecord>(
   mutators: Mutators<T>,
-  model: T,
-  isFetched: boolean = true,
+  model: $Shape<T>,
+  isSaved: boolean = true,
 ): Model<T> {
-  let origin = isFetched ? { ...model } : {}
+  let isFetched = isSaved
+  let origin: $Shape<T> = isFetched ? { ...model } : {}
   definePrivate(model, 'save', async function(): Promise<Model<T>> {
-    const columnsMeta = mutators.getMetadata()
-    const changes = Object.keys(columnsMeta).reduce(
-      (target: any, key: string): any =>
+    // $FlowIgnore
+    const columnsMeta: { [key: $Keys<T>]: ColumnMeta } = mutators.getMetadata()
+    const changes: $Shape<T> = Object.keys(columnsMeta).reduce(
+      (target: $Shape<T>, key: string) =>
         origin[key] != model[key]
           ? {
               ...target,
@@ -36,11 +40,10 @@ export function createModel<T: BaseRecord>(
           : target,
       {},
     )
-    if (Object.keys(changes).length || !model.id) {
-      if (isFetched && model.id) {
-        await mutators.update(model.id, changes)
+    if (Object.keys(changes).length || (!model.id || !isFetched)) {
+      if (isFetched && origin.id && model.id) {
+        await mutators.update(origin.id, changes)
       } else {
-        // $FlowIgnore
         const id = await mutators.insert(changes)
         model.id = id
         isFetched = true
@@ -58,8 +61,8 @@ export function createModel<T: BaseRecord>(
     model,
     'remove',
     async (): Promise<number> => {
-      if (isFetched && model.id) {
-        await mutators.remove(model.id)
+      if (isFetched && origin.id) {
+        await mutators.remove(origin.id)
         isFetched = false
         origin = {}
       }

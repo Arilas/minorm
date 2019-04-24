@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { createMigrationManager } from './createMigrationManager'
 import initMinormMigration from './initMinormSchema'
 import type { SchemaTool } from './types'

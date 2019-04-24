@@ -1,4 +1,4 @@
-/** @flow */
+/** @flow strict */
 import { compose } from '../utils/compose'
 import type { ManagerConstructor } from './types'
 
