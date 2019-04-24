@@ -27,12 +27,11 @@ const uMetadata = {
 describe('Unit', () => {
   describe('createModel', () => {
     test('should extend original object with methods', async () => {
-      const obj = {
+      const objRaw = {
         test: 'some',
       }
       let insertCount = 0
-      createModel(
-        // $FlowIgnore fix for model
+      const obj = createModel(
         {
           insert(changes) {
             if (insertCount == 0) {
@@ -57,24 +56,20 @@ describe('Unit', () => {
             return Promise.resolve(1)
           },
           getMetadata() {
-            return Promise.resolve(uMetadata)
+            return uMetadata
           },
         },
-        obj,
+        objRaw,
         false,
-      ) // $FlowIgnore fix for model
-      await obj.save() // $FlowIgnore fix for model
+      )
+      await obj.save()
       obj.populate({
         foo: 'bar',
         ololo: 'test',
       })
-      // $FlowIgnore fix for model
       await obj.save()
-      // $FlowIgnore fix for model
       await obj.save()
-      // $FlowIgnore fix for model
       await obj.remove()
-      // $FlowIgnore fix for model
       await obj.save()
     })
   })
