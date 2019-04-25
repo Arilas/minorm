@@ -94,7 +94,6 @@ describe('Integration', () => {
       expect(manager.getMetadataManager().hasTable('users')).toBe(true)
       expect(manager.getMetadataManager().hasTable('posts')).toBe(true)
       await schemaTool.dropSchema()
-      await manager.getPool().end()
       await manager.clear()
     })
 
@@ -165,7 +164,6 @@ describe('Integration', () => {
       expect(manager.getMetadataManager().hasTable('users')).toBe(true)
       expect(manager.getMetadataManager().hasTable('posts')).toBe(true)
       await schemaTool.dropSchema()
-      await manager.getPool().end()
       await manager.clear()
     })
   })
