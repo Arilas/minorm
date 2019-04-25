@@ -11,7 +11,7 @@ export type Metadata = $Exact<{
   getMetadataManager(): MetadataManager,
   setMetadataManager(newMetadataManager: MetadataManager): void,
   ready(): Promise<void>,
-  clear(): void,
+  clear(): Promise<void>,
 }>
 
 export function metadataCreator<T: Queries>(
@@ -26,14 +26,25 @@ export function metadataCreator<T: Queries>(
     const manager = next(connectionConfig)
     let metadataManager: MetadataManager = createMetadataManager(manager)
 
+    /**
+    This method is used to receive MetadataManager which contains all information about your database.
+    This information include all tables and columns in database and also relations between your tables
+     */
     function getMetadataManager() {
       return metadataManager
     }
 
+    /**
+    This method is used to replace MetadataManager with other implementation.
+    It's useful for a test environment where you don't need to load Metadata from a server, but just need to use prepared data
+     */
     function setMetadataManager(newMetadataManager: MetadataManager) {
       metadataManager = newMetadataManager
     }
 
+    /**
+    This method is used to start preparing manager for a use
+     */
     async function ready() {
       // $FlowIgnore
       if (manager.ready) {
@@ -42,11 +53,14 @@ export function metadataCreator<T: Queries>(
       return metadataManager.ready()
     }
 
-    function clear() {
+    /**
+    This method is used to clear manager and MetadataManager state
+     */
+    async function clear() {
       if (manager.clear) {
-        manager.clear()
+        await manager.clear()
       }
-      metadataManager = createMetadataManager(manager)
+      metadataManager.clear()
     }
 
     return {

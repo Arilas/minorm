@@ -7,7 +7,7 @@ import type { Metadata } from './metadataCreator'
 export type Repositories = $Exact<{
   ...Metadata,
   getRepository<Record: BaseRecord>(tableName: string): Repository<Record>,
-  clear(): void,
+  clear(): Promise<void>,
 }>
 
 export function repositoryCreator<T: Metadata>(
@@ -34,9 +34,9 @@ export function repositoryCreator<T: Metadata>(
       return repos[tableName]
     }
 
-    function clear() {
+    async function clear() {
       if (manager.clear) {
-        manager.clear()
+        await manager.clear()
       }
       repos = {}
     }

@@ -7,8 +7,8 @@
     "dist": "babel -d lib/ src/",
     "prepublish": "in-publish && npm run dist || echo 'Bad mode'",
     "lint": "eslint .",
-    "test": "jest --runInBand --forceExit",
-    "test:integration": "jest test/integration --runInBand --forceExit",
+    "test": "jest --runInBand",
+    "test:integration": "jest test/integration --runInBand",
     "test:unit": "jest test/unit"
   },
   "repository": {

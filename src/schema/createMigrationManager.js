@@ -105,7 +105,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
                     manager.getPool().execute({ sql: line }),
                   ),
                 )
-                manager.clear()
+                await manager.clear()
                 manager.connect()
                 await manager.ready()
 
@@ -138,7 +138,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
             manager.getPool().execute({ sql: line }),
           ),
         )
-        manager.clear()
+        await manager.clear()
         manager.connect()
         await manager.ready()
         if (method === 'up') {
