@@ -3,5 +3,8 @@
   "lcov.watch": [{
     "pattern": "**/*.js",
     "command": "npm test"
-  }]
+  }
+],
+"jest.showCoverageOnLoad": true,
+"jest.pathToJest": "yarn test:unit"
 }

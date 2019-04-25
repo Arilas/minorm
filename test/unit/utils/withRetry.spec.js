@@ -48,7 +48,7 @@ describe('Unit', () => {
         const endTime = new Date() * 1
         expect(value).toEqual(1)
         expect(handler.calledTwice).toBeTruthy()
-        expect(endTime - startTime).toBeCloseTo(20, -1)
+        expect(endTime - startTime).toBeCloseTo(20, -1.5)
       })
     })
   })

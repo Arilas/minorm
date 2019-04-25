@@ -4,7 +4,7 @@ import type { BaseRecord } from '../types'
 import type { Mutators } from './mutatorsCreator'
 
 export type Models<T: BaseRecord> = $Exact<{
-  create<Q: T>(entity: Q): Model<Q>,
+  create<Q: T>(entity?: Q): Model<Q>,
   hydrate(entity: T, isSaved?: boolean): Model<T>,
 }>
 

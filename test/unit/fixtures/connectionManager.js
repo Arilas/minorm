@@ -1,4 +1,5 @@
 /** @flow */
+import sinon from 'sinon'
 import { type QueryOptions } from 'mysql2'
 import { type Connection, type QueryResult } from 'mysql2/promise'
 
@@ -117,7 +118,7 @@ export function createFakePool() {
 
   const pool = {
     getConnection: () => Promise.resolve(fakeConnection),
-    end: () => Promise.resolve(),
+    end: sinon.stub().returns(Promise.resolve()),
     query: (sql: QueryOptions, values?: Array<mixed>) =>
       fakeConnection.query(sql, values),
     execute: (sql: QueryOptions, values?: Array<mixed>) =>
@@ -125,6 +126,7 @@ export function createFakePool() {
   }
 
   function fakeMySqlProvider(): Pool {
+    //$FlowIgnore
     return pool
   }
   function inject() {

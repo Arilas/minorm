@@ -65,5 +65,22 @@ describe('Unit', () => {
 
       expect(userFetched).toEqual(user)
     })
+
+    it('should clear everything when we call clear', async () => {
+      const manager = createManager({
+        url: '',
+        user: '',
+        password: '',
+      })
+      manager.connect()
+      await manager.ready()
+      let metadataManager = manager.getMetadataManager()
+      expect(metadataManager.isLoaded()).toBeTruthy()
+      faker.pool.end.resetHistory()
+      await manager.clear()
+      expect(faker.pool.end.calledOnce).toBeTruthy()
+      metadataManager = manager.getMetadataManager()
+      expect(metadataManager.isLoaded()).toBeFalsy()
+    })
   })
 })
