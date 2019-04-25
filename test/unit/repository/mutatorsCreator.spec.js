@@ -44,6 +44,7 @@ describe('Unit', () => {
         const repo = manager.getRepository('users')
         faker.setAnswer(
           'INSERT INTO users (createdAt, modifiedAt) VALUES (?, ?)',
+          ['das', 'asddsaf'],
           {
             insertId: 1,
           },
@@ -59,6 +60,7 @@ describe('Unit', () => {
         const repo = manager.getRepository('users')
         faker.setAnswer(
           'UPDATE users SET createdAt = ?, modifiedAt = ? WHERE (id = ?)',
+          ['das', 'asddsaf', 5],
           {
             affectedRows: 1,
           },
@@ -74,6 +76,7 @@ describe('Unit', () => {
         const repo = manager.getRepository('users')
         faker.setAnswer(
           'UPDATE users SET createdAt = ?, modifiedAt = ? WHERE (id IN (?, ?, ?))',
+          ['das', 'asddsaf', 1, 2, 3],
           {
             affectedRows: 3,
           },
@@ -126,7 +129,7 @@ describe('Unit', () => {
 
       it('should remove data with id as selector', async () => {
         const repo = manager.getRepository('users')
-        faker.setAnswer('DELETE FROM users WHERE (id = ?)', {
+        faker.setAnswer('DELETE FROM users WHERE (id = ?)', [5], {
           affectedRows: 1,
         })
         const affectedRows = await repo.remove(5)
@@ -135,9 +138,13 @@ describe('Unit', () => {
 
       it('should update data by criteria as selector', async () => {
         const repo = manager.getRepository('users')
-        faker.setAnswer('DELETE FROM users WHERE (id IN (?, ?, ?))', {
-          affectedRows: 3,
-        })
+        faker.setAnswer(
+          'DELETE FROM users WHERE (id IN (?, ?, ?))',
+          [1, 2, 3],
+          {
+            affectedRows: 3,
+          },
+        )
         const affectedRows = await repo.remove({
           id: {
             $in: [1, 2, 3],
@@ -159,6 +166,7 @@ describe('Unit', () => {
       })
 
       afterEach(async () => {
+        faker.resetAnswers()
         await manager.clear()
       })
     })

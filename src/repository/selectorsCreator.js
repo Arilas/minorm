@@ -60,20 +60,20 @@ export function selectorsCreator<T: BaseRecord>(
 
   function findBy(
     criteria: Criteria,
-    orderBy?: { [key: string]: boolean } = {},
+    orderBy?: { [key: string]: boolean },
     limit?: number,
     offset?: number,
   ): Promise<Array<Model<T>>> {
     return doSelect<T>(query => {
       query.criteria(criteria)
+      if (orderBy) {
+        Object.keys(orderBy).forEach(key => query.order(key, orderBy[key]))
+      }
       if (limit) {
         query.limit(limit)
       }
       if (offset) {
         query.offset(offset)
-      }
-      if (orderBy) {
-        Object.keys(orderBy).forEach(key => query.order(key, orderBy[key]))
       }
     })
   }

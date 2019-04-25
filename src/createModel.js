@@ -6,11 +6,16 @@ import type { ColumnMeta } from './utils/createMetadataManager'
 // $FlowIgnore
 function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
   const wrappedMethod = method.bind(obj)
-  Object.defineProperty(obj, name, {
-    enumerable: false,
-    configurable: false,
-    get: (): T => wrappedMethod,
-  })
+  const descriptor = Object.getOwnPropertyDescriptor(obj, name)
+  if (descriptor) {
+    descriptor.get = (): T => wrappedMethod
+  } else {
+    Object.defineProperty(obj, name, {
+      enumerable: false,
+      configurable: false,
+      get: (): T => wrappedMethod,
+    })
+  }
 }
 
 export type Model<Record: BaseRecord> = $Exact<{

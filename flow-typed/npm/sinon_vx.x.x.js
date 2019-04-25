@@ -1,5 +1,6 @@
 declare module 'sinon' {
   declare interface SinonSpyCallApi {
+    (...args: *): any;
     thisValue: any;
     args: Array<any>;
     exception: any;
@@ -81,6 +82,7 @@ declare module 'sinon' {
   }
 
   declare interface SinonStub extends SinonSpy {
+    (...args: any): any;
     resetBehavior(): void;
     resetHistory(): void;
     usingPromise(promiseLibrary: any): SinonStub;

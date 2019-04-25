@@ -27,63 +27,66 @@ export function queriesCreator<T: Connection>(
     This helper is checking that provided query is instance of QueryBuilder or at least provide API to receive sql and values
      */
     const checkForQueryBuilder = (query: QueryBuilder) => {
-      if (typeof query.toParam !== 'function') {
+      if (!query || typeof query.toParam !== 'function') {
         throw new Error('Query Builder instance required')
       }
-    }
-
-    /**
-    This helper is used to catch call stack before we start executing query.
-    This is useful when developer needs to understand which query and which code triggered execution of some problem query.
-    By default Error stack doesn't contains original call stack but only node timers and internal mysql2 call stack which is not so useful
-     */
-    const makeCatcher = (sql: string, stack: string) => err => {
-      const newErr = new Error(`${err.message}
-  Query: ${sql}
-  Call stack for query: ${stack}
-  `)
-      throw newErr
     }
 
     /**
     This method of querying information make escaping of query before sending to database.
     It's fast, it's safe, but it's not uses prepare statement, so there's possible some cases in future about this.
      */
-    function query(
+    async function query(
       query: QueryBuilder,
       options?: $Shape<QueryOptions>,
     ): QueryResult {
       checkForQueryBuilder(query)
       const { stack } = new Error()
       const paramString: ParamString = query.toParam()
-      return manager
-        .getPool()
-        .query({
+      try {
+        return await manager.getPool().query({
           ...(options || {}),
           sql: paramString.text,
           values: paramString.values,
         })
-        .catch(makeCatcher(paramString.text, stack))
+      } catch (err) {
+        const newErr = {
+          ...err,
+          message: `${err.message}
+Query: ${paramString.text}
+Call stack for query: ${stack}`,
+          stack,
+        }
+        throw newErr
+      }
     }
 
     /**
     This method of querying information uses prepare-statement, so it's safe from SQL-Injections if you you map your values
      */
-    function execute(
+    async function execute(
       query: QueryBuilder,
       options?: $Shape<QueryOptions>,
     ): QueryResult {
       checkForQueryBuilder(query)
       const { stack } = new Error()
       const paramString: ParamString = query.toParam()
-      return manager
-        .getPool()
-        .execute({
+      try {
+        return await manager.getPool().execute({
           ...(options || {}),
           sql: paramString.text,
           values: paramString.values,
         })
-        .catch(makeCatcher(paramString.text, stack))
+      } catch (err) {
+        const newErr = {
+          ...err,
+          message: `${err.message}
+Query: ${paramString.text}
+Call stack for query: ${stack}`,
+          stack,
+        }
+        throw newErr
+      }
     }
 
     /**
@@ -92,7 +95,7 @@ export function queriesCreator<T: Connection>(
     `manager.execute(query, { nestTables:tru })`
     @deprecated
      */
-    function nestQuery(
+    async function nestQuery(
       query: QueryBuilder,
       options?: $Shape<QueryOptions>,
     ): QueryResult {
@@ -102,15 +105,23 @@ export function queriesCreator<T: Connection>(
       checkForQueryBuilder(query)
       const { stack } = new Error()
       const paramString: ParamString = query.toParam()
-      return manager
-        .getPool()
-        .execute({
+      try {
+        return await manager.getPool().execute({
           ...(options || {}),
           nestTables: true,
           sql: paramString.text,
           values: paramString.values,
         })
-        .catch(makeCatcher(paramString.text, stack))
+      } catch (err) {
+        const newErr = {
+          ...err,
+          message: `${err.message}
+Query: ${paramString.text}
+Call stack for query: ${stack}`,
+          stack,
+        }
+        throw newErr
+      }
     }
 
     return {
