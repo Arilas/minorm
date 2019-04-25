@@ -1,4 +1,5 @@
 /** @flow strict */
+import { withRetry } from './withRetry'
 import type { Queries } from '../manager'
 
 export const TABLE_COLUMNS_META_QUERY = `
@@ -61,101 +62,178 @@ export function createMetadataManager(manager: Queries): MetadataManager {
   let loadPromise
   let dbSchema = {}
 
-  return {
-    loadTablesMetadata() {
-      return manager
-        .getPool()
-        .query({
-          sql: TABLE_COLUMNS_META_QUERY,
-          values: [manager.getConfiguration().database],
-        })
-        .then(([result]) => {
-          dbSchema = result.reduce(
-            (target, row) => ({
-              ...target,
-              [row.tableName]: {
-                columns: {
-                  ...(target.hasOwnProperty(row.tableName)
-                    ? target[row.tableName].columns
-                    : {}),
-                  [row.columnName]: row,
-                },
-                relations: dbSchema.hasOwnProperty(row.tableName)
-                  ? dbSchema[row.tableName].relations
-                  : {},
-              },
-            }),
-            dbSchema,
-          )
-        })
-    },
-    loadRelationsMetadata() {
-      return manager
-        .getPool()
-        .query({
-          sql: TABLE_RELATION_META_QUERY,
-          values: [manager.getConfiguration().database],
-        })
-        .then(([result]) => {
-          dbSchema = result.reduce(
-            (target, row) => ({
-              ...target,
-              [row.tableName]: {
-                columns: dbSchema.hasOwnProperty(row.tableName)
-                  ? dbSchema[row.tableName].columns
-                  : {},
-                relations: {
-                  ...(target.hasOwnProperty(row.tableName)
-                    ? target[row.tableName].relations
-                    : {}),
-                  [row.columnName]: row,
-                },
-              },
-            }),
-            dbSchema,
-          )
-        })
-    },
-    async initDbSchema() {
-      if (loaded) {
-        return true
-      }
-      if (loadPromise) {
-        return loadPromise
-      }
-      loadPromise = Promise.all([
-        this.loadTablesMetadata(),
-        this.loadRelationsMetadata(),
-      ])
-      await loadPromise
+  /**
+  This function loads informaton about all tables in database and columns in this tables.
+   */
+  function loadTablesMetadata() {
+    /**
+    We use withRetry there because when Pool is still in init mode requests like this can be rejected by timeout
+     */
+    return withRetry(() =>
+      manager.getPool().query({
+        sql: TABLE_COLUMNS_META_QUERY,
+        values: [manager.getConfiguration().database],
+      }),
+    ).then(([result]) => {
+      dbSchema = result.reduce(
+        (target, row) => ({
+          ...target,
+          [row.tableName]: {
+            columns: {
+              ...(target.hasOwnProperty(row.tableName)
+                ? target[row.tableName].columns
+                : {}),
+              [row.columnName]: row,
+            },
+            relations: dbSchema.hasOwnProperty(row.tableName)
+              ? dbSchema[row.tableName].relations
+              : {},
+          },
+        }),
+        dbSchema,
+      )
+    })
+  }
+
+  /**
+  This function loads information about relations between tables in database and on information about referenced table for that relation
+   */
+  function loadRelationsMetadata() {
+    /**
+     * We use withRetry there because when Pool is still in init mode requests like this can be rejected by timeout
+     */
+    return withRetry(() =>
+      manager.getPool().query({
+        sql: TABLE_RELATION_META_QUERY,
+        values: [manager.getConfiguration().database],
+      }),
+    ).then(([result]) => {
+      dbSchema = result.reduce(
+        (target, row) => ({
+          ...target,
+          [row.tableName]: {
+            columns: dbSchema.hasOwnProperty(row.tableName)
+              ? dbSchema[row.tableName].columns
+              : {},
+            relations: {
+              ...(target.hasOwnProperty(row.tableName)
+                ? target[row.tableName].relations
+                : {}),
+              [row.columnName]: row,
+            },
+          },
+        }),
+        dbSchema,
+      )
+    })
+  }
+
+  /**
+  This function returns a boolean flag about loading state of MetadataManager
+   */
+  function isLoaded() {
+    return loaded
+  }
+
+  /**
+  This function is used to init MetadataManager by loading all infromation about database
+   */
+  function ready() {
+    if (loadPromise) {
+      return loadPromise
+    }
+    loadPromise = Promise.all([
+      loadTablesMetadata(),
+      loadRelationsMetadata(),
+    ]).then(() => {
       loadPromise = null
       loaded = true
+    })
+    return loadPromise
+  }
+
+  /**
+  This function is used to check that some table is exist and MetadataManager has information about it
+   */
+  function hasTable(tableName) {
+    return dbSchema.hasOwnProperty(tableName)
+  }
+
+  /**
+  This function returns all information that we have for a specific table in format:
+  ```json
+  {
+    "columns": {
+      "id": {
+        "tableName": "posts",
+        "columnName": "id",
+        "dataType": "int",
+        "dataLength": 255,
+        "isNullable": 1
+      },
+      //... other fields
     },
-    isLoaded() {
-      return loaded
+    "relations": {
+      "creator_id": {
+        "tableName": "posts",
+        "columnName": "creator_id",
+        "referencedTableName": "users",
+        "referencedColumnName": "id"
+      }
+    }
+  }
+  ```
+   */
+  function getTable(tableName) {
+    return dbSchema[tableName]
+  }
+
+  /**
+  This function checks that we have a relation registered for a column in some table
+   */
+  function hasAssociation(tableName, columnName) {
+    return (
+      this.hasTable(tableName) &&
+      dbSchema[tableName].relations.hasOwnProperty(columnName)
+    )
+  }
+
+  /**
+  This function returns columns description for some table in format:
+  ```json
+  {
+    "id": {
+      "tableName": "users",
+      "columnName": "id",
+      "dataType": "int",
+      "dataLength": 255,
+      "isNullable": 1
     },
-    async ready() {
-      return await this.initDbSchema()
-    },
-    hasTable(tableName) {
-      return dbSchema.hasOwnProperty(tableName)
-    },
-    getTable(tableName) {
-      return dbSchema[tableName]
-    },
-    hasAssociation(tableName, columnName) {
-      return (
-        this.hasTable(tableName) &&
-        dbSchema[tableName].relations.hasOwnProperty(columnName)
-      )
-    },
-    getColumns(tableName) {
-      return this.hasTable(tableName) && dbSchema[tableName].columns
-    },
-    clear() {
-      dbSchema = {}
-      loaded = false
-      loadPromise = null
-    },
+    //... other fields
+  }
+  ```
+  Or false when table definition is not found
+   */
+  function getColumns(tableName) {
+    return this.hasTable(tableName) && dbSchema[tableName].columns
+  }
+
+  /**
+  This function is used to clear the state of Metadata Manager from loaded schema and table description.
+   */
+  function clear() {
+    dbSchema = {}
+    loaded = false
+    loadPromise = null
+  }
+
+  return {
+    isLoaded,
+    ready,
+    hasTable,
+    getTable,
+    hasAssociation,
+    getColumns,
+    clear,
   }
 }
