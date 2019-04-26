@@ -48,10 +48,7 @@ describe('Unit', () => {
       })
 
       it('should throw with invalid count of attemps', async () => {
-        const handler: () => Promise<1> = sinon
-          .stub()
-          .returns(Promise.resolve(1))
-        handler.withArgs(1).returns(Promise.reject('err'))
+        const handler: () => Promise<1> = sinon.stub().throws(new Error('err'))
         try {
           await withRetry(handler, 0, 20)
           throw new Error('should throw')
