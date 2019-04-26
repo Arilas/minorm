@@ -55,7 +55,7 @@
     "squel": "^5.12.0"
   },
   "engines": {
-    "node": ">=6.10"
+    "node": ">=8"
   },
   "jest": {
     "collectCoverageFrom": [
