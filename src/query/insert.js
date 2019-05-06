@@ -10,7 +10,7 @@ export class InsertQuery extends Squel.cls.Insert {
     options: QueryBuilderOptions,
     blocks?: Array<Squel.cls.Block>,
   ) {
-    // $FlowIgnore
+    // $FlowFixMe
     super(options, blocks)
 
     this._manager = manager
@@ -25,6 +25,6 @@ export default function insert(
   manager: { ...Queries },
   options?: QueryBuilderOptions,
 ): $InsertQuery {
-  // $FlowIgnore
+  // $FlowFixMe
   return new InsertQuery(manager, options)
 }

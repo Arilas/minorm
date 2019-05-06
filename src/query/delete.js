@@ -15,7 +15,7 @@ export class DeleteQuery extends Squel.cls.Delete {
     const newBlocks = blocks || [
       new Squel.cls.StringBlock(options, 'DELETE'),
       new Squel.cls.TargetTableBlock(options),
-      // $FlowIgnore
+      // $FlowFixMe
       new Squel.cls.FromTableBlock({
         ...(options || {}),
         singleTable: true,
@@ -40,6 +40,6 @@ export default function remove(
   manager: { ...Queries },
   options?: QueryBuilderOptions,
 ): $DeleteQuery {
-  // $FlowIgnore
+  // $FlowFixMe
   return new DeleteQuery(manager, options)
 }

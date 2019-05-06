@@ -178,7 +178,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
         Array.from(migrations.keys())
           .filter(migration => !appliedMigrations.hasOwnProperty(migration))
           .sort()
-          // $FlowIgnore fix for model
+          // $FlowFixMe fix for model
           .map(migration => [migration, migrations.get(migration)]),
       )
     },

@@ -12,7 +12,7 @@ export function putGateway(): (
     ...createBaseGateway(),
     getPostQueries() {
       return [
-        // $FlowIgnore
+        // $FlowFixMe
         insert({})
           .into(tableName)
           .setFieldsRows(entities)

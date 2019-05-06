@@ -16,7 +16,7 @@ export function modelsCreator<T: BaseRecord>(
     entity: $Shape<Record>,
     isSaved: boolean = false,
   ): Model<Record> {
-    // $FlowIgnore
+    // $FlowFixMe
     return createModel<Record>(mutators, entity, isSaved)
   }
 

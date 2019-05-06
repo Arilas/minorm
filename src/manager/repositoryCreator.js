@@ -26,11 +26,11 @@ export function repositoryCreator<T: Metadata>(
       tableName: string,
     ): Repository<Record> {
       if (repos.hasOwnProperty(tableName)) {
-        // $FlowIgnore we assign it one time
+        // $FlowFixMe we assign it one time
         return repos[tableName]
       }
       repos[tableName] = createRepository(tableName, manager)
-      // $FlowIgnore we assign it one time
+      // $FlowFixMe we assign it one time
       return repos[tableName]
     }
 

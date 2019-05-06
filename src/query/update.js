@@ -34,6 +34,6 @@ export default function update(
   manager: { ...Queries },
   options?: QueryBuilderOptions,
 ): $UpdateQuery {
-  // $FlowIgnore
+  // $FlowFixMe
   return new UpdateQuery(manager, options)
 }

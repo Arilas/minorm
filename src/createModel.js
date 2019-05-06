@@ -3,7 +3,7 @@ import type { BaseRecord } from './types'
 import type { Mutators } from './repository'
 import type { ColumnMeta } from './utils/createMetadataManager'
 
-// $FlowIgnore
+// $FlowFixMe
 function definePrivate<T: Function, O>(obj: O, name: string, method: T) {
   const wrappedMethod = method.bind(obj)
   const descriptor = Object.getOwnPropertyDescriptor(obj, name)
@@ -36,7 +36,7 @@ export function createModel<T: BaseRecord>(
   let origin: $Shape<T> = isFetched ? { ...model } : {}
 
   function getChanges(): $Shape<T> {
-    // $FlowIgnore
+    // $FlowFixMe
     const columnsMeta: { [key: $Keys<T>]: ColumnMeta } = mutators.getMetadata()
     return Object.keys(columnsMeta).reduce(
       (target: $Shape<T>, key: string) =>
@@ -90,6 +90,6 @@ export function createModel<T: BaseRecord>(
   definePrivate(model, 'populate', populate)
   definePrivate(model, 'remove', remove)
 
-  // $FlowIgnore
+  // $FlowFixMe
   return model
 }

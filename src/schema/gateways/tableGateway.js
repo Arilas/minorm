@@ -177,7 +177,7 @@ export function createTableBuilder(
   callback: (table: SchemaToolCreateTableContext) => void,
   isNew: boolean = true,
 ) {
-  // $FlowIgnore
+  // $FlowFixMe
   return tableGateway({ hasTable: () => !isNew })(tableName, callback)
 }
 

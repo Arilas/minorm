@@ -34,7 +34,7 @@ export function selectorsCreator<T: BaseRecord>(
     selector(query)
     const entities: Array<Record> = await query.execute()
 
-    // $FlowIgnore
+    // $FlowFixMe
     return entities.map(entity => hydrator(entity, true))
   }
 

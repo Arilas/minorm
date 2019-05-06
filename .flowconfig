@@ -12,6 +12,5 @@ unsafe-getters-setters
 untyped-import
 untyped-type-import
 
-
 [options]
-suppress_comment=.*\\$FlowIgnore
+module.use_strict=true

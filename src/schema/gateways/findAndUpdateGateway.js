@@ -12,7 +12,7 @@ export function findAndUpdateGateway(): (
   return (tableName, criteria, changes) => ({
     ...createBaseGateway(),
     getPostQueries() {
-      // $FlowIgnore
+      // $FlowFixMe
       const query = updateQuery({})
         .criteria(criteria)
         .table(tableName)

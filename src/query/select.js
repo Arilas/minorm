@@ -67,11 +67,11 @@ export class SelectQuery<T: BaseRecord> extends Squel.cls.QueryBuilder {
           [key: string]: BaseRecord,
         }>,
       > => {
-        // $FlowIgnore
+        // $FlowFixMe
         const result: Array<{ [key: string]: ?Object }> = await this.execute(
           true,
         )
-        // $FlowIgnore
+        // $FlowFixMe
         return result.map(item => this._mapper.map(item))
       },
     }
@@ -82,6 +82,6 @@ export default function select<T: BaseRecord>(
   manager: { ...Metadata },
   options?: QueryBuilderOptions,
 ): $SelectQuery<T> {
-  // $FlowIgnore
+  // $FlowFixMe
   return new SelectQuery(manager, options)
 }

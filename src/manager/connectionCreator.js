@@ -57,7 +57,7 @@ export function connectionCreator<T: {}>(
     This method is used to end pool connection and also clear manager state
      */
     async function clear() {
-      // $FlowIgnore
+      // $FlowFixMe
       if (manager.clear) {
         await manager.clear()
       }

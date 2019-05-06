@@ -40,9 +40,9 @@ export function createContext(
   const context = {}
   let gateways = []
   for (const name of Object.keys(registeredGateways)) {
-    // $FlowIgnore this is not what Flow should control in this application. It's abstract API
+    // $FlowFixMe this is not what Flow should control in this application. It's abstract API
     const handler = registeredGateways[name](metadataManager)
-    // $FlowIgnore
+    // $FlowFixMe
     context[name] = (...opts: Array<any>) => {
       if (opts.length > handler.length) {
         throw new Error(`${name} was called with mismatched amount of arguments.

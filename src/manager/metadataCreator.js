@@ -46,7 +46,7 @@ export function metadataCreator<T: Queries>(
     This method is used to start preparing manager for a use
      */
     async function ready() {
-      // $FlowIgnore
+      // $FlowFixMe
       if (manager.ready) {
         await manager.ready()
       }
