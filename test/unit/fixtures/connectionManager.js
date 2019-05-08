@@ -109,7 +109,7 @@ export function createFakePool() {
 
   const executeFormat = query => execute(query.sql, query.values)
 
-  // $FlowIgnore
+  // $FlowFixMe
   const fakeConnection: Connection = {
     query: executeFormat,
     execute: executeFormat,

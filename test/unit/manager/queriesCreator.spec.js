@@ -26,7 +26,7 @@ describe('Unit', () => {
 
       it('should throw error when query builder is not passed', async () => {
         try {
-          // $FlowIgnore
+          // $FlowFixMe
           await manager.query()
         } catch (err) {
           expect(err.message).toEqual('Query Builder instance required')

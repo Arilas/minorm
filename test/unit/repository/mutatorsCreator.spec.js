@@ -98,30 +98,30 @@ describe('Unit', () => {
       it("should throw eror when there's no condition or changes", () => {
         const repo = manager.getRepository('users')
         expect(() =>
-          // $FlowIgnore
+          // $FlowFixMe
           repo.update(undefined, { createdAt: 'dsa', modifiedAt: 'dsaads' }),
         ).toThrowError(
           'Please check that you provide selector and changes for update',
         )
         expect(() =>
-          // $FlowIgnore
+          // $FlowFixMe
           repo.update(null, { createdAt: 'dsa', modifiedAt: 'dsaads' }),
         ).toThrowError(
           'Please check that you provide selector and changes for update',
         )
-        // $FlowIgnore
+        // $FlowFixMe
         expect(() => repo.update(5, undefined)).toThrowError(
           'Please check that you provide selector and changes for update',
         )
-        // $FlowIgnore
+        // $FlowFixMe
         expect(() => repo.update(5, null)).toThrowError(
           'Please check that you provide selector and changes for update',
         )
-        // $FlowIgnore
+        // $FlowFixMe
         expect(() => repo.update(undefined, undefined)).toThrowError(
           'Please check that you provide selector and changes for update',
         )
-        // $FlowIgnore
+        // $FlowFixMe
         expect(() => repo.update(null, null)).toThrowError(
           'Please check that you provide selector and changes for update',
         )
@@ -156,11 +156,11 @@ describe('Unit', () => {
       it("should throw eror when there's no condition or changes", () => {
         const repo = manager.getRepository('users')
         expect(() =>
-          // $FlowIgnore
+          // $FlowFixMe
           repo.remove(undefined),
         ).toThrowError('Please provide selector for remove')
         expect(() =>
-          // $FlowIgnore
+          // $FlowFixMe
           repo.remove(null),
         ).toThrowError('Please provide selector for remove')
       })

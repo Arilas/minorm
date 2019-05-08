@@ -30,11 +30,11 @@ describe('Unit', () => {
           isFake: true,
           clear: () => null,
         }
-        // $FlowIgnore
+        // $FlowFixMe
         manager.setMetadataManager(fake)
         const metadataManager = manager.getMetadataManager()
         expect(metadataManager.isLoaded()).toBeFalsy()
-        // $FlowIgnore
+        // $FlowFixMe
         expect(metadataManager.isFake).toBeTruthy()
       })
 

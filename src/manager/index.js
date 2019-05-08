@@ -11,9 +11,9 @@ export { connectionCreator, metadataCreator, queriesCreator, repositoryCreator }
 
 export type { Connection, Metadata, Queries, Repositories }
 
-export const createBaseManager: (
-  next: ManagerConstructor<{}>,
-) => ManagerConstructor<Repositories> = compose(
+export const createBaseManager: <T: *>(
+  next: ManagerConstructor<T>,
+) => ManagerConstructor<$Exact<{ ...T, ...Repositories }>> = compose(
   repositoryCreator,
   metadataCreator,
   queriesCreator,

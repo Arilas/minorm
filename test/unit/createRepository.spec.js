@@ -62,7 +62,7 @@ describe('Unit', () => {
           ])
         },
       }
-      // $FlowIgnore fix for model
+      // $FlowFixMe fix for model
       const uRepo = createRepository('u', manager)
       const record = await uRepo.find(1)
       expect(record).not.toBeNull()
@@ -89,7 +89,7 @@ describe('Unit', () => {
           ])
         },
       }
-      // $FlowIgnore fix for model
+      // $FlowFixMe fix for model
       const uRepo = createRepository('u', manager)
       const record = await uRepo.findOneBy({ id: 1 })
       expect(record).not.toBeNull()
@@ -116,7 +116,7 @@ describe('Unit', () => {
           ])
         },
       }
-      // $FlowIgnore fix for model
+      // $FlowFixMe fix for model
       const uRepo = createRepository('u', manager)
       const result = await uRepo.findBy({ id: 1 })
       expect(result.length).toBe(1)
@@ -147,7 +147,7 @@ describe('Unit', () => {
           ])
         },
       }
-      // $FlowIgnore fix for model
+      // $FlowFixMe fix for model
       const uRepo = createRepository('u', manager)
       const result = await uRepo.findBy({
         id: {
@@ -189,7 +189,7 @@ describe('Unit', () => {
           ])
         },
       }
-      // $FlowIgnore fix for model
+      // $FlowFixMe fix for model
       const uRepo = createRepository('u', manager)
       const result = await uRepo.insert(changes)
       expect(result).toEqual(1)
@@ -210,7 +210,7 @@ describe('Unit', () => {
           return Promise.resolve([{}])
         },
       }
-      // $FlowIgnore fix for model
+      // $FlowFixMe fix for model
       const uRepo = createRepository('u', manager)
       await uRepo.update(1, changes)
     })

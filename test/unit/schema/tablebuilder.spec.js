@@ -23,7 +23,7 @@ describe('Unit', () => {
           gateway.column('password').notNull()
           gateway.column('createdAt').date()
         })
-        // $FlowIgnore inner method usage
+        // $FlowFixMe inner method usage
         expect(builder.build()).toEqual(usersBlock)
       })
     })

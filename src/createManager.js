@@ -22,12 +22,12 @@ export type Manager = $Exact<{
 }>
 
 export function createManager(connectionConfig: PoolOptions): Manager {
-  const baseManager = createBaseManager(() => ({}))(connectionConfig)
-
-  return {
-    ...baseManager,
+  const baseManager = createBaseManager(() => ({
     startQuery() {
       return makeQueryBuilder(baseManager)
     },
-  }
+  }))(connectionConfig)
+  // baseManager.foo.trim()
+
+  return baseManager
 }

@@ -13,7 +13,7 @@ export type Connection = $Exact<{
   clear(): Promise<void>,
 }>
 
-export function connectionCreator<T: {}>(
+export function connectionCreator<T>(
   next: ManagerConstructor<T>,
 ): ManagerConstructor<
   $Exact<{
