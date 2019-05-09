@@ -1,51 +1,39 @@
 {
-  "parser": "babel-eslint",
-  "plugins": ["flowtype", "prettier", "import"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "prettier", "import"],
   "env": {
     "es6": true,
     "jest": true,
     "node": true
   },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
+  },
   "extends": [
     "eslint:recommended",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:flowtype/recommended",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
-    "prettier/flowtype"
+    "prettier/@typescript-eslint"
   ],
   "settings": {
-    "import/resolver": "node"
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts", ".js"]
+      }
+    }
   },
   "rules": {
     "import/no-unresolved": 2,
     "import/named": 2,
-    "flowtype/array-style-complex-type": [2, "verbose"],
-    "flowtype/array-style-simple-type": [2, "verbose"],
-
-    "flowtype/boolean-style": [2, "boolean"],
-
-    "flowtype/define-flow-type": 1,
-
-    "flowtype/delimiter-dangle": [2, "only-multiline"],
-
-    "flowtype/no-primitive-constructor-types": 2,
-
-    "flowtype/no-types-missing-file-annotation": 2,
-
-    "flowtype/no-unused-expressions": 2,
-
-    "flowtype/semi": [2, "never"],
-
-    "flowtype/space-before-type-colon": [2, "never"],
-    "flowtype/space-after-type-colon": [
-      2,
-      "always",
-      { "allowLineBreak": true }
-    ],
-
-    "flowtype/space-before-generic-bracket": [2, "never"],
-
-    "flowtype/union-intersection-spacing": [2, "always"]
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-member-accessibility": 0,
+    "@typescript-eslint/camelcase": 0
   }
 }
