@@ -5,7 +5,8 @@
   "author": "Alex Grand <alex@granted.name>",
   "homepage": "https://github.com/Arilas/minorm/tree/master/packages/adapter-mysql#readme",
   "license": "MIT",
-  "main": "lib/adapter-mysql.js",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "test"

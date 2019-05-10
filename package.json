@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/Arilas/minorm#readme",
   "workspaces": [
-    "packages/*"
+    "packages/core",
+    "packages/adapter-mysql"
   ],
   "private": true,
   "devDependencies": {
