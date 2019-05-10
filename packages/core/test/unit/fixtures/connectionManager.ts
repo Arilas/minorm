@@ -112,6 +112,7 @@ export function createFakePool() {
     },
     query: executeFormat,
     execute: executeFormat,
+    _execute: options => execute(options.sql, options.values),
   }
 
   function inject() {}
