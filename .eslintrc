@@ -25,13 +25,30 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "extensions": [".ts", ".js"]
+        "extensions": [".ts", ".js"],
+        "moduleDirectory": ["node_modules", "packages"]
       }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
     }
   },
   "rules": {
     "import/no-unresolved": 2,
-    "import/named": 2,
+    "import/named": 0,
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/*.test.{ts,tsx}",
+          "**/*.spec.{ts,tsx}",
+          "**/*.story.tsx",
+          "**/__tests__/**",
+          "**/__mocks__/**",
+          "./config/**/*.js"
+        ]
+      }
+    ],
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/explicit-member-accessibility": 0,
     "@typescript-eslint/camelcase": 0

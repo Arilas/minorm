@@ -45,7 +45,7 @@ And also in some bootstrap function you will need to call:
 import { manager } from './models/manager'
 
 //...
-manager.connect()
+
 await manager.ready()
 ```
 

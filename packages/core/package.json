@@ -1,0 +1,37 @@
+{
+  "name": "@minorm/core",
+  "version": "1.0.0",
+  "description": "Minorm Core module",
+  "author": "Alex Grand <alex@granted.name>",
+  "homepage": "https://github.com/Arilas/minorm/tree/master/packages/core#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "scripts": {
+    "dist": "tsc --outDir lib",
+    "prepublish": "in-publish && npm run dist || echo 'Bad mode'"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arilas/minorm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Arilas/minorm/issues"
+  },
+  "dependencies": {
+    "squel": "^5.12.2"
+  },
+  "devDependencies": {
+    "sinon": "^7.3.2"
+  }
+}

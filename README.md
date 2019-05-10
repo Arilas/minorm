@@ -26,12 +26,14 @@ from it - Minorm can be a good start point. Minorm also have build-in Migrations
 `yarn add minorm`
 
 ```js
-import { createManager } from 'minorm'
+import { createManager } from '@minorm/core'
+import { createAdapter } from '@minorm/adapter-mysql'
 
-export const manager = createManager({
-  //options like for MySQL2 pool creation
-})
-manager.connect()
+export const manager = createManager(
+  createAdapter({
+    //options like for MySQL2 pool creation
+  }),
+)
 
 export const PostsRepo = {
   ...manager.getRepository('posts'),
@@ -87,11 +89,9 @@ Both options result with following result:
 
 ## Manager
 
-- `connect(): void` - initialize manager
 - `ready(): Promise<void>` - execute all work related to connection and preparing metadata
 - `getRepository(tableName): Repository` - returns a Repository
-- `getConnection(): Promise<Connection>` - returns MySQL Connection from pool
-- `getPool(): Pool` - returns Connection pool
+- `getAdapter(): Pool` - returns Connection pool
 - `clear(): Promise<void>` - clear connection, Repositories and Metadata
 - `getMetadataManager(): MetadataManager` - returns Metadata manager
 - `setMetadataManager(manager)` - replace Metadata manager with cachable

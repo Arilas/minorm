@@ -33,8 +33,6 @@ import { createManager } from 'minorm'
 import config from '../config'
 
 export const manager = createManager(config.minorm.connection)
-
-manager.connect()
 ```
 
 It's ready to use.
