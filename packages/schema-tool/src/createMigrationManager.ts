@@ -7,7 +7,7 @@ const MIGRATIONS_QUERY = `SELECT migration FROM ${MINORM_MIGRATIONS_TABLE}`
 
 type MigrationsMap = Map<string, Migration>
 
-const Generator = Function('return function*() {}')().prototype
+const Generator = Object.getPrototypeOf(Function('return function*() {}')())
 
 export function createMigrationManager(manager: Manager): MigrationManager {
   const initializers: MigrationsMap = new Map()
@@ -56,7 +56,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
           getDropAlters,
           getPostQueries,
         } = createMigrationContext(manager.getMetadataManager())
-        if (handler[method] instanceof Generator) {
+        if (Object.getPrototypeOf(handler[method]) === Generator) {
           const generator = handler[method](context) as Generator
           let send = null
           // eslint-disable-next-line
