@@ -68,6 +68,17 @@
     ],
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.js$"
-    ]
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "modulePathIgnorePatterns": [
+      "lib"
+    ],
+    "moduleNameMapper": {
+      "@minorm/(.+)$": "<rootDir>packages/$1/src"
+    }
   }
 }
