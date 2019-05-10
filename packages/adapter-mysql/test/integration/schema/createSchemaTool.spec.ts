@@ -99,6 +99,7 @@ describe('Integration', () => {
 
     test('should apply changes when I directly ask for this', async () => {
       const manager = createManager(createAdapter(Config.connection))
+      manager.connect()
       await manager.ready()
       const schemaTool = createSchemaTool(manager)
       schemaTool.setSchemaInit({

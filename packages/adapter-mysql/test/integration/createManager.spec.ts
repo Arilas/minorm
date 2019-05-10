@@ -7,10 +7,10 @@ import { createAdapter } from '../../src'
 describe('Integration', () => {
   describe('createManager', () => {
     const manager = createManager(createAdapter(Config.connection))
-    manager.connect()
     let schemaTool: SchemaTool
     const fixtureManager = createFixtureManager(manager)
     beforeEach(async () => {
+      manager.connect()
       await manager.ready()
       schemaTool = createSchemaTool(manager)
       await setupSchema(schemaTool)
