@@ -5,9 +5,18 @@ import { getRelations } from './getRelations'
 
 export function createAdapter(configuration: PoolOptions): Adapter {
   // @ts-ignore
-  const pool: Adapter = createPool(configuration)
+  let pool: Adapter = createPool(configuration)
+  let oldEnd = pool.end.bind(pool)
   pool.getColumns = () => getColumns(pool, configuration.database)
   pool.getRelations = () => getRelations(pool, configuration.database)
+  pool.end = async () => {
+    await oldEnd()
+    // @ts-ignore
+    pool = createPool(configuration)
+    pool.getColumns = () => getColumns(pool, configuration.database)
+    pool.getRelations = () => getRelations(pool, configuration.database)
+    oldEnd = pool.end.bind(pool)
+  }
 
   return pool
 }
