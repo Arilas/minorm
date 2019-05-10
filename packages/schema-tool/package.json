@@ -1,15 +1,14 @@
 {
-  "name": "@minorm/adapter-mysql",
+  "name": "@minorm/schema-tool",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "Alex Grand <alex@granted.name>",
-  "homepage": "https://github.com/Arilas/minorm/tree/master/packages/adapter-mysql#readme",
+  "homepage": "https://github.com/Arilas/minorm/tree/master/packages/schema-tool#readme",
   "license": "MIT",
   "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
-    "test": "test"
+    "test": "__tests__"
   },
   "files": [
     "lib"
@@ -28,14 +27,8 @@
   "bugs": {
     "url": "https://github.com/Arilas/minorm/issues"
   },
-  "dependencies": {
-    "mysql2": "^1.6.5"
-  },
   "peerDependencies": {
     "@minorm/core": "^1.0.0"
   },
-  "devDependencies": {
-    "@types/mysql2": "types/mysql2",
-    "@minorm/schema-tool": "^1.0.0"
-  }
+  "dependencies": {}
 }

@@ -6,6 +6,11 @@ import select from './select'
 import update from './update'
 import remove from './delete'
 
+export const insertQuery = insert
+export const selectQuery = select
+export const updateQuery = update
+export const removeQuery = remove
+
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function makeQueryBuilder(manager: Metadata<any, any>) {
   return {

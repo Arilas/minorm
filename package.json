@@ -27,6 +27,7 @@
   "homepage": "https://github.com/Arilas/minorm#readme",
   "workspaces": [
     "packages/core",
+    "packages/schema-tool",
     "packages/adapter-mysql"
   ],
   "private": true,

@@ -18,6 +18,9 @@
   "references": [
     {
       "@minorm/core": "core"
+    },
+    {
+      "@minorm/schema-tool": "schema-tool"
     }
   ]
 }

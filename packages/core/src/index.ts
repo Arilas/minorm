@@ -5,14 +5,18 @@ import {
   OkPacket,
   SomeRecord,
   BaseRecord,
+  Criteria,
 } from './types'
 import {
+  MetadataManager,
   Relation,
   ColumnMeta,
   createMetadataManager,
 } from './utils/createMetadataManager'
 import { createManager, Manager } from './createManager'
 import { createRepository, Repository } from './createRepository'
+import { ModelMethods } from './createModel'
+import { insertQuery, selectQuery, updateQuery, removeQuery } from './query'
 
 export {
   createManager,
@@ -28,4 +32,11 @@ export {
   Relation,
   ColumnMeta,
   createMetadataManager,
+  Criteria,
+  MetadataManager,
+  ModelMethods,
+  insertQuery,
+  selectQuery,
+  updateQuery,
+  removeQuery,
 }

@@ -1,10 +1,9 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-  "lcov.watch": [{
-    "pattern": "**/*.js",
-    "command": "npm test"
+  "jest.showCoverageOnLoad": true,
+  "jest.pathToJest": "yarn test:unit",
+  "files.exclude": {
+    "**/lib": true,
+    "**/node_modules": true
   }
-],
-"jest.showCoverageOnLoad": true,
-"jest.pathToJest": "yarn test:unit"
 }

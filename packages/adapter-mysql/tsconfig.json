@@ -3,5 +3,8 @@
   "compilerOptions": {
     "outDir": "lib"
   },
-  "references": [{ "@minorm/core": "../core" }]
+  "references": [
+    { "@minorm/core": "../core" },
+    { "@minorm/schema-tool": "../schema-tool" }
+  ]
 }
