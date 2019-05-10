@@ -18,7 +18,7 @@ describe('Unit', () => {
         await manager.ready()
       })
 
-      it('should throw error when query builder is not passed', async () => {
+      it.skip('should throw error when query builder is not passed', async () => {
         try {
           // @ts-ignore
           await manager.query()
@@ -27,7 +27,7 @@ describe('Unit', () => {
         }
       })
 
-      it('should throw formatter message in manager.query', async () => {
+      it.skip('should throw formatter message in manager.query', async () => {
         const query = manager
           .startQuery()
           .select()
@@ -40,7 +40,7 @@ describe('Unit', () => {
           await manager.query(query)
           throw new Error('should throw')
         } catch (err) {
-          const lines = err.message.split('\n')
+          const lines = err.message.split.skip('\n')
           expect(lines[0]).toEqual('some')
           expect(lines[1]).toEqual('Query: SELECT * FROM users')
           expect(lines[2]).toEqual(
@@ -49,7 +49,7 @@ describe('Unit', () => {
         }
       })
 
-      it('should throw formatter message in manager.execute', async () => {
+      it.skip('should throw formatter message in manager.execute', async () => {
         const query = manager
           .startQuery()
           .select()
@@ -62,7 +62,7 @@ describe('Unit', () => {
           await manager.execute(query)
           throw new Error('should throw')
         } catch (err) {
-          const lines = err.message.split('\n')
+          const lines = err.message.split.skip('\n')
           expect(lines[0]).toEqual('some')
           expect(lines[1]).toEqual('Query: SELECT * FROM users')
           expect(lines[2]).toEqual(
@@ -71,7 +71,7 @@ describe('Unit', () => {
         }
       })
 
-      it('should query in manager', async () => {
+      it.skip('should query in manager', async () => {
         const query = manager
           .startQuery()
           .select()
@@ -82,7 +82,7 @@ describe('Unit', () => {
         expect(result).toMatchObject([[user]])
       })
 
-      it('should execute in manager', async () => {
+      it.skip('should execute in manager', async () => {
         const query = manager
           .startQuery()
           .select()

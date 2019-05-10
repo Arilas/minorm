@@ -96,9 +96,13 @@ export function createFakePool() {
   assignDefaultBehavior()
 
   // @ts-ignore
-  const executeFormat = query => execute(query.sql, query.values)
+  const executeFormat = qb => {
+    const query = qb.toParam()
+    return execute(query.text, query.values)
+  }
 
   const pool: Adapter = {
+    init: () => undefined,
     end: sinon.stub().returns(Promise.resolve()),
     getColumns() {
       return Promise.resolve(fakeColumnsMeta)

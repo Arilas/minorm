@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { Delete, Update, Select, Insert } from 'squel'
+import { Delete, Update, Select, Insert, QueryBuilder } from 'squel'
 import { Relation, ColumnMeta } from './utils/createMetadataManager'
 
 export interface SomeRecord {
@@ -48,36 +48,22 @@ export interface QueryOptions {
 }
 
 export interface Adapter {
+  init(): void
   end(): Promise<void>
 
-  query<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]>(
-    sql: string,
-  ): Promise<[T, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
-  query<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]>(
-    sql: string,
-    values: SimpleValue | SimpleValue[] | { [param: string]: SimpleValue },
-  ): Promise<[T, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
-  query<T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]>(
-    options: QueryOptions,
-  ): Promise<[T, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
-
-  execute<
-    T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]
-  >(
-    sql: string,
-  ): Promise<[T, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
-  execute<
-    T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]
-  >(
-    sql: string,
-    values: SimpleValue | SimpleValue[] | { [param: string]: SimpleValue },
-  ): Promise<[T, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
-  execute<
+  query(
+    query: QueryBuilder,
+    options?: Partial<QueryOptions>,
+  ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
+  execute(
+    query: QueryBuilder,
+    options?: Partial<QueryOptions>,
+  ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
+  _execute<
     T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]
   >(
     options: QueryOptions,
   ): Promise<[T, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
-
   getRelations(): Promise<Relation[]>
   getColumns(): Promise<ColumnMeta[]>
 }

@@ -1,4 +1,5 @@
-import { Relation, Adapter } from '@minorm/core'
+import { Relation } from '@minorm/core'
+import { Pool } from 'mysql2/promise'
 
 export const TABLE_RELATION_META_QUERY = `
   SELECT
@@ -15,7 +16,7 @@ export const TABLE_RELATION_META_QUERY = `
 `
 
 export async function getRelations(
-  pool: Adapter,
+  pool: Pool,
   database: string | undefined,
 ): Promise<Relation[]> {
   const [result] = await pool.execute(TABLE_RELATION_META_QUERY, [database])

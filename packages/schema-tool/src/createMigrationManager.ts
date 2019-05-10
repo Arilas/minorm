@@ -72,40 +72,43 @@ export function createMigrationManager(manager: Manager): MigrationManager {
             const action = gateway.getAction()
             switch (action.type) {
               case 'QUERY': {
-                send = await manager.getAdapter().query(action.payload.sql)
+                send = await manager
+                  .getAdapter()
+                  ._execute({ sql: action.payload.sql })
                 break
               }
               case 'APPLY': {
                 await Promise.all(
                   getPreQueries().map(line =>
-                    manager.getAdapter().execute({ sql: line }),
+                    manager.getAdapter()._execute({ sql: line }),
                   ),
                 )
                 await Promise.all(
                   getDropAlters().map(line =>
-                    manager.getAdapter().execute({ sql: line }),
+                    manager.getAdapter()._execute({ sql: line }),
                   ),
                 )
                 // Because some of people don't drop foreign keys before and order is matter
                 for (const line of getDropQueries()) {
-                  await manager.getAdapter().execute({ sql: line })
+                  await manager.getAdapter()._execute({ sql: line })
                 }
                 await Promise.all(
                   getAddQueries().map(line =>
-                    manager.getAdapter().execute({ sql: line }),
+                    manager.getAdapter()._execute({ sql: line }),
                   ),
                 )
                 await Promise.all(
                   getAddAlters().map(line =>
-                    manager.getAdapter().execute({ sql: line }),
+                    manager.getAdapter()._execute({ sql: line }),
                   ),
                 )
                 await Promise.all(
                   getPostQueries().map(line =>
-                    manager.getAdapter().execute({ sql: line }),
+                    manager.getAdapter()._execute({ sql: line }),
                   ),
                 )
                 await manager.clear()
+                manager.connect()
                 await manager.ready()
 
                 resetQueries()
@@ -118,34 +121,35 @@ export function createMigrationManager(manager: Manager): MigrationManager {
         }
         await Promise.all(
           getPreQueries().map(line =>
-            manager.getAdapter().execute({ sql: line }),
+            manager.getAdapter()._execute({ sql: line }),
           ),
         )
         await Promise.all(
           getDropAlters().map(line =>
-            manager.getAdapter().execute({ sql: line }),
+            manager.getAdapter()._execute({ sql: line }),
           ),
         )
         // Because some of people don't drop foreign keys before and order is matter
         for (const line of getDropQueries()) {
-          await manager.getAdapter().execute({ sql: line })
+          await manager.getAdapter()._execute({ sql: line })
         }
         await Promise.all(
           getAddQueries().map(line =>
-            manager.getAdapter().execute({ sql: line }),
+            manager.getAdapter()._execute({ sql: line }),
           ),
         )
         await Promise.all(
           getAddAlters().map(line =>
-            manager.getAdapter().execute({ sql: line }),
+            manager.getAdapter()._execute({ sql: line }),
           ),
         )
         await Promise.all(
           getPostQueries().map(line =>
-            manager.getAdapter().execute({ sql: line }),
+            manager.getAdapter()._execute({ sql: line }),
           ),
         )
         await manager.clear()
+        manager.connect()
         await manager.ready()
         if (method === 'up') {
           const date = new Date()
@@ -174,7 +178,7 @@ export function createMigrationManager(manager: Manager): MigrationManager {
       // @ts-ignore
       const [result]: [RowDataPacket[]] = await manager
         .getAdapter()
-        .query({ sql: MIGRATIONS_QUERY })
+        ._execute({ sql: MIGRATIONS_QUERY })
       const appliedMigrations = result.reduce(
         (target, row) => ({
           ...target,

@@ -2,6 +2,7 @@ import { ManagerConstructor, ManagerBase } from './types'
 import { Adapter } from '../types'
 
 export type Connection<T extends ManagerBase, A extends Adapter> = T & {
+  connect(): void
   getAdapter(): A
   clear(): Promise<void>
 }
@@ -23,6 +24,10 @@ export function connectionCreator<T extends ManagerBase, A extends Adapter>(
       return adapter
     }
 
+    function connect() {
+      adapter.init()
+    }
+
     /**
     This method is used to end pool connection and also clear manager state
      */
@@ -35,6 +40,7 @@ export function connectionCreator<T extends ManagerBase, A extends Adapter>(
 
     return {
       ...manager,
+      connect,
       clear,
       getAdapter,
     }
