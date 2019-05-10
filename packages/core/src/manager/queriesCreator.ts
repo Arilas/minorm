@@ -10,11 +10,11 @@ export type Queries<
   query(
     query: QueryBuilder,
     options?: Partial<QueryOptions>,
-  ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]>
+  ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
   execute(
     query: QueryBuilder,
     options?: Partial<QueryOptions>,
-  ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]>
+  ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]> //eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export function queriesCreator<
@@ -40,6 +40,7 @@ export function queriesCreator<
     async function query(
       query: QueryBuilder,
       options?: Partial<QueryOptions>,
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]> {
       checkForQueryBuilder(query)
       const { stack } = new Error()
@@ -68,6 +69,7 @@ Call stack for query: ${stack}`,
     async function execute(
       query: QueryBuilder,
       options?: Partial<QueryOptions>,
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<[RowDataPacket[][] | RowDataPacket[] | OkPacket, any]> {
       checkForQueryBuilder(query)
       const { stack } = new Error()

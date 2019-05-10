@@ -4,6 +4,7 @@
   "description": "Minorm - Light high-performance ORM for MySQL",
   "main": "lib/index.js",
   "scripts": {
+    "dist": "yarn workspaces run dist",
     "lint": "eslint --ext .ts .",
     "test": "jest --runInBand",
     "test:unit": "jest test/unit"

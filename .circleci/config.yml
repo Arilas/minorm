@@ -27,7 +27,7 @@ shared: &shared
     # run tests!
     - run: yarn test
     - run: yarn lint
-    #- run: yarn tsc
+    - run: yarn tsc
     - run: $(yarn global bin)/codecov
 
 jobs:
