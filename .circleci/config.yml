@@ -25,6 +25,7 @@ shared: &shared
         key: v1-dependencies-{{ checksum "package.json" }}
 
     # run tests!
+    - run: yarn dist
     - run: yarn test
     - run: yarn lint
     - run: yarn tsc
