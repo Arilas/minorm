@@ -7,7 +7,9 @@
     "dist": "yarn workspaces run dist",
     "lint": "eslint --ext .ts .",
     "test": "jest --runInBand",
-    "test:unit": "jest test/unit"
+    "test:unit": "jest test/unit",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "repository": {
     "type": "git",
@@ -36,7 +38,11 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.12",
     "@types/node": "^12.0.0",
+    "@types/sinon": "^7.0.11",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
     "array-aggregate": "^0.1.7",
     "babel-jest": "^24.7.1",
     "eslint": "^5.16.0",
@@ -48,10 +54,7 @@
     "prettier": "^1.17.0",
     "sinon": "^7.3.2",
     "typescript": "^3.4.5",
-    "@types/jest": "^24.0.12",
-    "@types/sinon": "^7.0.11",
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
-    "@typescript-eslint/parser": "^1.7.0"
+    "vuepress": "^0.14.11"
   },
   "engines": {
     "node": ">=8"

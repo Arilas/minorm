@@ -56,6 +56,7 @@ Call stack for query: ${stack}`,
 
   async function _execute<
     T extends RowDataPacket[][] | RowDataPacket[] | OkPacket | OkPacket[]
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
   >(options: QueryOptions): Promise<[T, any]> {
     const { stack } = new Error()
     if (!pool) {
