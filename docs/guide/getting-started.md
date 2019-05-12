@@ -43,17 +43,3 @@ async function boot() {
   // Other boot code
 }
 ```
-
-## Making Repository
-
-In order to use main functionality you will need to use repositories. For example we will create repo for a table `posts`. To do this we will create file `models/posts.js` and put following content:
-
-```js
-import { manager } from './models'
-
-const repo = manager.getRepository('posts')
-
-export default repo
-```
-
-That's it. You don't need to manually type anything, just use it.

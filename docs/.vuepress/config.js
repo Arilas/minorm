@@ -21,7 +21,8 @@ module.exports = {
           children: [
             'installation',
             'getting-started',
-            // 'models',
+            'repositories',
+            'models',
             // 'relations',
             // 'query-examples',
           ],
