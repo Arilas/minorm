@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Minorm',
   description: 'Minimal ORM for you node.js project',
-  base: '/minorm',
+  base: '/minorm/',
 
   themeConfig: {
     repo: 'Arilas/minorm',
