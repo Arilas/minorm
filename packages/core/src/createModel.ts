@@ -22,6 +22,7 @@ export interface ModelMethods<Record> {
   isDirty(): boolean
   populate(data: Partial<Record>): void
   remove(): Promise<number>
+  refresh(): Promise<void>
 }
 
 export type Model<T = BaseRecord> = T & ModelMethods<T>
@@ -88,11 +89,19 @@ export function createModel<T extends SomeRecord = BaseRecord>(
     return 1
   }
 
+  async function refresh() {
+    if (!isFetched && !model.id) {
+      throw new Error(`Impossible to refresh record without id field`)
+    }
+    // origin = await mutators.
+  }
+
   definePrivate(model, 'getChanges', getChanges)
   definePrivate(model, 'save', save)
   definePrivate(model, 'isDirty', isDirty)
   definePrivate(model, 'populate', populate)
   definePrivate(model, 'remove', remove)
+  definePrivate(model, 'refresh', refresh)
 
   return model as Model<T>
 }

@@ -23,6 +23,7 @@ module.exports = {
             'getting-started',
             'repositories',
             'models',
+            'query-builder',
             // 'relations',
             // 'query-examples',
           ],

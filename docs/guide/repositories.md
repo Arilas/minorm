@@ -166,7 +166,7 @@ import PostRepo from './models/posts'
 async function insertPost(post) {
   const post = PostRepo.create(post)
   await post.save()
-  console.log(post.id) // model receice id after insertion
+  console.log(post.id) // model receive id after insertion
 
   return post
 }

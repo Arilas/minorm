@@ -30,7 +30,7 @@ export interface OkPacket {
   serverStatus: number
   warningCount: number
   message: string
-  procotol41: boolean
+  protocol41: boolean
 }
 
 export type SimpleValue = string | number | boolean | null | undefined

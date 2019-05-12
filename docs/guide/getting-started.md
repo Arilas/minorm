@@ -26,7 +26,7 @@ export default {
 }
 ```
 
-If you want to read about other conenction configuration parameters please read [mysqljs/mysql doc](https://github.com/mysqljs/mysql#connection-options).
+If you want to read about other connection configuration parameters please read [mysqljs/mysql doc](https://github.com/mysqljs/mysql#connection-options).
 
 Please note that minorm by default use connection pool, so there's additional config [here](https://github.com/mysqljs/mysql#pool-options)
 
