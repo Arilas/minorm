@@ -5,9 +5,9 @@ import {
   Mutators,
   Models,
   Selectors,
-} from './repository'
-import { Metadata } from './manager'
-import { BaseRecord, SomeRecord } from './types'
+} from './parts'
+import { Metadata } from '../manager/parts'
+import { BaseRecord, SomeRecord } from '../types'
 
 export type Repository<T = BaseRecord> = Mutators<T> & Models<T> & Selectors<T>
 

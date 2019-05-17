@@ -1,6 +1,5 @@
-// eslint-disable-next-line
 import { Delete, Update, Select, Insert, QueryBuilder } from 'squel'
-import { Relation, ColumnMeta } from './utils/createMetadataManager'
+import { Relation, ColumnMeta } from './metadata/createMetadataManager'
 
 export interface SomeRecord {
   id?: any // eslint-disable-line

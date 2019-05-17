@@ -1,4 +1,4 @@
-import { createRepository } from '../../src/createRepository'
+import { createRepository } from '../../src'
 import insert from '../../src/query/insert'
 import select from '../../src/query/select'
 import update from '../../src/query/update'

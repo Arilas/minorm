@@ -1,6 +1,6 @@
 import Squel, { QueryBuilderOptions, Block } from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import { Queries } from '../manager'
+import { Queries } from '../manager/parts'
 import { DeleteQuery as $DeleteQuery, OkPacket } from '../types'
 
 // @ts-ignore
@@ -15,9 +15,8 @@ export class DeleteQuery extends Squel.cls.Delete {
     const newBlocks = blocks || [
       new Squel.cls.StringBlock(options, 'DELETE'),
       new Squel.cls.TargetTableBlock(options),
-      // $FlowFixMe
       new Squel.cls.FromTableBlock({
-        ...(options || {}),
+        ...options,
         singleTable: true,
       }),
       new Squel.cls.JoinBlock(options),

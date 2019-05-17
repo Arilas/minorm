@@ -2846,11 +2846,6 @@ arr-union@^3.1.0:
   resolved "https://registry.yarnpkg.com/arr-union/-/arr-union-3.1.0.tgz#e39b09aea9def866a8f206e288af63919bae39c4"
   integrity sha1-45sJrqne+Gao8gbiiK9jkZuuOcQ=
 
-array-aggregate@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/array-aggregate/-/array-aggregate-0.1.7.tgz#e814f6009c731344ddd6bff4028ed46c651a0aca"
-  integrity sha512-DzRtc79XYLRF/+MsSrdqvrHgM5y3ub/+E8zE3EU5HNgmBBuADCWNC+N5CYYnAQsJCgUMohPpEYuhXj4ENyLkkQ==
-
 array-differ@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/array-differ/-/array-differ-1.0.0.tgz#eff52e3758249d33be402b8bb8e564bb2b5d4031"

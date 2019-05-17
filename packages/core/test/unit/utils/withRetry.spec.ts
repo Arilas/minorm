@@ -27,7 +27,7 @@ describe('Unit', () => {
           expect(handler.callCount).toEqual(5)
         }
       })
-      it('should delay between attemps', async () => {
+      it('should delay between attempts', async () => {
         const handler = sinon.stub().returns(Promise.resolve(1))
         handler.withArgs(1).returns(Promise.reject('err'))
         const startTime = Date.now()
@@ -38,13 +38,13 @@ describe('Unit', () => {
         expect(endTime - startTime).toBeCloseTo(20, -1.5)
       })
 
-      it('should throw with invalid count of attemps', async () => {
+      it('should throw with invalid count of attempts', async () => {
         const handler = sinon.stub().throws(new Error('err'))
         try {
           await withRetry(handler, 0, 20)
           throw new Error('should throw')
         } catch (err) {
-          expect(err.message).toEqual('Wrong amount of attemps')
+          expect(err.message).toEqual('Wrong amount of attempts')
           expect(handler.callCount).toEqual(0)
         }
       })

@@ -1,6 +1,6 @@
-import { createRepository, Repository } from '../createRepository'
-import { BaseRecord, Adapter } from '../types'
-import { ManagerConstructor, ManagerBase } from './types'
+import { createRepository, Repository } from '../../repository/createRepository'
+import { BaseRecord, Adapter } from '../../types'
+import { ManagerConstructor, ManagerBase } from '../types'
 import { Metadata } from './metadataCreator'
 import { Queries } from '.'
 import { Connection } from './connectionCreator'
@@ -19,23 +19,23 @@ export function repositoryCreator<
 >(next: ManagerConstructor<T, A>): ManagerConstructor<Repositories<T, A>, A> {
   return adapter => {
     const manager = next(adapter)
-    let repos: { [key: string]: Repository } = {}
+    let repositories: { [key: string]: Repository } = {}
 
     function getRepository<Record = BaseRecord>(
       tableName: string,
     ): Repository<Record> {
-      if (repos.hasOwnProperty(tableName)) {
-        return repos[tableName] as Repository<Record>
+      if (repositories.hasOwnProperty(tableName)) {
+        return repositories[tableName] as Repository<Record>
       }
-      repos[tableName] = createRepository(tableName, manager)
-      return repos[tableName] as Repository<Record>
+      repositories[tableName] = createRepository(tableName, manager)
+      return repositories[tableName] as Repository<Record>
     }
 
     async function clear() {
       if (manager.clear) {
         await manager.clear()
       }
-      repos = {}
+      repositories = {}
     }
 
     return {

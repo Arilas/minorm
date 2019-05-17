@@ -1,6 +1,5 @@
 import sinon from 'sinon' // eslint-disable-line
-import { ColumnMeta, Relation } from '../../../src/utils/createMetadataManager'
-import { Adapter } from '../../../src/types'
+import { ColumnMeta, Relation, Adapter } from '../../../src'
 
 export const fakeRelationResponse: Relation[] = [
   {

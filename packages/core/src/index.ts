@@ -12,9 +12,9 @@ import {
   Relation,
   ColumnMeta,
   createMetadataManager,
-} from './utils/createMetadataManager'
-import { createManager, Manager } from './createManager'
-import { createRepository, Repository } from './createRepository'
+} from './metadata/createMetadataManager'
+import { createManager, Manager } from './manager/createManager'
+import { createRepository, Repository } from './repository/createRepository'
 import { ModelMethods } from './createModel'
 import { insertQuery, selectQuery, updateQuery, removeQuery } from './query'
 

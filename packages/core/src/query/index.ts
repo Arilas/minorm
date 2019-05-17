@@ -1,5 +1,5 @@
 import { QueryBuilderOptions } from 'squel'
-import { Metadata } from '../manager'
+import { Metadata } from '../manager/parts'
 import { BaseRecord, SelectQuery } from '../types'
 import insert from './insert'
 import select from './select'

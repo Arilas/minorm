@@ -1,7 +1,7 @@
 import Squel, { QueryBuilderOptions, FromTableBlock, Block } from 'squel'
 import IncludeBlock from './blocks/IncludeBlock'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import { Metadata } from '../manager'
+import { Metadata } from '../manager/parts'
 import {
   SelectQuery as $SelectQuery,
   BaseRecord,

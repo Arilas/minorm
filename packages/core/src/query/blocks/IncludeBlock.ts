@@ -1,6 +1,6 @@
 import Squel, { QueryBuilderOptions, FromTableBlock } from 'squel'
-import { Metadata } from '../../manager'
-import { Relation } from '../../utils/createMetadataManager'
+import { Metadata } from '../../manager/parts'
+import { Relation } from '../../metadata/createMetadataManager'
 import { SelectQueryMapper } from '../../types'
 
 export default class IncludeBlock extends Squel.cls.JoinBlock {

@@ -6,6 +6,7 @@ module.exports = {
   themeConfig: {
     repo: 'Arilas/minorm',
     repoLabel: 'GitHub',
+    sidebarDepth: 3,
     nav: [
       {
         text: 'Guide',

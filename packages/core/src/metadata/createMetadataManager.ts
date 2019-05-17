@@ -1,4 +1,4 @@
-import { withRetry } from './withRetry'
+import { withRetry } from '../utils/withRetry'
 import { Adapter } from '../types'
 
 export const TABLE_COLUMNS_META_QUERY = `
@@ -74,7 +74,7 @@ export function createMetadataManager<A extends Adapter>(
   } = {}
 
   /**
-  This function loads informaton about all tables in database and columns in this tables.
+  This function loads information about all tables in database and columns in this tables.
    */
   function loadTablesMetadata() {
     // console.log(adapter)
@@ -150,7 +150,7 @@ export function createMetadataManager<A extends Adapter>(
   }
 
   /**
-  This function is used to init MetadataManager by loading all infromation about database
+  This function is used to init MetadataManager by loading all information about database
    */
   function ready() {
     if (loadPromise) {

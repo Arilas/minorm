@@ -3,7 +3,7 @@ import { Criteria } from '../../types'
 
 export default class CriteriaBlock extends Squel.cls.WhereBlock {
   criteria(criteria: Criteria) {
-    Object.keys(criteria).map(key => {
+    for (const key of Object.keys(criteria)) {
       const part = criteria[key]
       if (part === null || part === undefined) {
         this.where(`${key} IS NULL`)
@@ -26,6 +26,6 @@ export default class CriteriaBlock extends Squel.cls.WhereBlock {
             break
         }
       }
-    })
+    }
   }
 }

@@ -1,7 +1,7 @@
-import selectQuery from '../query/select'
-import { Model } from '../createModel'
-import { BaseRecord, Criteria, SelectQuery } from '../types'
-import { Metadata } from '../manager'
+import selectQuery from '../../query/select'
+import { Model } from '../../createModel'
+import { BaseRecord, Criteria, SelectQuery } from '../../types'
+import { Metadata } from '../../manager/parts'
 
 export interface Selectors<T = BaseRecord> {
   find(id: number): Promise<Model<T> | null>

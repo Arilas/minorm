@@ -1,10 +1,10 @@
 import {
   createMetadataManager,
   MetadataManager,
-} from '../utils/createMetadataManager'
-import { ManagerConstructor, ManagerBase } from './types'
+} from '../../metadata/createMetadataManager'
+import { ManagerConstructor, ManagerBase } from '../types'
 import { Queries } from './queriesCreator'
-import { Adapter } from '../types'
+import { Adapter } from '../../types'
 import { Connection } from './connectionCreator'
 
 export type Metadata<

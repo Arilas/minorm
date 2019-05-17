@@ -37,26 +37,35 @@ describe('Unit', () => {
       })
 
       const creator = {
+        id: 1,
         user: true,
+        avatar_id: 1,
       }
 
       const post = {
+        id: 1,
+        creator_id: 1,
         post: true,
       }
 
       const avatar = {
+        id: 1,
+        user_id: 1,
         avatar: true,
       }
 
       const lastComment = {
+        id: 1,
         lastComment: true,
       }
 
       const category = {
+        id: 1,
         category: true,
       }
 
       const company = {
+        id: 1,
         company: true,
       }
 
@@ -96,6 +105,26 @@ describe('Unit', () => {
           creator: {
             ...creator,
             avatar,
+          },
+        })
+      })
+      test('should map entities with nested try includes', () => {
+        const mapper = createMapper()
+        mapper.setEntryPoint('post')
+        mapper.setRelation('post', 'creator')
+        mapper.setRelation('creator', 'avatar')
+        const postEntity = mapper.map({
+          post,
+          creator,
+          avatar: {
+            id: null,
+          },
+        })
+        expect(postEntity).toEqual({
+          ...post,
+          creator: {
+            ...creator,
+            avatar: null,
           },
         })
       })

@@ -1,15 +1,22 @@
-import { compose } from '../utils/compose'
-import { ManagerConstructor, ManagerBase } from './types'
+import { compose } from '../../utils/compose'
+import { ManagerConstructor, ManagerBase } from '../types'
 
 import { connectionCreator, Connection } from './connectionCreator'
 import { metadataCreator, Metadata } from './metadataCreator'
 import { queriesCreator, Queries } from './queriesCreator'
 import { repositoryCreator, Repositories } from './repositoryCreator'
-import { Adapter } from '../types'
+import { Adapter } from '../../types'
 
-export { connectionCreator, metadataCreator, queriesCreator, repositoryCreator }
-
-export { Connection, Metadata, Queries, Repositories }
+export {
+  connectionCreator,
+  metadataCreator,
+  queriesCreator,
+  repositoryCreator,
+  Connection,
+  Metadata,
+  Queries,
+  Repositories,
+}
 
 export const createBaseManager: <T extends ManagerBase, A extends Adapter>(
   next: ManagerConstructor<T, A>,

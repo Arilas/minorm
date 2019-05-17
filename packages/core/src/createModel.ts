@@ -1,6 +1,6 @@
 import { BaseRecord, SomeRecord } from './types'
-import { Mutators } from './repository'
-import { ColumnMeta } from './utils/createMetadataManager'
+import { Mutators } from './repository/parts'
+import { ColumnMeta } from './metadata/createMetadataManager'
 
 function definePrivate<T extends Function, O>(obj: O, name: string, method: T) {
   const wrappedMethod = method.bind(obj)

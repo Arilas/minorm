@@ -1,15 +1,15 @@
-import insertQuery from '../query/insert'
-import updateQuery from '../query/update'
-import deleteQuery from '../query/delete'
+import insertQuery from '../../query/insert'
+import updateQuery from '../../query/update'
+import deleteQuery from '../../query/delete'
 import {
   InsertQuery,
   UpdateQuery,
   BaseRecord,
   Criteria,
   SomeRecord,
-} from '../types'
-import { TableMetadata } from '../utils/createMetadataManager'
-import { Metadata } from '../manager'
+} from '../../types'
+import { TableMetadata } from '../../metadata/createMetadataManager'
+import { Metadata } from '../../manager/parts'
 
 export interface Mutators<T extends SomeRecord> {
   getMetadata(): TableMetadata

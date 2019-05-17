@@ -1,6 +1,6 @@
 import Squel, { QueryBuilderOptions, Block } from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
-import { Queries } from '../manager'
+import { Queries } from '../manager/parts'
 import { UpdateQuery as $UpdateQuery, OkPacket } from '../types'
 
 export class UpdateQuery extends Squel.cls.QueryBuilder {

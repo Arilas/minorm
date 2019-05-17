@@ -1,6 +1,6 @@
 import Squel, { QueryBuilderOptions, Block } from 'squel'
 import { InsertQuery as $InsertQuery, OkPacket } from '../types'
-import { Queries } from '../manager'
+import { Queries } from '../manager/parts'
 
 // @ts-ignore
 export class InsertQuery extends Squel.cls.Insert {

@@ -16,5 +16,5 @@ export async function withRetry<T>(
       }
     }
   }
-  throw new Error('Wrong amount of attemps')
+  throw new Error('Wrong amount of attempts')
 }

@@ -1,5 +1,5 @@
-import { createModel, Model } from '../createModel'
-import { BaseRecord, SomeRecord } from '../types'
+import { createModel, Model } from '../../createModel'
+import { BaseRecord, SomeRecord } from '../../types'
 import { Mutators } from './mutatorsCreator'
 
 export interface Models<T extends SomeRecord = BaseRecord> {

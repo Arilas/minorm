@@ -55,9 +55,10 @@ export function createMapper() {
       function populateResult(target: Hierarchy, relations: Hierarchy) {
         const keys = Object.keys(relations)
         for (const key of keys) {
-          if (rawData[key]) {
+          const part = rawData[key]
+          if (part && part.id != null) {
             target[key] = {
-              ...rawData[key],
+              ...part,
               ...relations[key],
             }
             populateResult(target[key], relations[key])
