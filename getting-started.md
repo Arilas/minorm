@@ -1,9 +1,9 @@
 # Getting Started
 
-MinORM is really easy to integrate with any of existing project
+Minorm is really easy to integrate with any of existing project
 
 ```bash
-npm install --save minorm
+yarn add minorm
 ```
 
 Make db configuration in your config like:
@@ -16,10 +16,12 @@ export default {
       host: process.env.MYSQL_HOST || 'localhost',
       port: process.env.MYSQL_PORT || 3306,
       user: process.env.MYSQL_USER || 'user',
-      password: process.env.hasOwnProperty('MYSQL_PASS') ? process.env.MYSQL_PASS : 'password',
-      database: process.env.MYSQL_DB || 'app_db'
-    }
-  }
+      password: process.env.hasOwnProperty('MYSQL_PASS')
+        ? process.env.MYSQL_PASS
+        : 'password',
+      database: process.env.MYSQL_DB || 'app_db',
+    },
+  },
 }
 ```
 
@@ -27,26 +29,24 @@ Add file where you will initialize your manager, like `src/db/index.js` with thi
 
 ```js
 /** @flow */
-import {createManager} from 'minorm'
+import { createManager } from 'minorm'
 import config from '../config'
 
 export const manager = createManager(config.minorm.connection)
-
-manager.connect()
 ```
 
 It's ready to use.
 
-MinORM will automatically parse your database for tables, columns and relations so you don't need to manually map all models.
+Minorm will automatically parse your database for tables, columns and relations so you don't need to manually map all models.
 
 ## Integrate to startup
 
-MinORM connection is async, so if you need to know, when it's ready you can use `manager.ready()` method like:
+Minorm connection is async, so if you need to know, when it's ready you can use `manager.ready()` method like:
 
 ```js
 //server.js
 import Koa from 'koa'
-import {manager} from './db'
+import { manager } from './db'
 import config from './config'
 
 const app = new Koa()
@@ -70,6 +70,7 @@ const repository = manager.getRepository('posts')
 ```
 
 You can find entity by id:
+
 ```js
 const post = await repository.find(5)
 if (post == null) {
@@ -78,12 +79,13 @@ if (post == null) {
 ```
 
 You can find some post by more complex criteria:
+
 ```js
 const post = await repository.findOneBy({
   title: 'Some title',
   status: {
-    $not: 'removed'
-  }
+    $not: 'removed',
+  },
 })
 if (post == null) {
   // Post not found
@@ -91,17 +93,20 @@ if (post == null) {
 ```
 
 You also can find many items for complex criteria:
+
 ```js
 const posts = await repository.findBy({
   status: {
-    $not: 'removed'
-  }
+    $not: 'removed',
+  },
 })
 ```
 
 You also can write custom query:
+
 ```js
-const posts = await repository.startQuery('post')
+const posts = await repository
+  .startQuery('post')
   .where('post.title = ?', 'Some title')
   .limit(10)
   .offset(20)
@@ -111,11 +116,12 @@ const posts = await repository.startQuery('post')
 ## Making an INSERT to table
 
 You can simple write any data to table with simple code:
+
 ```js
 const post = await repository.create({
   title: 'Some title',
   status: 'active'
-  columnThatNotExistsInTable: 'will be ignored' // MinORM automatically detect table
+  columnThatNotExistsInTable: 'will be ignored' // Minorm automatically detect table
   // columns and will ignore fields that is not exists in database
 }).save()
 console.log(post.id) // will show inserted id
@@ -126,6 +132,7 @@ console.log(post.id) // will show inserted id
 Methods like `find()`, `findOneBy()` and `findBy()` inject helpers to each object in result like: `save()`, `remove()` and `populate()`
 
 So you can use:
+
 ```js
 let post = await repository.find(5)
 if (post == null) {
@@ -134,7 +141,7 @@ if (post == null) {
 post.title = 'Test title'
 post.populate({
   status: 'active',
-  modifiedAt: new Date
+  modifiedAt: new Date(),
 })
 await post.save() // Will insert or update existing row in table
 ```
@@ -142,6 +149,7 @@ await post.save() // Will insert or update existing row in table
 ## Removing data
 
 You can simple remove row from model:
+
 ```js
 const post = await repository.find(5)
 if (post == null) {
@@ -151,21 +159,26 @@ await post.remove()
 ```
 
 Or by using repository method to remove without fetching:
+
 ```js
 await repository.remove(5)
 ```
+
 Or even using some criteria for remove:
+
 ```js
 await repository.remove({
-  status: 'removed'
+  status: 'removed',
 })
 ```
 
 ## Attaching model helpers for received rows by custom query:
 
 You can attach model helpers for any fetched row by:
+
 ```js
-const [post] = await repository.startQuery('post')
+const [post] = await repository
+  .startQuery('post')
   .where('post.title = ?', 'Some title')
   .limit(1)
   .execute()

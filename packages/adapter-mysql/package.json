@@ -1,0 +1,44 @@
+{
+  "name": "@minorm/adapter-mysql",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "Alex Grand <alex@granted.name>",
+  "homepage": "https://github.com/Arilas/minorm/tree/master/packages/adapter-mysql#readme",
+  "license": "MIT",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arilas/minorm.git"
+  },
+  "scripts": {
+    "dist": "tsc",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/Arilas/minorm/issues"
+  },
+  "dependencies": {
+    "mysql2": "^1.6.5",
+    "squel": "^5.12.2"
+  },
+  "peerDependencies": {
+    "@minorm/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@minorm/schema-tool": "^1.0.0",
+    "@types/jest": "^25.1.1",
+    "@types/mysql2": "types/mysql2#master",
+    "mysql2": "^2.1.0"
+  }
+}

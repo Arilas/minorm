@@ -1,16 +1,15 @@
 {
   "name": "minorm",
-  "version": "0.2.3-next.1",
-  "description": "MinORM - Light high-performance ORM for MySQL",
+  "version": "1.0.0-next.1",
+  "description": "Minorm - Light high-performance ORM for MySQL",
   "main": "lib/index.js",
   "scripts": {
-    "dist": "babel -d lib/ src/",
-    "prepublish": "in-publish && npm run dist || echo 'Bad mode'",
-    "lint": "eslint .",
-    "test": "jest --runInBand --forceExit",
-    "test:integration": "jest test/integration --runInBand --forceExit",
-    "test:functional": "jest test/functional --runInBand --forceExit",
-    "test:unit": "jest test/unit --runInBand --forceExit"
+    "dist": "yarn workspaces foreach run dist",
+    "lint": "eslint --ext .ts .",
+    "test": "jest --runInBand",
+    "test:unit": "yarn pnpify jest test/unit",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "repository": {
     "type": "git",
@@ -28,50 +27,34 @@
     "url": "https://github.com/Arilas/minorm/issues"
   },
   "homepage": "https://github.com/Arilas/minorm#readme",
+  "workspaces": [
+    "packages/core",
+    "packages/schema-tool",
+    "packages/adapter-mysql"
+  ],
+  "private": true,
   "devDependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/preset-flow": "^7.0.0",
-    "@babel/register": "^7.0.0",
-    "array-aggregate": "^0.1.7",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
-    "eslint": "^5.6.1",
-    "eslint-plugin-flowtype": "^2.50.3",
-    "flow-bin": "^0.82.0",
-    "flow-typed": "^2.5.1",
-    "in-publish": "^2.0.0",
-    "jest": "^23.6.0"
-  },
-  "dependencies": {
-    "is-generator-function": "^1.0.7",
-    "mysql2": "^1.6.1",
-    "squel": "^5.12.0"
+    "@types/jest": "^25.1.1",
+    "@types/node": "^13.5.2",
+    "@types/sinon": "^7.0.11",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "@yarnpkg/pnpify": "^2.0.0-rc.17",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-import-resolver-node": "^0.3.3",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^25.1.0",
+    "prettier": "^1.17.0",
+    "sinon": "^8.1.1",
+    "ts-jest": "^25.1.0",
+    "typescript": "^3.7.5"
   },
   "engines": {
-    "node": ">=6.10"
+    "node": ">=8"
   },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ],
-    "coverageDirectory": "./coverage/",
-    "collectCoverage": true,
-    "testPathIgnorePatterns": [
-      "<rootDir>[/\\\\](build|docs|node_modules|scriptslib/)[/\\\\]",
-      "(config|fixtures|utils)"
-    ],
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.js$": "babel-jest"
-    },
-    "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.js$"
-    ],
-    "testMatch": [
-      "**/test/**/*.js"
-    ]
+  "resolutions": {
+    "@minorm/core": "portal:/Users/arilas/Work/Projects/krona/minorm/packages/core"
   }
 }

@@ -12,30 +12,32 @@ shared: &shared
     # Download and cache dependencies
     - restore_cache:
         keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "yarn.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+    - run: yarn global add yarn@berry
     - run: yarn install
     - run: yarn global add codecov
+    - run: yarn dist
 
     - save_cache:
         paths:
-          - node_modules
-        key: v1-dependencies-{{ checksum "package.json" }}
+          - .yarn
+          - .pnp.js
+        key: v1-dependencies-{{ checksum "yarn.lock" }}
 
     # run tests!
     - run: yarn test
     - run: yarn lint
-    - run: yarn flow check
     - run: $(yarn global bin)/codecov
 
 jobs:
-  node_10_mariadb_10-3:
+  node_12_mariadb_10-3:
     <<: *shared
     docker:
       # specify the version you desire here
-      - image: circleci/node:10
+      - image: circleci/node:12
       - image: circleci/mariadb:10.3
         environment:
           MYSQL_DATABASE: minorm_test
@@ -43,11 +45,11 @@ jobs:
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
 
-  node_10_mysql_8:
+  node_12_mysql_8:
     <<: *shared
     docker:
       # specify the version you desire here
-      - image: circleci/node:10
+      - image: circleci/node:12
       - image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
         environment:
@@ -56,68 +58,57 @@ jobs:
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
 
-  node_8:
+  node_10:
     <<: *shared
     docker:
       # specify the version you desire here
-      - image: circleci/node:8
+      - image: circleci/node:10
       - image: circleci/mariadb:10.3
         environment:
           MYSQL_DATABASE: minorm_test
           MYSQL_USER: local
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
-  node_6:
-    <<: *shared
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:6
-      - image: circleci/mariadb:10.3
-        environment:
-          MYSQL_DATABASE: minorm_test
-          MYSQL_USER: local
-          MYSQL_PASSWORD: freeware
-          MYSQL_RANDOM_ROOT_PASSWORD: yes
+
   version-1:
     docker:
-    - image: circleci/node:10
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "package.json" }}
-        - v1-dependencies-
-    - run:
-        command: yarn install
-    - run:
-        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-    - run:
-        command: npm publish
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          command: yarn install
+      - run:
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          command: npm publish
   version-2:
     docker:
-    - image: circleci/node:10
+      - image: circleci/node:10
     working_directory: ~/repo
     steps:
-    - checkout
-    - restore_cache:
-        keys:
-        - v1-dependencies-{{ checksum "package.json" }}
-        - v1-dependencies-
-    - run:
-        command: yarn install
-    - run:
-        command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-    - run:
-        command: npm publish --tag next
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          command: yarn install
+      - run:
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          command: npm publish --tag next
 workflows:
   version: 2
   build:
     jobs:
-      - node_6
-      - node_8
-      - node_10_mariadb_10-3
-      - node_10_mysql_8
+      - node_10
+      - node_12_mariadb_10-3
+      - node_12_mysql_8
       - version-1:
           filters:
             branches:
@@ -125,10 +116,9 @@ workflows:
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
           requires:
-          - node_6
-          - node_8
-          - node_10_mariadb_10-3
-          - node_10_mysql_8
+            - node_10
+            - node_12_mariadb_10-3
+            - node_12_mysql_8
       - version-2:
           filters:
             branches:
@@ -136,7 +126,6 @@ workflows:
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)-next\.([0-9]+)$/
           requires:
-          - node_6
-          - node_8
-          - node_10_mariadb_10-3
-          - node_10_mysql_8
+            - node_10
+            - node_12_mariadb_10-3
+            - node_12_mysql_8

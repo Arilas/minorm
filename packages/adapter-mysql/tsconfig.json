@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@minorm/*": ["../*"]
+    }
+  },
+  "references": [{ "path": "../core" }, { "path": "../schema-tool" }]
+}

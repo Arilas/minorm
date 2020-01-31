@@ -1,7 +1,15 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-  "lcov.watch": [{
-    "pattern": "**/*.js",
-    "command": "npm test"
-  }]
+  "jest.showCoverageOnLoad": true,
+  "jest.pathToJest": "yarn test:unit",
+  "files.exclude": {
+    "**/node_modules": true,
+    "packages/**/*.js": true,
+    "packages/**/*.d.ts": true,
+    "packages/**/*.d.ts.map": true,
+    "packages/**/*.js.map": true
+  },
+  "typescript.tsdk": ".vscode/pnpify/typescript/lib",
+  "eslint.nodePath": ".vscode/pnpify",
+  "prettier.prettierPath": ".vscode/pnpify/prettier/index.js"
 }

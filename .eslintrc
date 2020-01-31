@@ -1,40 +1,62 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "prettier", "import"],
   "env": {
-    "node": true,
     "es6": true,
-    "jest": true
+    "jest": true,
+    "node": true
   },
-  "globals": {
-    "Uint32Array": true
+  "ignorePatterns": ["/packages/**/*.d.ts"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    },
+    "extensions": [".ts"]
   },
-  "plugins": [
-    "flowtype"
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint"
   ],
   "settings": {
-    "flowtype": {
-      "onlyFilesWithFlowAnnotation": true
+    "import/internal-regex": "^@minorm/",
+    "import/resolver": {
+      "node": {
+        "extensions": [".ts", ".js"],
+        "moduleDirectory": ["packages"]
+      }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
     }
   },
-  "extends": ["eslint:recommended", "plugin:flowtype/recommended"],
   "rules": {
-    "quotes": [2, "single", {"avoidEscape": true, "allowTemplateLiterals": true}],
-    "semi": [2, "never"],
-    "indent": [2, 2, {"SwitchCase": 1}],
-    "no-var": [2],
-    "prefer-const": [1],
-    "no-duplicate-imports": [2],
-    "arrow-body-style": [2, "as-needed"],
-    "arrow-parens": [2, "as-needed"],
-    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
-    "flowtype/require-parameter-type": 0,
-    "flowtype/semi": [
-      2,
-      "never"
+    "import/no-unresolved": 0,
+    "import/named": 0,
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "**/*.test.{ts,tsx}",
+          "**/*.spec.{ts,tsx}",
+          "**/*.story.tsx",
+          "**/__tests__/**",
+          "**/__mocks__/**",
+          "./config/**/*.js"
+        ]
+      }
     ],
-    "flowtype/type-id-match": [
-      2,
-      "^([A-Z][a-z0-9]+)+$"
-    ]
+    "no-prototype-builtins": 0,
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/ban-ts-ignore": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "@typescript-eslint/explicit-member-accessibility": 0,
+    "@typescript-eslint/camelcase": 0
   }
 }
