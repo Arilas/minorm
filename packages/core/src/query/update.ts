@@ -1,9 +1,9 @@
-import Squel, { QueryBuilderOptions, Block } from 'squel'
+import { QueryBuilderOptions, Block, cls } from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
 import { Queries } from '../manager/parts'
 import { UpdateQuery as $UpdateQuery, OkPacket } from '../types'
 
-export class UpdateQuery extends Squel.cls.QueryBuilder {
+export class UpdateQuery extends cls.QueryBuilder {
   private _manager: Queries<any, any> //eslint-disable-line @typescript-eslint/no-explicit-any
   constructor(
     manager: Queries<any, any>, //eslint-disable-line @typescript-eslint/no-explicit-any
@@ -11,12 +11,12 @@ export class UpdateQuery extends Squel.cls.QueryBuilder {
     blocks: Block[] | undefined,
   ) {
     const newBlocks = blocks || [
-      new Squel.cls.StringBlock(options, 'UPDATE'),
-      new Squel.cls.UpdateTableBlock(options),
-      new Squel.cls.SetFieldBlock(options),
+      new cls.StringBlock(options, 'UPDATE'),
+      new cls.UpdateTableBlock(options),
+      new cls.SetFieldBlock(options),
       new CriteriaBlock(options),
-      new Squel.cls.OrderByBlock(options),
-      new Squel.cls.LimitBlock(options),
+      new cls.OrderByBlock(options),
+      new cls.LimitBlock(options),
     ]
 
     super(options, newBlocks)

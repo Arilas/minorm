@@ -19,7 +19,7 @@ export function createMapper() {
     if (!entryPoint) {
       throw new Error('Entry point not found')
     }
-    if (!rawData || !rawData.hasOwnProperty(entryPoint)) {
+    if (!rawData || rawData == null || !rawData.hasOwnProperty(entryPoint)) {
       return null
     }
     if (rawData['']) {
@@ -36,8 +36,10 @@ export function createMapper() {
         continue
       }
       if (data && data.id != null) {
+        // @ts-ignore
         rawData[targetPath][alias] = data
       } else {
+        // @ts-ignore
         rawData[targetPath][alias] = null
       }
     }

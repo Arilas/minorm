@@ -3,7 +3,7 @@ import { Adapter } from '@minorm/core'
 import { getColumns as getColumnsExecute } from './getColumns'
 import { getRelations as getRelationsExecute } from './getRelations'
 import { QueryBuilder, ParamString } from 'squel'
-import { QueryOptions, RowDataPacket, OkPacket } from '@minorm/core/lib/types'
+import { QueryOptions, RowDataPacket, OkPacket } from '@minorm/core/src/types'
 
 export function createAdapter(configuration: PoolOptions): Adapter {
   let pool: Pool | null = null

@@ -1,4 +1,4 @@
-import Squel, { QueryBuilderOptions, FromTableBlock, Block } from 'squel'
+import { QueryBuilderOptions, FromTableBlock, Block, cls } from 'squel'
 import IncludeBlock from './blocks/IncludeBlock'
 import CriteriaBlock from './blocks/CriteriaBlock'
 import { Metadata } from '../manager/parts'
@@ -11,8 +11,9 @@ import {
 } from '../types'
 import { createMapper } from '../utils/createMapper'
 
-export class SelectQuery<T extends SomeRecord = BaseRecord> extends Squel.cls
-  .QueryBuilder {
+export class SelectQuery<
+  T extends SomeRecord = BaseRecord
+> extends cls.QueryBuilder {
   _manager: Metadata<any, any> //eslint-disable-line @typescript-eslint/no-explicit-any
   _mapper: SelectQueryMapper
   _fromTableBlock: FromTableBlock
@@ -23,21 +24,21 @@ export class SelectQuery<T extends SomeRecord = BaseRecord> extends Squel.cls
   ) {
     const mapper = createMapper()
     // For include functionality we need fromTableBlock inside IncludeBlock
-    const fromTableBlock = new Squel.cls.FromTableBlock(options)
+    const fromTableBlock = new cls.FromTableBlock(options)
     const newBlocks = blocks || [
-      new Squel.cls.StringBlock(options, 'SELECT'),
-      new Squel.cls.FunctionBlock(options),
-      new Squel.cls.DistinctBlock(options),
-      new Squel.cls.GetFieldBlock(options),
+      new cls.StringBlock(options, 'SELECT'),
+      new cls.FunctionBlock(options),
+      new cls.DistinctBlock(options),
+      new cls.GetFieldBlock(options),
       fromTableBlock,
       new IncludeBlock(manager, fromTableBlock, options, mapper),
       new CriteriaBlock(options),
-      new Squel.cls.GroupByBlock(options),
-      new Squel.cls.HavingBlock(options),
-      new Squel.cls.OrderByBlock(options),
-      new Squel.cls.LimitBlock(options),
-      new Squel.cls.OffsetBlock(options),
-      new Squel.cls.UnionBlock(options),
+      new cls.GroupByBlock(options),
+      new cls.HavingBlock(options),
+      new cls.OrderByBlock(options),
+      new cls.LimitBlock(options),
+      new cls.OffsetBlock(options),
+      new cls.UnionBlock(options),
     ]
 
     super(options, newBlocks)

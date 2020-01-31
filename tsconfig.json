@@ -18,9 +18,10 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
+    "baseUrl": ".",
 
     "paths": {
-      "@minorm/core": ["packages/core"]
+      "@minorm/*": ["packages/*"]
     }
   },
   "references": [

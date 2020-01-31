@@ -1,4 +1,4 @@
-import squel, { QueryBuilderOptions, Squel } from 'squel'
+import squel, { QueryBuilderOptions } from 'squel'
 import { Metadata } from '../manager/parts'
 import { BaseRecord, SelectQuery } from '../types'
 import insert from './insert'
@@ -12,7 +12,7 @@ export const updateQuery = update
 export const removeQuery = remove
 
 //eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function makeQueryBuilder(manager: Metadata<any, any>): Squel {
+export function makeQueryBuilder(manager: Metadata<any, any>) {
   return {
     ...squel,
     insert: (options?: QueryBuilderOptions | null) => insert(manager, options),

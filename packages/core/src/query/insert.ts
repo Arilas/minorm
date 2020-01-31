@@ -1,9 +1,9 @@
-import Squel, { QueryBuilderOptions, Block } from 'squel'
+import { QueryBuilderOptions, Block, cls } from 'squel'
 import { InsertQuery as $InsertQuery, OkPacket } from '../types'
 import { Queries } from '../manager/parts'
 
 // @ts-ignore
-export class InsertQuery extends Squel.cls.Insert {
+export class InsertQuery extends cls.Insert {
   _manager: Queries<any, any> //eslint-disable-line @typescript-eslint/no-explicit-any
   constructor(
     manager: Queries<any, any>, //eslint-disable-line @typescript-eslint/no-explicit-any

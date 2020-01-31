@@ -1,7 +1,7 @@
-import Squel from 'squel'
+import { cls } from 'squel'
 import { Criteria } from '../../types'
 
-export default class CriteriaBlock extends Squel.cls.WhereBlock {
+export default class CriteriaBlock extends cls.WhereBlock {
   criteria(criteria: Criteria) {
     for (const key of Object.keys(criteria)) {
       const part = criteria[key]

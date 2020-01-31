@@ -1,10 +1,10 @@
-import Squel, { QueryBuilderOptions, Block } from 'squel'
+import { QueryBuilderOptions, Block, cls } from 'squel'
 import CriteriaBlock from './blocks/CriteriaBlock'
 import { Queries } from '../manager/parts'
 import { DeleteQuery as $DeleteQuery, OkPacket } from '../types'
 
 // @ts-ignore
-export class DeleteQuery extends Squel.cls.Delete {
+export class DeleteQuery extends cls.Delete {
   _manager: Queries<any, any> //eslint-disable-line @typescript-eslint/no-explicit-any
 
   constructor(
@@ -13,16 +13,16 @@ export class DeleteQuery extends Squel.cls.Delete {
     blocks: Block[] | null,
   ) {
     const newBlocks = blocks || [
-      new Squel.cls.StringBlock(options, 'DELETE'),
-      new Squel.cls.TargetTableBlock(options),
-      new Squel.cls.FromTableBlock({
+      new cls.StringBlock(options, 'DELETE'),
+      new cls.TargetTableBlock(options),
+      new cls.FromTableBlock({
         ...options,
         singleTable: true,
       }),
-      new Squel.cls.JoinBlock(options),
+      new cls.JoinBlock(options),
       new CriteriaBlock(options),
-      new Squel.cls.OrderByBlock(options),
-      new Squel.cls.LimitBlock(options),
+      new cls.OrderByBlock(options),
+      new cls.LimitBlock(options),
     ]
 
     super(options, newBlocks)

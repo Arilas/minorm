@@ -1,4 +1,4 @@
-import sinon from 'sinon'
+import { stub } from 'sinon'
 import { createModel } from '../../src/createModel'
 import { BaseRecord } from '../../src/types'
 
@@ -78,10 +78,10 @@ describe('Unit', () => {
     it('should remove data', async () => {
       // eslint-disable-next-line
       const mutators: any = {
-        insert: sinon.stub().returns(Promise.resolve(1)),
-        update: sinon.stub().returns(Promise.resolve(1)),
-        remove: sinon.stub().returns(Promise.resolve(1)),
-        getMetadata: sinon.stub().returns(uMetadata),
+        insert: stub().returns(Promise.resolve(1)),
+        update: stub().returns(Promise.resolve(1)),
+        remove: stub().returns(Promise.resolve(1)),
+        getMetadata: stub().returns(uMetadata),
       }
       const model = createModel(
         mutators,
@@ -98,10 +98,10 @@ describe('Unit', () => {
     it('should populate data', async () => {
       // eslint-disable-next-line
       const mutators: any = {
-        insert: sinon.stub().returns(Promise.resolve(1)),
-        update: sinon.stub().returns(Promise.resolve(1)),
-        remove: sinon.stub().returns(Promise.resolve(1)),
-        getMetadata: sinon.stub().returns(uMetadata),
+        insert: stub().returns(Promise.resolve(1)),
+        update: stub().returns(Promise.resolve(1)),
+        remove: stub().returns(Promise.resolve(1)),
+        getMetadata: stub().returns(uMetadata),
       }
       const model = createModel<BaseRecord>(
         mutators,
@@ -128,10 +128,10 @@ describe('Unit', () => {
     it('should not call mutators when data is not changed', async () => {
       // eslint-disable-next-line
       const mutators: any = {
-        insert: sinon.stub().returns(Promise.resolve(1)),
-        update: sinon.stub().returns(Promise.resolve(1)),
-        remove: sinon.stub().returns(Promise.resolve(1)),
-        getMetadata: sinon.stub().returns(uMetadata),
+        insert: stub().returns(Promise.resolve(1)),
+        update: stub().returns(Promise.resolve(1)),
+        remove: stub().returns(Promise.resolve(1)),
+        getMetadata: stub().returns(uMetadata),
       }
       const model = createModel<BaseRecord>(
         mutators,
@@ -149,10 +149,10 @@ describe('Unit', () => {
     it('should call insert when data is changed and id provided', async () => {
       // eslint-disable-next-line
       const mutators: any = {
-        insert: sinon.stub().returns(Promise.resolve(1)),
-        update: sinon.stub().returns(Promise.resolve(1)),
-        remove: sinon.stub().returns(Promise.resolve(1)),
-        getMetadata: sinon.stub().returns(uMetadata),
+        insert: stub().returns(Promise.resolve(1)),
+        update: stub().returns(Promise.resolve(1)),
+        remove: stub().returns(Promise.resolve(1)),
+        getMetadata: stub().returns(uMetadata),
       }
       const model = createModel(
         mutators,
@@ -169,10 +169,10 @@ describe('Unit', () => {
     it('should call update when id is changed', async () => {
       // eslint-disable-next-line
       const mutators: any = {
-        insert: sinon.stub().returns(Promise.resolve(1)),
-        update: sinon.stub().returns(Promise.resolve(1)),
-        remove: sinon.stub().returns(Promise.resolve(1)),
-        getMetadata: sinon.stub().returns(uMetadata),
+        insert: stub().returns(Promise.resolve(1)),
+        update: stub().returns(Promise.resolve(1)),
+        remove: stub().returns(Promise.resolve(1)),
+        getMetadata: stub().returns(uMetadata),
       }
       const model = createModel(
         mutators,

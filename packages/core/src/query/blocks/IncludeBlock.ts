@@ -1,9 +1,9 @@
-import Squel, { QueryBuilderOptions, FromTableBlock } from 'squel'
+import { QueryBuilderOptions, FromTableBlock, cls } from 'squel'
 import { Metadata } from '../../manager/parts'
 import { Relation } from '../../metadata/createMetadataManager'
 import { SelectQueryMapper } from '../../types'
 
-export default class IncludeBlock extends Squel.cls.JoinBlock {
+export default class IncludeBlock extends cls.JoinBlock {
   _manager: Metadata<any, any> //eslint-disable-line @typescript-eslint/no-explicit-any
   _mapper: SelectQueryMapper
   _fromTableBlock: FromTableBlock

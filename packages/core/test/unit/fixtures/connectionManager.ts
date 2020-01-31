@@ -1,4 +1,4 @@
-import sinon from 'sinon' // eslint-disable-line
+import { stub } from 'sinon' // eslint-disable-line
 import { ColumnMeta, Relation, Adapter } from '../../../src'
 
 export const fakeRelationResponse: Relation[] = [
@@ -86,7 +86,7 @@ export const fakeColumnsMeta: ColumnMeta[] = [
 ]
 
 export function createFakePool() {
-  const execute = sinon.stub()
+  const execute = stub()
   function assignDefaultBehavior() {
     execute.callsFake((query, values) => {
       throw new Error(`fake not found ${query} ${values}`)
@@ -102,7 +102,7 @@ export function createFakePool() {
 
   const pool: Adapter = {
     init: () => undefined,
-    end: sinon.stub().returns(Promise.resolve()),
+    end: stub().returns(Promise.resolve()),
     getColumns() {
       return Promise.resolve(fakeColumnsMeta)
     },
