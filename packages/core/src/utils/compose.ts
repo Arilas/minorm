@@ -1,4 +1,3 @@
-/* eslint-disable import/export */
 type Func<A, B> = (next: A) => B
 
 export function compose<A, B>(f0: Func<A, B>): (ctx: A) => B

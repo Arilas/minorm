@@ -52,7 +52,7 @@ export function mutatorsCreator<T extends SomeRecord = BaseRecord>(
         'Please check that you provide selector and changes for update',
       )
     }
-    let cond: Criteria =
+    const cond: Criteria =
       typeof selector === 'number' || typeof selector === 'string'
         ? {
             id: selector,
@@ -75,7 +75,7 @@ export function mutatorsCreator<T extends SomeRecord = BaseRecord>(
     if (!selector) {
       throw new Error('Please provide selector for remove')
     }
-    let cond: Criteria =
+    const cond: Criteria =
       typeof selector === 'number' || typeof selector === 'string'
         ? {
             id: selector,

@@ -6,12 +6,14 @@
     "jest": true,
     "node": true
   },
+  "ignorePatterns": ["/packages/**/*.d.ts"],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
       "modules": true
-    }
+    },
+    "extensions": [".ts"]
   },
   "extends": [
     "eslint:recommended",
@@ -23,10 +25,11 @@
     "prettier/@typescript-eslint"
   ],
   "settings": {
+    "import/internal-regex": "^@minorm/",
     "import/resolver": {
       "node": {
         "extensions": [".ts", ".js"],
-        "moduleDirectory": ["node_modules", "packages"]
+        "moduleDirectory": ["packages"]
       }
     },
     "import/parsers": {
@@ -34,7 +37,7 @@
     }
   },
   "rules": {
-    "import/no-unresolved": 2,
+    "import/no-unresolved": 0,
     "import/named": 0,
     "import/no-extraneous-dependencies": [
       "error",
@@ -49,6 +52,9 @@
         ]
       }
     ],
+    "no-prototype-builtins": 0,
+    "@typescript-eslint/no-empty-function": 0,
+    "@typescript-eslint/ban-ts-ignore": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/explicit-member-accessibility": 0,
     "@typescript-eslint/camelcase": 0

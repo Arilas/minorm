@@ -1,75 +1,51 @@
 import { BaseRecord } from '../types'
 
 export function createMapper() {
-  type Hierarchy = BaseRecord
-  const hierarchy: { [key: string]: string[] } = {}
-  const map: BaseRecord = {}
+  const reverseMap: { [key: string]: string } = {}
   let entryPoint: string | undefined
 
-  return {
-    setRelation(from: string, alias: string) {
-      if (!hierarchy.hasOwnProperty(from)) {
-        hierarchy[from] = []
-      }
-      hierarchy[from].push(alias)
-    },
-    setEntryPoint(alias: string) {
-      entryPoint = alias
-    },
-    build() {
-      if (!entryPoint) {
-        throw new Error('Entry point not found')
-      }
-      function populateMap(target: Hierarchy, entryPoint: string) {
-        if (!hierarchy[entryPoint]) {
-          return {}
-        }
-        target[entryPoint] = hierarchy[entryPoint].reduce(
-          (target, path) =>
-            Object.assign(target, {
-              [path]: {},
-            }),
-          target[entryPoint] || {},
-        )
-        hierarchy[entryPoint].forEach(path =>
-          populateMap(target[entryPoint], path),
-        )
-        return target[entryPoint]
-      }
+  function setRelation(from: string, alias: string) {
+    if (reverseMap[alias]) {
+      throw new Error(`Alias ${alias} is already registered`)
+    }
+    reverseMap[alias] = from
+  }
 
-      return populateMap(map, entryPoint)
-    },
-    map(rawData: { [key: string]: BaseRecord | null }) {
-      if (!entryPoint) {
-        throw new Error('Entry point not found')
-      }
-      if (!rawData || !rawData.hasOwnProperty(entryPoint)) {
-        return null
-      }
-      const map = this.build()
-      const result = {
+  function setEntryPoint(alias: string) {
+    entryPoint = alias
+  }
+
+  function map(rawData: { [key: string]: BaseRecord | null }) {
+    if (!entryPoint) {
+      throw new Error('Entry point not found')
+    }
+    if (!rawData || !rawData.hasOwnProperty(entryPoint)) {
+      return null
+    }
+    if (rawData['']) {
+      rawData[entryPoint] = {
         ...rawData[entryPoint],
-        ...map,
-        ...(rawData[''] || {}),
+        ...rawData[''],
       }
-      function populateResult(target: Hierarchy, relations: Hierarchy) {
-        const keys = Object.keys(relations)
-        for (const key of keys) {
-          const part = rawData[key]
-          if (part && part.id != null) {
-            target[key] = {
-              ...part,
-              ...relations[key],
-            }
-            populateResult(target[key], relations[key])
-          } else {
-            target[key] = null
-          }
-        }
-      }
-      populateResult(result, map)
+    }
 
-      return result
-    },
+    for (const alias of Object.keys(rawData)) {
+      const data = rawData[alias]
+      const targetPath = reverseMap[alias]
+      if (!targetPath || !rawData[targetPath]) {
+        continue
+      }
+      if (data && data.id != null) {
+        rawData[targetPath][alias] = data
+      } else {
+        rawData[targetPath][alias] = null
+      }
+    }
+    return rawData[entryPoint]
+  }
+  return {
+    setEntryPoint,
+    setRelation,
+    map,
   }
 }

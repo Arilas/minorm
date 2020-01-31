@@ -30,7 +30,7 @@ export type Model<T = BaseRecord> = T & ModelMethods<T>
 export function createModel<T extends SomeRecord = BaseRecord>(
   mutators: Mutators<T>,
   model: T,
-  isSaved: boolean = true,
+  isSaved = true,
 ): Model<T> {
   let isFetched = isSaved
   let origin: Partial<T> = isFetched ? { ...model } : {}
@@ -41,7 +41,7 @@ export function createModel<T extends SomeRecord = BaseRecord>(
     return Object.keys(columnsMeta).reduce(
       (target: Partial<T>, key: string) =>
         // @ts-ignore
-        origin[key] != model[key]
+        !Object.is(origin[key], model[key])
           ? {
               ...target,
               // @ts-ignore
@@ -54,7 +54,7 @@ export function createModel<T extends SomeRecord = BaseRecord>(
 
   async function save(): Promise<Model<T>> {
     const changes = getChanges()
-    if (Object.keys(changes).length || (!model.id || !isFetched)) {
+    if (Object.keys(changes).length || !model.id || !isFetched) {
       if (isFetched && origin.id && model.id) {
         await mutators.update(origin.id, changes)
       } else {

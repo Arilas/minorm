@@ -38,7 +38,7 @@ export class DeleteQuery extends Squel.cls.Delete {
 
 export default function remove(
   manager: Queries<any, any>, //eslint-disable-line @typescript-eslint/no-explicit-any
-  options: QueryBuilderOptions | undefined = {},
+  options: QueryBuilderOptions | null = {},
 ): $DeleteQuery {
   // @ts-ignore
   return new DeleteQuery(manager, options)

@@ -16,6 +16,7 @@ shared: &shared
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+    - run: npm i -g yarn@berry
     - run: yarn install
     - run: yarn global add codecov
 
@@ -25,11 +26,9 @@ shared: &shared
         key: v1-dependencies-{{ checksum "package.json" }}
 
     # run tests!
-    - run: yarn lerna bootstrap
     - run: yarn dist
     - run: yarn test
     - run: yarn lint
-    - run: yarn tsc
     - run: $(yarn global bin)/codecov
 
 jobs:
@@ -70,17 +69,6 @@ jobs:
           MYSQL_PASSWORD: freeware
           MYSQL_RANDOM_ROOT_PASSWORD: yes
 
-  node_8:
-    <<: *shared
-    docker:
-      # specify the version you desire here
-      - image: circleci/node:8
-      - image: circleci/mariadb:10.3
-        environment:
-          MYSQL_DATABASE: minorm_test
-          MYSQL_USER: local
-          MYSQL_PASSWORD: freeware
-          MYSQL_RANDOM_ROOT_PASSWORD: yes
   version-1:
     docker:
       - image: circleci/node:10
@@ -117,7 +105,6 @@ workflows:
   version: 2
   build:
     jobs:
-      - node_8
       - node_10
       - node_12_mariadb_10-3
       - node_12_mysql_8
@@ -128,7 +115,6 @@ workflows:
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)$/
           requires:
-            - node_8
             - node_10
             - node_12_mariadb_10-3
             - node_12_mysql_8
@@ -139,7 +125,6 @@ workflows:
             tags:
               only: /^v([0-9]+)\.([0-9]+)\.([0-9]+)-next\.([0-9]+)$/
           requires:
-            - node_8
             - node_10
             - node_12_mariadb_10-3
             - node_12_mysql_8

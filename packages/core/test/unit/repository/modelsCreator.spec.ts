@@ -5,7 +5,7 @@ describe('Unit', () => {
   describe('Repository', () => {
     describe('modelsCreator', () => {
       const faker = createFakePool()
-      let manager = createManager(faker.pool)
+      const manager = createManager(faker.pool)
       beforeAll(async () => {
         faker.inject()
 
@@ -26,7 +26,7 @@ describe('Unit', () => {
         expect(model.getChanges()).toMatchObject({})
       })
 
-      it('should create model without any incomming object', () => {
+      it('should create model without any incoming object', () => {
         const repo = manager.getRepository('users')
         const model = repo.create()
         expect(model.isDirty()).toBeTruthy()

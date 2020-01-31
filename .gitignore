@@ -41,3 +41,11 @@ jspm_packages
 lib
 dist
 build
+
+.yarn/
+.pnp.js
+
+packages/**/*.js
+packages/**/*.d.ts
+packages/**/*.d.ts.map
+packages/**/*.js.map

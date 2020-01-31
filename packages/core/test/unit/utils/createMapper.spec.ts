@@ -3,39 +3,6 @@ import { createMapper } from '../../../src/utils/createMapper'
 describe('Unit', () => {
   describe('Utils', () => {
     describe('createMapper', () => {
-      test('should build map without includes', () => {
-        const mapper = createMapper()
-        mapper.setEntryPoint('user')
-        expect(mapper.build()).toEqual({})
-      })
-      test('should build map with one include', () => {
-        const mapper = createMapper()
-        mapper.setEntryPoint('post')
-        mapper.setRelation('post', 'creator')
-        expect(mapper.build()).toEqual({ creator: {} })
-      })
-      test('should build map with nested includes', () => {
-        const mapper = createMapper()
-        mapper.setEntryPoint('post')
-        mapper.setRelation('post', 'creator')
-        mapper.setRelation('creator', 'avatar')
-        expect(mapper.build()).toEqual({ creator: { avatar: {} } })
-      })
-      test('should build map with multiple nested includes', () => {
-        const mapper = createMapper()
-        mapper.setEntryPoint('post')
-        mapper.setRelation('post', 'creator')
-        mapper.setRelation('post', 'category')
-        mapper.setRelation('post', 'lastComment')
-        mapper.setRelation('creator', 'avatar')
-        mapper.setRelation('category', 'company')
-        expect(mapper.build()).toEqual({
-          creator: { avatar: {} },
-          category: { company: {} },
-          lastComment: {},
-        })
-      })
-
       const creator = {
         id: 1,
         user: true,

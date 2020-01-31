@@ -48,7 +48,7 @@ export function createFixtureManager(manager: Manager) {
       .save()
   }
 
-  function createUsers(count: number = 1): Promise<User[]> {
+  function createUsers(count = 1): Promise<User[]> {
     return Promise.all(range(0, count).map(createUser))
   }
 
@@ -68,13 +68,13 @@ export function createFixtureManager(manager: Manager) {
     return createPostToUser(user.id)
   }
 
-  function createPostsToUser(count: number = 1, id: number): Promise<Post[]> {
+  function createPostsToUser(count = 1, id: number): Promise<Post[]> {
     return Promise.all(range(0, count).map(createPostToUser.bind(id)))
   }
 
   async function createPosts(
-    usersCount: number = 1,
-    postsPerUser: number = 1,
+    usersCount = 1,
+    postsPerUser = 1,
   ): Promise<Post[][]> {
     const users = await createUsers(usersCount)
     return Promise.all(
@@ -98,7 +98,7 @@ export function createFixtureManager(manager: Manager) {
     return createPostComment(postId, user.id)
   }
 
-  async function createPostWithComments(count: number = 1): Promise<Comment[]> {
+  async function createPostWithComments(count = 1): Promise<Comment[]> {
     const post = await createPost()
     return Promise.all(
       range(0, count).map(createPostCommentWithUser.bind(post.id)),

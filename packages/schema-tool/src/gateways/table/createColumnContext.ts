@@ -1,6 +1,6 @@
 import { SchemaToolColumnContext } from '../../types'
 import { MetadataManager } from '@minorm/core'
-import { SimpleValue } from '@minorm/core/lib/types'
+import { SimpleValue } from '@minorm/core/src/types'
 
 export const TYPE_VARCHAR = 'VARCHAR'
 export const TYPE_TEXT = 'TEXT'

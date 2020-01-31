@@ -32,7 +32,7 @@ export class UpdateQuery extends Squel.cls.QueryBuilder {
 
 export default function update(
   manager: Queries<any, any>, //eslint-disable-line @typescript-eslint/no-explicit-any
-  options: QueryBuilderOptions | undefined = {},
+  options: QueryBuilderOptions | null = {},
 ): $UpdateQuery {
   // @ts-ignore
   return new UpdateQuery(manager, options)

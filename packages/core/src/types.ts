@@ -84,7 +84,6 @@ export interface Criteria {
 export interface SelectQueryMapper {
   setRelation(from: string, alias: string): void
   setEntryPoint(alias: string): void
-  build(): BaseRecord
   map(rawData: { [key: string]: BaseRecord | null }): BaseRecord | null
 }
 

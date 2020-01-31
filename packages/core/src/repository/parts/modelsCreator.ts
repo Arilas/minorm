@@ -12,7 +12,7 @@ export function modelsCreator<T extends SomeRecord = BaseRecord>(
 ): Models<T> {
   function hydrate<Record extends T = T>(
     entity: Partial<Record>,
-    isSaved: boolean = false,
+    isSaved = false,
   ): Model<Record> {
     // @ts-ignore
     return createModel<Record>(mutators, entity, isSaved)

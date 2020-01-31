@@ -5,7 +5,7 @@ describe('Unit', () => {
   describe('Repository', () => {
     describe('mutatorsCreator', () => {
       const faker = createFakePool()
-      let manager = createManager(faker.pool)
+      const manager = createManager(faker.pool)
       beforeEach(async () => {
         faker.inject()
 

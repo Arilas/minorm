@@ -1,7 +1,7 @@
 export async function withRetry<T>(
   handler: (attempt?: number) => Promise<T>,
-  times: number = 5,
-  timeoutBetweenTries: number = 500,
+  times = 5,
+  timeoutBetweenTries = 500,
 ): Promise<T> {
   const delay = () =>
     new Promise(resolve => setTimeout(resolve, timeoutBetweenTries))

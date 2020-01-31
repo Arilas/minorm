@@ -1,9 +1,6 @@
 import { SchemaTool } from '@minorm/schema-tool' // eslint-disable-line
 
-export async function setupSchema(
-  schemaTool: SchemaTool,
-  init: boolean = true,
-) {
+export async function setupSchema(schemaTool: SchemaTool, init = true) {
   schemaTool.setSchemaInit({
     up(schema) {
       schema.table('users', ctx => {

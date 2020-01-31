@@ -5,7 +5,7 @@ describe('Unit', () => {
   describe('Manager', () => {
     describe('metadataCreator', () => {
       const faker = createFakePool()
-      let manager = createManager(faker.pool)
+      const manager = createManager(faker.pool)
 
       beforeEach(async () => {
         faker.inject()

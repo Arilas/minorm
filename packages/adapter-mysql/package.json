@@ -5,8 +5,8 @@
   "author": "Alex Grand <alex@granted.name>",
   "homepage": "https://github.com/Arilas/minorm/tree/master/packages/adapter-mysql#readme",
   "license": "MIT",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -22,7 +22,7 @@
     "url": "git+https://github.com/Arilas/minorm.git"
   },
   "scripts": {
-    "dist": "tsc --outDir lib",
+    "dist": "tsc",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
@@ -37,6 +37,8 @@
   },
   "devDependencies": {
     "@minorm/schema-tool": "^1.0.0",
-    "@types/mysql2": "types/mysql2"
+    "@types/jest": "^25.1.1",
+    "@types/mysql2": "types/mysql2#master",
+    "mysql2": "^2.1.0"
   }
 }

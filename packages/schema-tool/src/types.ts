@@ -1,5 +1,5 @@
 import { Criteria, BaseRecord } from '@minorm/core'
-import { SimpleValue } from '@minorm/core/lib/types'
+import { SimpleValue } from '@minorm/core/src/types'
 
 export interface SchemaTool {
   setSchemaInit(handler: Migration): void

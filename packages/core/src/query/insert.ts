@@ -23,7 +23,7 @@ export class InsertQuery extends Squel.cls.Insert {
 
 export default function insert(
   manager: Queries<any, any>, //eslint-disable-line @typescript-eslint/no-explicit-any
-  options: QueryBuilderOptions | undefined = {},
+  options: QueryBuilderOptions | null = {},
 ): $InsertQuery {
   // @ts-ignore
   return new InsertQuery(manager, options)

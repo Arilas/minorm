@@ -1,7 +1,11 @@
 {
-  "extends": "../tsconfig.settings.json",
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "lib"
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@minorm/*": ["../*"]
+    }
   },
-  "references": [{ "@minorm/core": "../core" }]
+  "references": [{ "path": "../core" }]
 }

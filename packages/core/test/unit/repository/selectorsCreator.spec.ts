@@ -5,7 +5,7 @@ describe('Unit', () => {
   describe('Repository', () => {
     describe('selectorsCreator', () => {
       const faker = createFakePool()
-      let manager = createManager(faker.pool)
+      const manager = createManager(faker.pool)
       const user = {
         id: 1,
         createdAt: 'dsa',

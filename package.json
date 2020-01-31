@@ -4,7 +4,7 @@
   "description": "Minorm - Light high-performance ORM for MySQL",
   "main": "lib/index.js",
   "scripts": {
-    "dist": "yarn workspaces run dist",
+    "dist": "yarn workspaces foreach run dist",
     "lint": "eslint --ext .ts .",
     "test": "jest --runInBand",
     "test:unit": "jest test/unit",
@@ -38,22 +38,23 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-typescript": "^7.3.3",
-    "@types/jest": "^24.0.12",
-    "@types/node": "^12.0.0",
+    "@types/jest": "^25.1.1",
+    "@types/node": "^13.5.2",
     "@types/sinon": "^7.0.11",
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
-    "@typescript-eslint/parser": "^1.7.0",
-    "babel-jest": "^24.7.1",
-    "eslint": "^5.16.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-import": "^2.17.2",
+    "@typescript-eslint/eslint-plugin": "^2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "@yarnpkg/pnpify": "^2.0.0-rc.17",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-import-resolver-node": "^0.3.3",
+    "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "jest": "^24.7.1",
-    "lerna": "^3.13.4",
+    "jest": "^25.1.0",
     "prettier": "^1.17.0",
-    "sinon": "^7.3.2",
-    "typescript": "^3.4.5",
-    "vuepress": "^0.14.11"
+    "sinon": "^8.1.1",
+    "typescript": "^3.7.5",
+    "vuepress": "^1.2.0"
   },
   "engines": {
     "node": ">=8"
@@ -82,5 +83,8 @@
     "moduleNameMapper": {
       "@minorm/(.+)$": "<rootDir>packages/$1/src"
     }
+  },
+  "resolutions": {
+    "@minorm/core": "portal:/Users/arilas/Work/Projects/krona/minorm/packages/core"
   }
 }

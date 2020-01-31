@@ -74,7 +74,7 @@ export class SelectQuery<T extends SomeRecord = BaseRecord> extends Squel.cls
 
 export default function select<T = BaseRecord>(
   manager: Metadata<any, any>, //eslint-disable-line @typescript-eslint/no-explicit-any
-  options: QueryBuilderOptions | undefined = {},
+  options: QueryBuilderOptions | null = {},
 ): $SelectQuery<T> {
   // @ts-ignore
   return new SelectQuery(manager, options)

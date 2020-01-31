@@ -198,7 +198,7 @@ export function tableGateway(
 export function createTableBuilder(
   tableName: string,
   callback: (table: SchemaToolCreateTableContext) => void,
-  isNew: boolean = true,
+  isNew = true,
 ) {
   // @ts-ignore
   return tableGateway({ hasTable: () => !isNew })(tableName, callback)

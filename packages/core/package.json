@@ -5,10 +5,10 @@
   "author": "Alex Grand <alex@granted.name>",
   "homepage": "https://github.com/Arilas/minorm/tree/master/packages/core#readme",
   "license": "MIT",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "src/index.js",
+  "typings": "src/index.d.ts",
   "scripts": {
-    "dist": "tsc --outDir lib",
+    "dist": "tsc",
     "prepublish": "in-publish && npm run dist || echo 'Bad mode'"
   },
   "directories": {
@@ -32,6 +32,6 @@
     "squel": "^5.12.2"
   },
   "devDependencies": {
-    "sinon": "^7.3.2"
+    "sinon": "^8.1.1"
   }
 }
