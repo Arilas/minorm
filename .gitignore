@@ -42,11 +42,6 @@ lib
 dist
 build
 
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.pnp.*
-
 packages/**/*.js
 packages/**/*.d.ts
 packages/**/*.d.ts.map

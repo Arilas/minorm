@@ -19,7 +19,6 @@ jobs:
       - name: Prepare env
         run: |
           npm i -g yarn@berry
-          yarn install
           yarn dist
       - name: Run tests
         run: yarn test:unit
